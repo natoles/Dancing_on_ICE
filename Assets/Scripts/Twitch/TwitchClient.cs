@@ -5,44 +5,25 @@ using UnityEngine.UI;
 using Twitch = TwitchLib.Unity;
 using TwitchLib.Client.Models;
 using TwitchLib.Client.Events;
+using System;
 
-public class TwitchClient : MonoBehaviour
+public class TwitchClient : Twitch.Client
 {
-    private Twitch.Client client;
-    private string channelToJoin = "twifus123";
+    private static readonly TwitchClient instance = new TwitchClient();
+    private static readonly ConnectionCredentials credentials = new ConnectionCredentials(AuthTokens.BOT_NAME, AuthTokens.BOT_ACCESS_TOKEN);
 
-    private Text chat;
-
-    private void Start()
+    private TwitchClient() {}
+    
+    public static TwitchClient Instance()
     {
-        chat = GetComponent<Text>();
-
-        Application.runInBackground = true;
-
-        ConnectionCredentials credentials = new ConnectionCredentials("dancing_on_ice", AuthTokens.BOT_ACCESS_TOKEN);
-        client = new Twitch.Client();
-        client.Initialize(credentials, channelToJoin);
-        client.OnLog += Client_OnLog;
-        client.OnMessageReceived += Client_OnMessageReceived;
-
-        client.Connect();
+        return instance;
     }
 
-    private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
+    public void Connect(string channelToJoin)
     {
-        chat.text += "\n" + e.ChatMessage.Username + " : " + e.ChatMessage.Message;
+        base.Initialize(credentials, channelToJoin);
+        base.Connect();
     }
 
-    private void Client_OnLog(object sender, TwitchLib.Client.Events.OnLogArgs e)
-    {
-        Debug.Log($"{e.DateTime.ToString()}: {e.BotUsername} - {e.Data}");
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            client.SendMessage(client.JoinedChannels[0], "a-u");
-        }
-    }
+    private new void Connect() {}
 }
