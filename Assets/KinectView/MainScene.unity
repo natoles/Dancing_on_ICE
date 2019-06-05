@@ -164,8 +164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8821130411451d343a1488e2a9db134e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoneMaterial: {fileID: 2100000, guid: f2ea145c63353784985576f08398a815, type: 2}
-  BodySourceManager: {fileID: 1698423884}
+  mBodySourceManager: {fileID: 1698423885}
+  mJointObject: {fileID: 3160504526947011193, guid: 69c54b7a03538e74592d652ab3760d0b,
+    type: 3}
 --- !u!1 &716011529
 GameObject:
   m_ObjectHideFlags: 0
