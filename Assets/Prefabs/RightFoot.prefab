@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RightFoot
       objectReference: {fileID: 0}
+    - target: {fileID: 3160504526947011193, guid: 69c54b7a03538e74592d652ab3760d0b,
+        type: 3}
+      propertyPath: m_TagString
+      value: Foot
+      objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_LocalPosition.x
