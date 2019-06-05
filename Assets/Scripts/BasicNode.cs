@@ -7,7 +7,7 @@ public class BasicNode : MonoBehaviour
     GameObject movingPart;
     GameObject goal;
     GameObject rightHand;
-    float speed = 10f;
+    float speed = 1f;
     float size;
     public GameObject hand;
     bool inCircle = false;
@@ -39,6 +39,8 @@ public class BasicNode : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
+        Debug.Log("Bonjour");
+        Debug.Log(col.gameObject);
         if (col.gameObject == hand){
             inCircle = true;
         } 

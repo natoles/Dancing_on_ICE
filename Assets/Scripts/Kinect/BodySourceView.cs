@@ -7,7 +7,11 @@ using Joint = Windows.Kinect.Joint;
 public class BodySourceView : MonoBehaviour 
 {
     public BodySourceManager mBodySourceManager;
-    public GameObject mJointObject;
+    public GameObject rightHand;
+    public GameObject leftHand;
+    public GameObject rightFoot;
+    public GameObject leftFoot;
+    int cpt = 0;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -15,9 +19,25 @@ public class BodySourceView : MonoBehaviour
         JointType.HandLeft,
         JointType.HandRight,
         JointType.FootLeft,
+        JointType.FootRight,
     };
-    
-    
+
+    private GameObject[] _sprites = new GameObject[4];
+    /* 
+    private List<GameObject> _sprites = new List<GameObject>{
+        rightHand,
+        leftHand,
+        rightFoot,
+        leftFoot,
+    };
+    */
+    void Start()
+    {
+        _sprites[0] = leftHand;
+        _sprites[1] = rightHand;
+        _sprites[2] = leftFoot;
+        _sprites[3] = rightFoot;
+    }
     void Update () 
     {   
         #region Get Kinect data
@@ -77,11 +97,12 @@ public class BodySourceView : MonoBehaviour
     private GameObject CreateBodyObject(ulong id)
     {
         GameObject body = new GameObject("Body:" + id);
-        
+
+        cpt = 0;
         foreach(JointType joint in _joints)
         {
             //Attaches the gameobject we chose to all the joint we selected previously
-            GameObject newJoint = Instantiate(mJointObject);
+            GameObject newJoint = Instantiate(_sprites[cpt++]);
             newJoint.name = joint.ToString();
 
             //Set the relative position of the joint to it's parent(the body)
