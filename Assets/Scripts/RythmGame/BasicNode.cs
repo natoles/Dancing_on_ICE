@@ -7,11 +7,10 @@ public class BasicNode : MonoBehaviour
     GameObject movingPart; //Inner circle
     GameObject goal; //Outer circle
     Vector3 size; //Size of the outer circle 
-    bool inCircle = false; //True if the correct joint is in the node
-    float timeIn = 0; //Time since the joint has entered the node
+    protected bool inCircle = false; //True if the correct joint is in the node
+    protected float timeIn = 0; //Time since the joint has entered the node
     float timeFrame; //Time frame to make a PERFECT
     float timeToFinish = 3f; ///Time the node will take to destroy itself
-    string member = "Hand"; //Choice of the joint who will activate the node (Hand or Foot)
     private IEnumerator _growth; 
     bool finished = false; //True if the node is finished
     
@@ -33,7 +32,8 @@ public class BasicNode : MonoBehaviour
     
     void Update()
     {
-        //Scroe according to timing
+        
+        //Score according to timing
         if (finished){
             if (inCircle)
                 {
@@ -49,21 +49,6 @@ public class BasicNode : MonoBehaviour
                     Debug.Log("MISSED");
                 }
             Destroy(gameObject);
-        } 
-    }
-
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.gameObject.tag == member){
-            inCircle = true;
-            timeIn = Time.time;
-        } 
-    }
-
-    void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.gameObject.tag == member){
-            inCircle = false;
         } 
     }
 

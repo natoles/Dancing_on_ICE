@@ -9,7 +9,7 @@ public class NodeCreation : MonoBehaviour
     int xPos;
     int yPos;
     float spawnInterval = 2f;
-    // Start is called before the first frame update
+    
     void Start()
     {
         
@@ -28,7 +28,7 @@ public class NodeCreation : MonoBehaviour
         xPos = Random.Range(-17, 17);
         yPos = Random.Range(-9, 9);
         GameObject newBasicNode = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
-        newBasicNode.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
+        newBasicNode.transform.localScale = new Vector3(1f,1f,1f); //Changes the scale
         yield return new WaitForSeconds(spawnInterval);
         createNode = true;
         
