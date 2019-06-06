@@ -39,8 +39,12 @@ public class BasicNode : MonoBehaviour
                 {
                     if (Time.time - timeIn <= timeFrame)
                         Debug.Log("PERFECT");
-                    else 
-                        Debug.Log("GOOD");
+                    else {
+                        if (Time.time - timeIn <= timeFrame * 3)
+                            Debug.Log("GOOD");
+                        else 
+                            Debug.Log("BAD");
+                    }
                 } else {
                     Debug.Log("MISSED");
                 }
@@ -63,7 +67,7 @@ public class BasicNode : MonoBehaviour
         } 
     }
 
-    //Interpolate the inner circle
+    //Interpolates the inner circle
     private IEnumerator Growth(float timeGrowth){
         float progress = 0;
         Vector3 initialScale = movingPart.transform.localScale;
