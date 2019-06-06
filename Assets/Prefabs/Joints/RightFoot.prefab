@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4283573537134678155
+--- !u!1001 &2815768177665720132
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,17 +10,17 @@ PrefabInstance:
     - target: {fileID: 3160504526947011193, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_Name
-      value: LeftFoot
+      value: RightFoot
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011193, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_TagString
-      value: Foot
+      value: RightFoot
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.7
+      value: 5.7
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
@@ -74,18 +74,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011192, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
-      propertyPath: m_Color.g
-      value: 1
+      propertyPath: m_Color.r
+      value: 0.040236473
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011192, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
-      propertyPath: m_Color.b
+      propertyPath: m_Color.g
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011192, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
-      propertyPath: m_Color.r
-      value: 0.9887359
+      propertyPath: m_Color.b
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69c54b7a03538e74592d652ab3760d0b, type: 3}
