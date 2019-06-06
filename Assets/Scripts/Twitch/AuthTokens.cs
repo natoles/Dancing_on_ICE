@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAuthTokens
+public static class AuthTokens
 {
-    string CLIENT_ID { get; }
-    string CLIENT_SECRET { get; }
-    string BOT_ACCESS_TOKEN { get; }
-    string BOT_REFRESH_TOKEN { get; }
+    public static string CLIENT_ID          { get; } = "";
+    public static string CLIENT_SECRET      { get; } = "";
+    public static string BOT_ACCESS_TOKEN   { get; } = "";
+    public static string BOT_REFRESH_TOKEN  { get; } = "";
 }
