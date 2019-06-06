@@ -8,7 +8,6 @@ public class BasicNode : MonoBehaviour
     GameObject goal;
     float speed = 0.5f;
     float size;
-    public GameObject hand;
     bool inCircle = false;
     float timeIn = 0;
     public string member = "";
@@ -23,7 +22,6 @@ public class BasicNode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        movingPart.transform.Rotate(0,0,0.2f);
         movingPart.transform.localScale += new Vector3(speed/100, speed/100, 0);
         if (movingPart.transform.lossyScale.x >= size - size/12){
             if (inCircle)
