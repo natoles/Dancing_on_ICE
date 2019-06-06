@@ -11,7 +11,7 @@ public class BasicNode : MonoBehaviour
     protected bool inCircle = false; //True if the correct joint is in the node
     protected float timeIn = 0; //Time since the joint has entered the node
     float timeFrame; //Time frame to make a PERFECT
-    float timeToFinish = 3f; ///Time the node will take to destroy itself
+    float timeToFinish = 7f; ///Time the node will take to destroy itself
     private IEnumerator _growth; 
     bool finished = false; //True if the node is finished
     public GameObject textMissed;
@@ -27,7 +27,7 @@ public class BasicNode : MonoBehaviour
         size[0] -= size[0]/12;
         size[1] -= size[1]/12;
 
-        _growth = Growth(3f);
+        _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
     }
 
