@@ -1,11 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
 using Twitch = TwitchLib.Unity;
 using TwitchLib.Client.Models;
-using TwitchLib.Client.Events;
-using System;
 
 public class TwitchClient : Twitch.Client
 {
@@ -19,11 +14,17 @@ public class TwitchClient : Twitch.Client
         return instance;
     }
 
-    public void Connect(string channelToJoin)
+    public void ConnectTo(string channelToJoin)
     {
         base.Initialize(credentials, channelToJoin);
         base.Connect();
     }
 
-    private new void Connect() {}
+    public void SendMessage(string message, bool dryRun = false)
+    {
+        if (base.JoinedChannels.Count > 0)
+            base.SendMessage(base.JoinedChannels[0], message, dryRun);
+        else
+            Console.WriteLine("No channel joined, sending message failed");
+    }
 }
