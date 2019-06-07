@@ -6,6 +6,8 @@ public class Main : MonoBehaviour
 {
     bool createNode = true;
     public GameObject BasicNodeHand; 
+    public GameObject BasicNodeRightHand;
+    public GameObject BasicNodeLeftHand;
     int xPos;
     int yPos;
     float spawnInterval = 2f;
@@ -38,8 +40,23 @@ public class Main : MonoBehaviour
         createNode = false;
         xPos = Random.Range(-17, 17);
         yPos = Random.Range(-9, 9);
-        GameObject newBasicNode = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
-        newBasicNode.transform.localScale = new Vector3(1f,1f,1f); //Changes the scale
+        int type = Random.Range(1,4);
+        switch (type)
+        {
+            case 1 : 
+                GameObject newBasicNodeHand = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                break;
+            case 2 : 
+                GameObject newBasicNodeRightHand = Instantiate(BasicNodeRightHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                break;
+            case 3 : 
+                GameObject newBasicNodeLeftHand = Instantiate(BasicNodeLeftHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                break;
+            default :
+                GameObject newBasicNodeDefault = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                break;
+        }
+        
         yield return new WaitForSeconds(spawnInterval);
         createNode = true;
         

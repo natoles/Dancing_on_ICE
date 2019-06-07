@@ -482,6 +482,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BasicNodeHand: {fileID: 8189489159801356007, guid: eb1e93b58536ad84eac5484a81c6f9ec,
     type: 3}
+  BasicNodeRightHand: {fileID: 5946777050729531625, guid: ad73d63970dc68c44b22a493cead69c3,
+    type: 3}
+  BasicNodeLeftHand: {fileID: 3666548618263322825, guid: 450ef269066f2e14da7a7f0298db96c5,
+    type: 3}
   Score: 0
   tmpScore: 0
 --- !u!4 &733231977
