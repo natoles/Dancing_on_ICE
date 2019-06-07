@@ -11,10 +11,11 @@ public class BasicNode : MonoBehaviour
     protected bool inCircle = false; //True if the correct joint is in the node
     protected float timeIn = 0; //Time since the joint has entered the node
     float timeFrame; //Time frame to make a PERFECT
-    float timeToFinish = 7f; ///Time the node will take to destroy itself
+    float timeToFinish = 3f; ///Time the node will take to destroy itself
     private IEnumerator _growth; 
     bool finished = false; //True if the node is finished
     public GameObject textMissed;
+    GameObject main;
     
     void Start()
     {
@@ -29,6 +30,7 @@ public class BasicNode : MonoBehaviour
 
         _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
+        main = GameObject.Find("Main");
     }
 
     
@@ -44,6 +46,7 @@ public class BasicNode : MonoBehaviour
                         mtext.GetComponent<Text>().text = "PERFECT";
                         mtext.GetComponent<Text>().fontSize += 30;
                         mtext.GetComponent<Text>().color = Color.yellow;
+                        main.GetComponent<Main>().Score += 15369;
                         Debug.Log("PERFECT");
                     }
                     else {
@@ -51,29 +54,26 @@ public class BasicNode : MonoBehaviour
                             mtext.GetComponent<Text>().text = "GREAT";
                             mtext.GetComponent<Text>().fontSize += 0;
                             mtext.GetComponent<Text>().color = Color.magenta;
+                            main.GetComponent<Main>().Score += 8345;
                             Debug.Log("GOOD");
                         }
                         else {
                             mtext.GetComponent<Text>().text = "BAD";
                             mtext.GetComponent<Text>().fontSize -= 20;
                             mtext.GetComponent<Text>().color = Color.blue;
+                            main.GetComponent<Main>().Score += 5621;
                             Debug.Log("BAD");
                         }
                     }
                 } else {
-                    ShowText();
                     mtext.GetComponent<Text>().text = "MISSED";
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.gray;
+                    main.GetComponent<Main>().Score += 15369;
                     Debug.Log("MISSED");
                 }
             Destroy(gameObject);
         } 
-    }
-
-    void ShowText(){
-        
-        
     }
 
     //Interpolates the inner circle

@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeCreation : MonoBehaviour
+public class Main : MonoBehaviour
 {
     bool createNode = true;
     public GameObject BasicNodeHand; 
     int xPos;
     int yPos;
     float spawnInterval = 2f;
+    public int Score = 0;
+    public int tmpScore = 0;
     
     void Start()
     {
@@ -20,6 +22,15 @@ public class NodeCreation : MonoBehaviour
     {
         if (createNode)
             StartCoroutine(BasicNodeCreation());
+
+        //Score update
+        if(tmpScore < Score - 151){
+            tmpScore += 151;
+        } else {
+            if ((tmpScore < Score))
+            tmpScore += Score-tmpScore;
+        }
+
     }
 
     IEnumerator BasicNodeCreation()
