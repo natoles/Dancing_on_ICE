@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class BasicNode : MonoBehaviour
 {
-    GameObject movingPart; //Inner circle
-    GameObject goal; //Outer circle
-    Vector3 size; //Size of the outer circle 
+    GameObject movingPart; //Outer circle
+    GameObject goal; //Inner circle
+    Vector3 size; //Size of the inner circle 
     protected bool inCircle = false; //True if the correct joint is in the node
     protected float timeIn = 0; //Time since the joint has entered the node
     float timeFrame; //Time frame to make a PERFECT
@@ -25,8 +25,8 @@ public class BasicNode : MonoBehaviour
         timeFrame = timeToFinish/10;
 
         //Graphical adjustment
-        size[0] -= size[0]/12;
-        size[1] -= size[1]/12;
+        size[0] += size[0]/12;
+        size[1] += size[1]/12;
 
         _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
@@ -69,14 +69,14 @@ public class BasicNode : MonoBehaviour
                     mtext.GetComponent<Text>().text = "MISSED";
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.gray;
-                    main.GetComponent<Main>().Score += 15369;
+                    main.GetComponent<Main>().Score += 15369; //CHANGE TO 0
                     Debug.Log("MISSED");
                 }
             Destroy(gameObject);
         } 
     }
 
-    //Interpolates the inner circle
+    //Interpolates the outer circle
     private IEnumerator Growth(float timeGrowth){
         float progress = 0;
         Vector3 initialScale = movingPart.transform.localScale;
