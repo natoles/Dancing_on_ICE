@@ -5,14 +5,19 @@ using UnityEngine;
 public class Main : MonoBehaviour
 {
     bool createNode = true;
+
+    //Nodes list
     public GameObject BasicNodeHand; 
     public GameObject BasicNodeRightHand;
     public GameObject BasicNodeLeftHand;
-    int xPos;
-    int yPos;
-    float spawnInterval = 2f;
-    public int Score = 0;
-    public int tmpScore = 0;
+    float spawnInterval = 1f;
+    public int Score = 0; //Actual score
+    public int tmpScore = 0; //Score displayed
+
+    //Zones for node spawn
+    public Collider LH_zone; 
+    public Collider RH_zone; 
+    public Collider H_zone; 
     
     void Start()
     {
@@ -38,27 +43,35 @@ public class Main : MonoBehaviour
     IEnumerator BasicNodeCreation()
     {
         createNode = false;
-        xPos = Random.Range(-17, 17);
-        yPos = Random.Range(-9, 9);
+        
+        //Spawn a random node
         int type = Random.Range(1,4);
         switch (type)
         {
             case 1 : 
-                GameObject newBasicNodeHand = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                GameObject newBasicNodeHand = Instantiate(BasicNodeHand, RandomPointInBounds(H_zone.bounds), Quaternion.Euler(0,0,0));
                 break;
             case 2 : 
-                GameObject newBasicNodeRightHand = Instantiate(BasicNodeRightHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                GameObject newBasicNodeRightHand = Instantiate(BasicNodeRightHand, RandomPointInBounds(RH_zone.bounds), Quaternion.Euler(0,0,0));
                 break;
             case 3 : 
-                GameObject newBasicNodeLeftHand = Instantiate(BasicNodeLeftHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                GameObject newBasicNodeLeftHand = Instantiate(BasicNodeLeftHand, RandomPointInBounds(LH_zone.bounds), Quaternion.Euler(0,0,0));
                 break;
             default :
-                GameObject newBasicNodeDefault = Instantiate(BasicNodeHand, new Vector3(xPos, yPos,0), Quaternion.Euler(0,0,0));
+                GameObject newBasicNodeDefault = Instantiate(BasicNodeHand, RandomPointInBounds(H_zone.bounds), Quaternion.Euler(0,0,0));
                 break;
         }
         
         yield return new WaitForSeconds(spawnInterval);
         createNode = true;
-        
+    }
+
+    //Return a random Vector3 inside a collider
+    public static Vector3 RandomPointInBounds(Bounds bounds) {
+    return new Vector3(
+        Random.Range(bounds.min.x, bounds.max.x),
+        Random.Range(bounds.min.y, bounds.max.y),
+        0
+    );
     }
 }
