@@ -10,7 +10,9 @@ public class Main : MonoBehaviour
     public GameObject BasicNodeHand; 
     public GameObject BasicNodeRightHand;
     public GameObject BasicNodeLeftHand;
-    float spawnInterval = 1f;
+    public GameObject LineNodeRightHand;
+    public GameObject LineNodeLeftHand;
+    float spawnInterval = 2.5f;
     public int Score = 0; //Actual score
     public int tmpScore = 0; //Score displayed
 
@@ -45,7 +47,7 @@ public class Main : MonoBehaviour
         createNode = false;
         
         //Spawn a random node
-        int type = Random.Range(1,4);
+        int type = Random.Range(1,6);
         switch (type)
         {
             case 1 : 
@@ -56,6 +58,12 @@ public class Main : MonoBehaviour
                 break;
             case 3 : 
                 GameObject newBasicNodeLeftHand = Instantiate(BasicNodeLeftHand, RandomPointInBounds(LH_zone.bounds), Quaternion.Euler(0,0,0));
+                break;
+            case 4 : 
+                GameObject newLineNodeRightHand = Instantiate(LineNodeRightHand, RandomPointInBounds(RH_zone.bounds), Quaternion.Euler(0,0,0));
+                break;
+            case 5 : 
+                GameObject newLineNodeLeftHand = Instantiate(LineNodeLeftHand, RandomPointInBounds(LH_zone.bounds), Quaternion.Euler(0,0,0));
                 break;
             default :
                 GameObject newBasicNodeDefault = Instantiate(BasicNodeHand, RandomPointInBounds(H_zone.bounds), Quaternion.Euler(0,0,0));

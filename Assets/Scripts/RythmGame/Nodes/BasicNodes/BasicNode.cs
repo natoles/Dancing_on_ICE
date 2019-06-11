@@ -41,7 +41,7 @@ public class BasicNode : Node
                     mtext.GetComponent<Text>().text = "MISSED";
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.gray;
-                    main.GetComponent<Main>().Score += 15369; //CHANGE TO 0
+                    main.GetComponent<Main>().Score += 0; //CHANGE TO 0
                     Debug.Log("MISSED");
                 }
             Destroy(gameObject);
