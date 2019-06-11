@@ -38,6 +38,8 @@ public abstract class LineNode : Node
     }
     void Update()
     {
+        movingPart.transform.Rotate(0f,0f,1f);
+
         //If player completed the entire path
         if (finishedMoving){
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);

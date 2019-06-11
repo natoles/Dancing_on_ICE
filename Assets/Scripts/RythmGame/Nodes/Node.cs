@@ -5,9 +5,9 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     
-    GameObject movingPart; //Outer circle
+    protected GameObject movingPart; //Outer circle
     GameObject goal; //Inner circle
-    Vector3 size; //Size of the inner circle 
+    protected Vector3 size; //Size of the inner circle 
     protected bool inCircle = false; //True if the correct joint is in the node
     protected float timeIn = 0; //Time since the joint has entered the node
     protected float timeFrame; //Time frame to make a PERFECT
