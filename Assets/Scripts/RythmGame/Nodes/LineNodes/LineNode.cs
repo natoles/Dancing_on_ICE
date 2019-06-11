@@ -15,7 +15,7 @@ public abstract class LineNode : Node
     bool finishedMoving = false; //Has the node finished his journey ?
     protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
-    
+    protected bool inCircle = false; //Is the player in the circle ?
     void Awake(){
         SetJoint();
     }

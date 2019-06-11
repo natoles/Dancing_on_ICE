@@ -9,15 +9,7 @@ public class BasicNode_LeftHand : BasicNode
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
-            inCircle = true;
-            timeIn = Time.time;
-        } 
-    }
-
-    void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.gameObject.tag == joint){
-            inCircle = false;
+            finished = true;
         } 
     }
 }

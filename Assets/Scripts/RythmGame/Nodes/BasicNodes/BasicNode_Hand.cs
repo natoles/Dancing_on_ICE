@@ -10,15 +10,8 @@ public class BasicNode_Hand : BasicNode
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == joint1 || col.gameObject.tag == joint2){
-            inCircle = true;
-            timeIn = Time.time;
+            finished = true;
         } 
     }
 
-    void OnTriggerExit2D(Collider2D col)
-    {
-        if (col.gameObject.tag == joint1 || col.gameObject.tag == joint2){
-            inCircle = false;
-        } 
-    }
 }
