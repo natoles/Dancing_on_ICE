@@ -44,6 +44,10 @@ public class LineNode_Hand : Node
             mtext.GetComponent<Text>().color = Color.yellow;
             main.GetComponent<Main>().Score += 15369;
             Debug.Log("PERFECT");
+
+            //reset variable to avoid entering in other loop after destruction
+            moving = false; 
+            finished = false;
             Destroy(gameObject);
         }
 
@@ -80,7 +84,7 @@ public class LineNode_Hand : Node
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.gray;
                     main.GetComponent<Main>().Score += 15369; //CHANGE TO 0
-                    Debug.Log("MISSED");
+                    Debug.Log("MISSED YEAAAAAAAAAh");
                 }
             }
             Destroy(gameObject);
