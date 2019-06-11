@@ -568,6 +568,7 @@ MonoBehaviour:
     type: 3}
   LineNodeLeftHand: {fileID: 3514730752467805539, guid: 582498e719a67004d8ec34e3d2fe432b,
     type: 3}
+  spawnInterval: 2
   Score: 0
   tmpScore: 0
   LH_zone: {fileID: 2007234658}
