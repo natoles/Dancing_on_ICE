@@ -2,30 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class LineNode_Hand : Node
-{
 
+public abstract class LineNode : Node
+{
     LineRenderer line; //The line the nde will follow
-    Collider LH_zone; //Th Zone in which the lineRenderer will be created
+    protected Collider spawnZone; //Th Zone in which the lineRenderer will be created
     float timeLine = 5f; //Time the node will take to make his journey accross the screen. Farewell little node.
     float timeLine1; //Time to go from initial position to point 1
     float timeLine2; //Time to go from point 1 to point 2
     private IEnumerator moveLine; 
     bool moving = false; //Is the node moving along the lineRenderer ?
     bool finishedMoving = false; //Has the node finished his journey ?
-    string joint = "LeftHand"; //Choice of the joint who will activate the node (Hand or Foot)
+    protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
     
+    void Awake(){
+        SetJoint();
+    }
     public override void Start()
     {
-        base.Start();
-        LH_zone = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
+        base.Start();  
+        //spawnZone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
         line = GetComponent<LineRenderer>();
-
         //creation of the path
         line.SetPosition(0, transform.position);
-        line.SetPosition(1, RandomPointInBounds(LH_zone.bounds));
-        line.SetPosition(2, RandomPointInBounds(LH_zone.bounds));
+        line.SetPosition(1, RandomPointInBounds(spawnZone.bounds));
+        line.SetPosition(2, RandomPointInBounds(spawnZone.bounds));
 
         //Time calculation
         float dist1 = Vector3.Distance(line.GetPosition(0), line.GetPosition(1));
@@ -61,8 +63,6 @@ public class LineNode_Hand : Node
         if(moving && !inCircle)
         {
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
-            Debug.Log(timeLine);
-            Debug.Log(timeLine* 1/3.0f);
             if (Time.time - timeInside >= timeLine * 2/3.0f){
                 mtext.GetComponent<Text>().text = "GREAT";
                 mtext.GetComponent<Text>().fontSize += 0;
@@ -84,7 +84,7 @@ public class LineNode_Hand : Node
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.gray;
                     main.GetComponent<Main>().Score += 15369; //CHANGE TO 0
-                    Debug.Log("MISSED YEAAAAAAAAAh");
+                    Debug.Log("MISSED");
                 }
             }
             Destroy(gameObject);
@@ -136,4 +136,9 @@ public class LineNode_Hand : Node
             inCircle = false;
         } 
     }
+
+    public virtual void SetJoint(){
+        Debug.Log("parent");
+    }
+
 }
