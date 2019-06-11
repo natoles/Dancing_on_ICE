@@ -15,7 +15,7 @@ public class BasicNode : Node
             if (missed){
                 mtext.GetComponent<Text>().text = "MISSED";
                 mtext.GetComponent<Text>().fontSize -= 50;
-                mtext.GetComponent<Text>().color = Color.gray;
+                mtext.GetComponent<Text>().color = Color.red;
                 main.GetComponent<Main>().Score += 0; //CHANGE TO 0
                 Debug.Log("MISSED");
             } else {             

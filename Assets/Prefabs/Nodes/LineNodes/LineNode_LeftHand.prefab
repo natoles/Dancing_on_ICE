@@ -96,6 +96,21 @@ PrefabInstance:
       propertyPath: m_Parameters.colorGradient.key0.b
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.r
+      value: 0.6556604
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 0.6556604
+      objectReference: {fileID: 0}
     - target: {fileID: 3071063089438466741, guid: 98850c8572f530143a30086ad3b9a594,
         type: 3}
       propertyPath: m_Sprite

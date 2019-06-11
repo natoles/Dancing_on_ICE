@@ -12,7 +12,7 @@ public class Main : MonoBehaviour
     public GameObject BasicNodeLeftHand;
     public GameObject LineNodeRightHand;
     public GameObject LineNodeLeftHand;
-    float spawnInterval = 2.5f;
+    public float spawnInterval = 2.5f;
     public int Score = 0; //Actual score
     public int tmpScore = 0; //Score displayed
 
