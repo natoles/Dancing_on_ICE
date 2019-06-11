@@ -17,7 +17,7 @@ public class Node : MonoBehaviour
     public GameObject textMissed; //Score text : MISSED, BAD, GREAT, PERFECT
     protected GameObject main;
 
-    void Start()
+    public virtual void Start()
     {
         goal = this.transform.GetChild(0).gameObject;
         movingPart = this.transform.GetChild(1).gameObject;
@@ -34,11 +34,6 @@ public class Node : MonoBehaviour
         
     }
 
-
-    public virtual void Update()
-    {
-        
-    }
 
     //Interpolates the outer circle
     private IEnumerator Growth(float timeGrowth){
