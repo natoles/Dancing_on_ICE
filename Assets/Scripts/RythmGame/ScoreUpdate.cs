@@ -7,7 +7,8 @@ public class ScoreUpdate : MonoBehaviour
 {
 
     public GameObject textScore; 
-    GameObject main; 
+    GameObject scoring; 
+    GameObject main;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +18,6 @@ public class ScoreUpdate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textScore.GetComponent<Text>().text = "SCORE : " + main.GetComponent<Main>().tmpScore;
+        textScore.GetComponent<Text>().text = "SCORE : " + main.GetComponent<Scoring>().tmpScore;
     }
 }

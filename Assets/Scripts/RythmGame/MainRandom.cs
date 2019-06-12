@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Main : MonoBehaviour
+public class MainRandom : MonoBehaviour
 {
     bool createNode = true;
 
@@ -13,8 +13,7 @@ public class Main : MonoBehaviour
     public GameObject LineNodeRightHand;
     public GameObject LineNodeLeftHand;
     public float spawnInterval = 2.5f;
-    public int Score = 0; //Actual score
-    public int tmpScore = 0; //Score displayed
+    
 
     //Zones for node spawn
     public Collider LH_zone; 
@@ -31,15 +30,6 @@ public class Main : MonoBehaviour
     {
         if (createNode)
             StartCoroutine(BasicNodeCreation());
-
-        //Score update
-        if(tmpScore < Score - 151){
-            tmpScore += 151;
-        } else {
-            if ((tmpScore < Score))
-            tmpScore += Score-tmpScore;
-        }
-
     }
 
     IEnumerator BasicNodeCreation()
