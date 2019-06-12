@@ -60,7 +60,7 @@ public abstract class LineNode : Node
             mtext.GetComponent<Text>().text = "PERFECT";
             mtext.GetComponent<Text>().fontSize += 30;
             mtext.GetComponent<Text>().color = Color.yellow;
-            main.GetComponent<Main>().Score += 15369;
+            main.GetComponent<Scoring>().Score += 15369;
             Debug.Log("PERFECT");
 
             //reset variable to avoid entering in other loop after destruction
@@ -83,7 +83,7 @@ public abstract class LineNode : Node
                 mtext.GetComponent<Text>().text = "GREAT";
                 mtext.GetComponent<Text>().fontSize += 0;
                 mtext.GetComponent<Text>().color = Color.magenta;
-                main.GetComponent<Main>().Score += 8345;
+                main.GetComponent<Scoring>().Score += 8345;
                 Debug.Log("GOOD");
             }
             else {
@@ -91,7 +91,7 @@ public abstract class LineNode : Node
                     mtext.GetComponent<Text>().text = "BAD";
                     mtext.GetComponent<Text>().fontSize -= 20;
                     mtext.GetComponent<Text>().color = Color.blue;
-                    main.GetComponent<Main>().Score += 5621;
+                    main.GetComponent<Scoring>().Score += 5621;
                     Debug.Log("BAD");
                 }
                 else 
@@ -99,7 +99,7 @@ public abstract class LineNode : Node
                     mtext.GetComponent<Text>().text = "MISSED";
                     mtext.GetComponent<Text>().fontSize -= 50;
                     mtext.GetComponent<Text>().color = Color.red;
-                    main.GetComponent<Main>().Score += 0; //CHANGE TO 0
+                    main.GetComponent<Scoring>().Score += 0; //CHANGE TO 0
                     Debug.Log("MISSED");
                 }
             }

@@ -18,7 +18,7 @@ public class NodeCreation : MonoBehaviour
     );
     }
 
-    //Creates a BasicNode for the body part joint, the nose lasts timeToFinish seconds, at position spawnPosition  
+    //Creates a BasicNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
     public void CreateBasicNode(Joint joint, float timeToFinish, Vector3 spawnPositon){    
         switch (joint)
         {
@@ -81,7 +81,8 @@ public class NodeCreation : MonoBehaviour
         CreateBasicNode(joint, defaultTimeToFinish);
     }
 
-
+    //Creates a LineNode for the body part joint, the node lasts timeToFinish seconds,
+    //travels for timeLine seconds, from spawnPosition to pos1 to pos2
     public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3 pos1, Vector3 pos2){
         switch (joint)
         {
@@ -100,21 +101,23 @@ public class NodeCreation : MonoBehaviour
                 nodePrefab = GameObject.Find("Prefab_LineNode_LeftHand");
                 zone = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeLeftHand = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
-                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().enabled = true;
-                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().timeToFinish = timeToFinish;
-                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().timeLine = timeLine;
-                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().pos1 = pos1;
-                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().pos2 = pos2;
+                LineNode_LeftHand objL = newLineNodeLeftHand.GetComponent<LineNode_LeftHand>();
+                objL.enabled = true;
+                objL.timeToFinish = timeToFinish;
+                objL.timeLine = timeLine;
+                objL.pos1 = pos1;
+                objL.pos2 = pos2;
                 break;
             default :
                 nodePrefab = GameObject.Find("Prefab_LineNode_RightHand");
                 zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeDefault = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
-                newLineNodeDefault.GetComponent<LineNode_RightHand>().enabled = true;
-                newLineNodeDefault.GetComponent<LineNode_RightHand>().timeToFinish = timeToFinish;
-                newLineNodeDefault.GetComponent<LineNode_RightHand>().timeLine = timeLine;
-                newLineNodeDefault.GetComponent<LineNode_RightHand>().pos1 = pos1;
-                newLineNodeDefault.GetComponent<LineNode_RightHand>().pos2 = pos2;
+                LineNode_RightHand objD = newLineNodeDefault.GetComponent<LineNode_RightHand>();
+                objD.enabled = true;
+                objD.timeToFinish = timeToFinish;
+                objD.timeLine = timeLine;
+                objD.pos1 = pos1;
+                objD.pos2 = pos2;
                 break;
         }
     }
