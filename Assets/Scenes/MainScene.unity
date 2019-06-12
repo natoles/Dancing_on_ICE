@@ -614,6 +614,7 @@ GameObject:
   - component: {fileID: 733231976}
   - component: {fileID: 733231978}
   - component: {fileID: 733231979}
+  - component: {fileID: 733231980}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -644,8 +645,6 @@ MonoBehaviour:
   LineNodeLeftHand: {fileID: 3514730752467805539, guid: 582498e719a67004d8ec34e3d2fe432b,
     type: 3}
   spawnInterval: 2
-  Score: 0
-  tmpScore: 0
   LH_zone: {fileID: 2007234658}
   RH_zone: {fileID: 729278943}
   H_zone: {fileID: 926796136}
@@ -772,6 +771,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   self: {fileID: 733231975}
+--- !u!114 &733231980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733231975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 668d29647220da34c925c7d63394815d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Score: 0
+  tmpScore: 0
 --- !u!1 &926796134
 GameObject:
   m_ObjectHideFlags: 0
