@@ -1,7 +1,21 @@
-﻿public static class ChatCommands
+﻿using System.Collections;
+using System.Collections.Generic;
+
+public static class ChatCommands
 {
-    public static string AUDIENCE_TIME_CMD = "gambatte";
-    public static string INCREASE_DIFFICULTY_CMD = "up";
-    public static string DECREASE_DIFFICULTY_CMD = "down";
-    public static string CONGRATULATION_CMD = "gg";
+    public enum CommandType
+    {
+        AudienceTime,
+        IncreaseDifficulty,
+        DecreaseDifficulty,
+        Congratulate
+    }
+
+    public static Dictionary<CommandType, string> commands = new Dictionary<CommandType, string>
+    {
+        { CommandType.AudienceTime, "gambatte" },
+        { CommandType.IncreaseDifficulty, "increase" },
+        { CommandType.DecreaseDifficulty, "decrease" },
+        { CommandType.Congratulate, "gg" }
+    };
 }
