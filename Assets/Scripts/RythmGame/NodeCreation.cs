@@ -82,16 +82,19 @@ public class NodeCreation : MonoBehaviour
     }
 
 
-    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition){
+    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3 pos1, Vector3 pos2){
         switch (joint)
         {
             case Joint.RightHand :
                 nodePrefab = GameObject.Find("Prefab_LineNode_RightHand");
                 zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeRightHand = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
-                newLineNodeRightHand.GetComponent<LineNode_RightHand>().enabled = true;
-                newLineNodeRightHand.GetComponent<LineNode_RightHand>().timeToFinish = timeToFinish;
-                newLineNodeRightHand.GetComponent<LineNode_RightHand>().timeLine = timeLine;
+                LineNode_RightHand objR = newLineNodeRightHand.GetComponent<LineNode_RightHand>();
+                objR.enabled = true;
+                objR.timeToFinish = timeToFinish;
+                objR.timeLine = timeLine;
+                objR.pos1 = pos1;
+                objR.pos2 = pos2;
                 break;
             case Joint.LeftHand : 
                 nodePrefab = GameObject.Find("Prefab_LineNode_LeftHand");
@@ -100,6 +103,8 @@ public class NodeCreation : MonoBehaviour
                 newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().enabled = true;
                 newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().timeToFinish = timeToFinish;
                 newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().timeLine = timeLine;
+                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().pos1 = pos1;
+                newLineNodeLeftHand.GetComponent<LineNode_LeftHand>().pos2 = pos2;
                 break;
             default :
                 nodePrefab = GameObject.Find("Prefab_LineNode_RightHand");
@@ -108,6 +113,8 @@ public class NodeCreation : MonoBehaviour
                 newLineNodeDefault.GetComponent<LineNode_RightHand>().enabled = true;
                 newLineNodeDefault.GetComponent<LineNode_RightHand>().timeToFinish = timeToFinish;
                 newLineNodeDefault.GetComponent<LineNode_RightHand>().timeLine = timeLine;
+                newLineNodeDefault.GetComponent<LineNode_RightHand>().pos1 = pos1;
+                newLineNodeDefault.GetComponent<LineNode_RightHand>().pos2 = pos2;
                 break;
         }
     }
@@ -133,7 +140,7 @@ public class NodeCreation : MonoBehaviour
                 randomSpawnPosition = RandomPointInBounds(zone.bounds);
                 break;
         }
-        CreateLineNode(joint, timeToFinish, timeLine, randomSpawnPosition);
+        CreateLineNode(joint, timeToFinish, timeLine, randomSpawnPosition, Vector3.zero, Vector3.zero);
         
     }
     

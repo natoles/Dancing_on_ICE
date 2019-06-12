@@ -16,9 +16,9 @@ public abstract class LineNode : Node
     protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
     protected bool inCircle = false; //Is the player in the circle ?
-    Vector3 pos1;
-    Vector3 pos2;
-    //bool init = true;
+    public Vector3 pos1;
+    public Vector3 pos2;
+    bool init = true;
     void Awake(){
         SetJoint();
     }
@@ -27,36 +27,23 @@ public abstract class LineNode : Node
         base.Start();  
         //spawnZone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
         line = GetComponent<LineRenderer>();
-
-        pos1 = RandomPointInBounds(spawnZone.bounds);
-        pos2 = RandomPointInBounds(spawnZone.bounds);
-
-        //init = false;
-
-        //creation of the path
-        line.SetPosition(0, transform.position);
-        line.SetPosition(1, pos1);
-        line.SetPosition(2, pos2);
-
-        //Time calculation
-        float dist1 = Vector3.Distance(line.GetPosition(0), line.GetPosition(1));
-        float dist2 = Vector3.Distance(line.GetPosition(1), line.GetPosition(2));
-        float totalDistance =  dist1 + dist2;
-        timeLine1 = dist1/totalDistance * timeLine;
-        timeLine2 = dist2/totalDistance * timeLine;
-       
+        if (pos1 == Vector3.zero && pos2 == Vector3.zero)
+        {
+            pos1 = RandomPointInBounds(spawnZone.bounds);
+            pos2 = RandomPointInBounds(spawnZone.bounds);
+        }
+          
     }
     void Update()
     {
-        /* 
         //init in Update so I can change the values of some variables
         if (init){
             init = false;
 
             //creation of the path
             line.SetPosition(0, transform.position);
-            line.SetPosition(1, RandomPointInBounds(spawnZone.bounds));
-            line.SetPosition(2, RandomPointInBounds(spawnZone.bounds));
+            line.SetPosition(1, pos1);
+            line.SetPosition(2, pos2);
 
             //Time calculation
             float dist1 = Vector3.Distance(line.GetPosition(0), line.GetPosition(1));
@@ -64,7 +51,7 @@ public abstract class LineNode : Node
             float totalDistance =  dist1 + dist2;
             timeLine1 = dist1/totalDistance * timeLine;
             timeLine2 = dist2/totalDistance * timeLine;
-        }*/
+        }
         movingPart.transform.Rotate(0f,0f,1f);
 
         //If player completed the entire path
