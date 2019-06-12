@@ -590,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46137abd238d51347a8e16ab528eb58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: AudienceTimeCommand
 --- !u!1 &770984385
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2074456087}
+  m_Material: {fileID: 2031393777}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -1409,7 +1409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46137abd238d51347a8e16ab528eb58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  type: IncreaseDifficultyCommand
 --- !u!1 &1125962153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,49 +1475,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1130534683
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1130534685}
-  - component: {fileID: 1130534684}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1130534684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130534683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 519cb90ee0380ba42ab6b5a86a135ab9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1130534685
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130534683}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 319.5, y: 166, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1152738529
 GameObject:
@@ -2028,7 +1985,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46137abd238d51347a8e16ab528eb58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 2
+  type: DecreaseDifficultyCommand
 --- !u!1 &1331276744
 GameObject:
   m_ObjectHideFlags: 0
@@ -2678,7 +2635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46137abd238d51347a8e16ab528eb58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
+  type: CongratulationCommand
 --- !u!1 &1983451143
 GameObject:
   m_ObjectHideFlags: 0
@@ -2758,7 +2715,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1983451143}
   m_CullTransparentMesh: 0
---- !u!21 &2074456087
+--- !u!21 &2031393777
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0

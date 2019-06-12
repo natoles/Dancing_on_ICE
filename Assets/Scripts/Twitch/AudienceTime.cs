@@ -36,7 +36,7 @@ public class AudienceTime : MonoBehaviour
         {
             Debug.Log("Starting Audience Time");
             Show();
-            client.SendMessage($"Audience time ! Type {ChatCommands.commands[ChatCommands.CommandType.AudienceTime].ToUpperInvariant()} in chat to increase the multiplier !");
+            client.SendMessage($"Audience time ! Type {SettingsManager.Instance.config["ChatCommands"]["AudienceTimeCommand"].StringValue.ToUpperInvariant()} in chat to increase the multiplier !");
             client.OnMessageReceived += AudienceTime_Handler;
             started = true;
         }
@@ -59,7 +59,7 @@ public class AudienceTime : MonoBehaviour
 
     private void AudienceTime_Handler(object sender, OnMessageReceivedArgs e)
     {
-        if (e.ChatMessage.Message.ToLowerInvariant() == ChatCommands.commands[ChatCommands.CommandType.AudienceTime])
+        if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Instance.config["ChatCommands"]["AudienceTimeCommand"].StringValue)
         {
             AddToMultiplier(0.1f);
         }
