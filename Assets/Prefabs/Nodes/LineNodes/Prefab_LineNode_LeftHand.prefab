@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28efd9a1b268bf34490b28a480c7a927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
+  timeLine: 5
 --- !u!1001 &1898354537782390886
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 3071063089017853189, guid: 98850c8572f530143a30086ad3b9a594,
         type: 3}
       propertyPath: m_Name
-      value: LineNode_LeftHand
+      value: Prefab_LineNode_LeftHand
       objectReference: {fileID: 0}
     - target: {fileID: 3071063089017853194, guid: 98850c8572f530143a30086ad3b9a594,
         type: 3}

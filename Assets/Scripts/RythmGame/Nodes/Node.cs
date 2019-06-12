@@ -9,7 +9,7 @@ public class Node : MonoBehaviour
     GameObject goal; //Inner circle
     protected Vector3 size; //Size of the inner circle 
     protected float timeFrame; //Time frame to make a PERFECT
-    protected float timeToFinish = 3f; ///Time the node will take to destroy itself
+    public float timeToFinish; ///Time the node will take to destroy itself
     private IEnumerator _growth; 
     protected bool finished = false; //True if the node is finished
     public GameObject textMissed; //Score text : MISSED, BAD, GREAT, PERFECT
