@@ -21,7 +21,7 @@ public class AudienceTime : MonoBehaviour
 
     private void Start()
     {
-        client = TwitchClient.Instance();
+        client = TwitchClient.Instance;
         Hide();
     }
 
@@ -36,7 +36,7 @@ public class AudienceTime : MonoBehaviour
         {
             Debug.Log("Starting Audience Time");
             Show();
-            client.SendMessage($"Audience time ! Type {ChatCommands.AUDIENCE_TIME_CMD.ToUpperInvariant()} in chat to increase the multiplier !");
+            client.SendMessage($"Audience time ! Type {ChatCommands.commands[ChatCommands.CommandType.AudienceTime].ToUpperInvariant()} in chat to increase the multiplier !");
             client.OnMessageReceived += AudienceTime_Handler;
             started = true;
         }
@@ -45,6 +45,7 @@ public class AudienceTime : MonoBehaviour
             Debug.Log("Ending Audience Time");
             client.OnMessageReceived -= AudienceTime_Handler;
             Hide();
+            client.SendMessage("Audience time is now finished ! Thanks for your participation !");
             started = false;
         }
 
@@ -58,9 +59,8 @@ public class AudienceTime : MonoBehaviour
 
     private void AudienceTime_Handler(object sender, OnMessageReceivedArgs e)
     {
-        if (e.ChatMessage.Message.ToLowerInvariant() == ChatCommands.AUDIENCE_TIME_CMD)
+        if (e.ChatMessage.Message.ToLowerInvariant() == ChatCommands.commands[ChatCommands.CommandType.AudienceTime])
         {
-
             AddToMultiplier(0.1f);
         }
     }
