@@ -8,21 +8,18 @@ using UnityEngine.UI;
 
 public class ChatDisplay : MonoBehaviour
 {
-    private TwitchClient client = null;
-    private TwitchAPI api = null;
     private Text chat = null;
     public InputField twitchChannelInputField = null;
     public Button connectButton = null;
-    
+
 
     private void Start()
     {
-        client = TwitchClient.Instance;
-        api = TwitchAPI.Instance;
         chat = GetComponent<Text>();
-        client.OnMessageReceived += Chat_OnMessageReceived;
+        TwitchClient.Instance.OnMessageReceived += Chat_OnMessageReceived;
+        twitchChannelInputField.text = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
         twitchChannelInputField.onValueChanged.AddListener(delegate { ConnectLayout(); });
-        connectButton.onClick.AddListener(ConnectToChannelWrapper);
+        //connectButton.onClick.AddListener(ConnectToChannelWrapper);
     }
 
     private void ConnectToChannelWrapper()
@@ -34,17 +31,16 @@ public class ChatDisplay : MonoBehaviour
     {
         GetStreamsResponse obj = null;
         yield return
-            api.InvokeAsync(
-                api.Streams.helix.GetStreamsAsync(userLogins: new List<string> { twitchChannelInputField.text }),
+            TwitchAPI.Instance.InvokeAsync(
+                TwitchAPI.Instance.Streams.helix.GetStreamsAsync(userLogins: new List<string> { twitchChannelInputField.text }),
                 (response) => obj = response
                 );
         
         if (obj.Streams.Length > 0)
         {
             Debug.Log($"{obj.Streams[0].ViewerCount} viewers on stream");
-            client.ConnectTo(twitchChannelInputField.text);
-            Text buttonText = connectButton.GetComponentInChildren<Text>();
-            client.OnJoinedChannel += (sender, e) => { ConnectedLayout(); } ;
+            TwitchClient.Instance.ConnectTo(twitchChannelInputField.text);
+            TwitchClient.Instance.OnJoinedChannel += (sender, e) => { ConnectedLayout(); } ;
         }
         else
         {
@@ -60,6 +56,7 @@ public class ChatDisplay : MonoBehaviour
         buttonText.text = "Connect";
         buttonText.color = Color.black;
         connectButton.interactable = true;
+        SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value = twitchChannelInputField.text;
     }
 
     private void ConnectedLayout()

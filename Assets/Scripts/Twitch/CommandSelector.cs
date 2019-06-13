@@ -9,17 +9,17 @@ public class CommandSelector : MonoBehaviour
     InputField commandSelector = null;
 
     [SerializeField]
-    public string type = "AudienceTimeCommand";
+    public SettingTyp type = SettingTyp.AudTimCmd;
 
     private void Start()
     {
         commandSelector = GetComponent<InputField>();
-        commandSelector.text = SettingsManager.Instance.config["ChatCommands"][type].StringValue;
+        commandSelector.text = SettingsManager.Instance.twitch[type].value;
         commandSelector.onValueChanged.AddListener(UpdateCommand);
     }
 
     private void UpdateCommand(string arg0)
     {
-        SettingsManager.Instance.config["ChatCommands"][type].StringValue = arg0;
+        SettingsManager.Instance.twitch[type].value = arg0;
     }
 }
