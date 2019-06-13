@@ -131,4 +131,12 @@ public class TwitchClient : Singleton<TwitchClient>
         else
             Debug.Log("No channel joined, sending message failed");
     }
+
+    public bool IsConnected
+    {
+        get
+        {
+            return client != null && client.IsInitialized && client.IsConnected;
+        }
+    }
 }
