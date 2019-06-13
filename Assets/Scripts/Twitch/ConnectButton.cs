@@ -8,14 +8,17 @@ using TwitchLib.Client.Events;
 
 public class ConnectButton : Button
 {
+    private bool quitting = false;
+
     protected override void Awake()
     {
         base.Awake();
 
-        if (Application.isPlaying)
+        if (Application.isPlaying) // prevent this part from being executed in EditMode (because TwitchClient is not instancied at this time)
         {
             onClick.AddListener(ConnectToStreamWrapper);
             TwitchClient.Instance.OnJoinedChannel += ConnectButton_OnJoinedChannel;
+            TwitchClient.Instance.OnLeftChannel += ConnectButton_OnLeftChannel;
             if (TwitchClient.Instance.IsConnected)
                 LayoutConnected();
         }
@@ -50,6 +53,20 @@ public class ConnectButton : Button
     private void ConnectButton_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
     {
         LayoutConnected();
+        interactable = false;
+    }
+
+    private void ConnectButton_OnLeftChannel(object sender, OnLeftChannelArgs e)
+    {
+        LayoutDisconnected();
+        interactable = true;
+    }
+
+    private void LayoutDisconnected()
+    {
+        Text text = GetComponentInChildren<Text>();
+        text.text = "Connect";
+        text.color = Color.black;
     }
 
     private void LayoutConnected()
@@ -57,5 +74,20 @@ public class ConnectButton : Button
         Text text = GetComponentInChildren<Text>();
         text.text = "Connected";
         text.color = Color.green;
+    }
+
+    private void OnApplicationQuit()
+    {
+        quitting = true;
+    }
+
+    protected override void OnDestroy()
+    {
+        if (Application.isPlaying && !quitting) // prevent this part from being executed in EditMode or while exiting (because TwitchClient may be not instancied at this time)
+        {
+            TwitchClient.Instance.OnJoinedChannel -= ConnectButton_OnJoinedChannel;
+            TwitchClient.Instance.OnLeftChannel -= ConnectButton_OnLeftChannel;
+        }
+        base.OnDestroy();
     }
 }
