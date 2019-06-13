@@ -5,7 +5,7 @@ using TwitchLib.Client.Events;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AudienceTime : MonoBehaviour
+public class AudienceTimeManager : MonoBehaviour
 {
     public Text noticeText = null;
     public Text multiplierText = null;
@@ -17,11 +17,8 @@ public class AudienceTime : MonoBehaviour
     private bool started = false;
     private float multiplier = 1f;
 
-    private TwitchClient client = null;
-
     private void Start()
     {
-        client = TwitchClient.Instance;
         Hide();
     }
 
@@ -36,16 +33,16 @@ public class AudienceTime : MonoBehaviour
         {
             Debug.Log("Starting Audience Time");
             Show();
-            client.SendMessage($"Audience time ! Type {SettingsManager.Instance.config["ChatCommands"]["AudienceTimeCommand"].StringValue.ToUpperInvariant()} in chat to increase the multiplier !");
-            client.OnMessageReceived += AudienceTime_Handler;
+            TwitchClient.Instance.SendMessage($"Audience time ! Type {SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value.ToUpperInvariant()} in chat to increase the multiplier !");
+            TwitchClient.Instance.OnMessageReceived += AudienceTime_Handler;
             started = true;
         }
         else if (started && Time.time > startTime + duration)
         {
             Debug.Log("Ending Audience Time");
-            client.OnMessageReceived -= AudienceTime_Handler;
+            TwitchClient.Instance.OnMessageReceived -= AudienceTime_Handler;
             Hide();
-            client.SendMessage("Audience time is now finished ! Thanks for your participation !");
+            TwitchClient.Instance.SendMessage("Audience time is now finished ! Thanks for your participation !");
             started = false;
         }
 
@@ -59,7 +56,7 @@ public class AudienceTime : MonoBehaviour
 
     private void AudienceTime_Handler(object sender, OnMessageReceivedArgs e)
     {
-        if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Instance.config["ChatCommands"]["AudienceTimeCommand"].StringValue)
+        if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
         {
             AddToMultiplier(0.1f);
         }
