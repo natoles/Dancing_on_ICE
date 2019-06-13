@@ -44,6 +44,7 @@ public abstract class LineNode : Node
             line.SetPosition(0, transform.position);
             line.SetPosition(1, pos1);
             line.SetPosition(2, pos2);
+            line.loop = false;
 
             //Time calculation
             float dist1 = Vector3.Distance(line.GetPosition(0), line.GetPosition(1));
