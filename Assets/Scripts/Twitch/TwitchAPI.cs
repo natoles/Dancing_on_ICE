@@ -2,20 +2,12 @@
 
 public class TwitchAPI : Twitch.Api
 {
-    public static TwitchAPI instance = null;
-    
-    public static TwitchAPI Instance
+    public static readonly TwitchAPI Instance = new TwitchAPI();
+
+    static TwitchAPI()
     {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new TwitchAPI();
-                instance.Settings.AccessToken = AuthTokens.BOT_ACCESS_TOKEN;
-                instance.Settings.ClientId = AuthTokens.CLIENT_ID;
-            }
-            return instance;
-        }
+        Instance.Settings.AccessToken = AuthTokens.BOT_ACCESS_TOKEN;
+        Instance.Settings.ClientId = AuthTokens.CLIENT_ID;
     }
 
     private TwitchAPI() { }
