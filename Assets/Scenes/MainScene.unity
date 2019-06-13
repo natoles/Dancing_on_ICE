@@ -618,7 +618,7 @@ GameObject:
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
-  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -900,6 +900,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3514730752467805551, guid: 582498e719a67004d8ec34e3d2fe432b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 582498e719a67004d8ec34e3d2fe432b, type: 3}
 --- !u!1 &1445134854
@@ -1069,6 +1074,26 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3071063089017853192, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Positions.Array.data[0].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071063089017853193, guid: 98850c8572f530143a30086ad3b9a594,
         type: 3}
       propertyPath: m_Enabled
       value: 0

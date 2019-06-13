@@ -90,6 +90,7 @@ public class NodeCreation : MonoBehaviour
                 nodePrefab = GameObject.Find("Prefab_LineNode_RightHand");
                 zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeRightHand = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
+                newLineNodeRightHand.GetComponent<LineRenderer>().enabled = true;
                 LineNode_RightHand objR = newLineNodeRightHand.GetComponent<LineNode_RightHand>();
                 objR.enabled = true;
                 objR.timeToFinish = timeToFinish;
@@ -101,6 +102,7 @@ public class NodeCreation : MonoBehaviour
                 nodePrefab = GameObject.Find("Prefab_LineNode_LeftHand");
                 zone = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeLeftHand = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
+                newLineNodeLeftHand.GetComponent<LineRenderer>().enabled = true;
                 LineNode_LeftHand objL = newLineNodeLeftHand.GetComponent<LineNode_LeftHand>();
                 objL.enabled = true;
                 objL.timeToFinish = timeToFinish;
@@ -112,6 +114,7 @@ public class NodeCreation : MonoBehaviour
                 nodePrefab = GameObject.Find("Prefab_LineNode_RightHand");
                 zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
                 GameObject newLineNodeDefault = Instantiate(nodePrefab, spawnPosition, Quaternion.Euler(0,0,0));
+                newLineNodeDefault.GetComponent<LineRenderer>().enabled = true;
                 LineNode_RightHand objD = newLineNodeDefault.GetComponent<LineNode_RightHand>();
                 objD.enabled = true;
                 objD.timeToFinish = timeToFinish;
