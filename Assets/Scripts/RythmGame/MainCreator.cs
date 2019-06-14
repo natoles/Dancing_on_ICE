@@ -10,28 +10,37 @@ public class MainCreator : MonoBehaviour
     NodeCreation creator;
     public GameObject self;
     List<TimeStamp> track = new List<TimeStamp>();
+    public float[] timeValues;
 
     void Start()
     {
+        timeValues = new float[] {4,4,4,8,8,18,18,18,18,22,22,22};
         creator = self.AddComponent<NodeCreation>();
 
-        track.Add(new TimeStamp(4,0,0));
-        track.Add(new TimeStamp(4,0,1));
-        track.Add(new TimeStamp(4,0,2));
+        track.Add(new TimeStamp(0,0,0));
+        track.Add(new TimeStamp(0,0,1));
+        track.Add(new TimeStamp(0,0,2));
 
-        track.Add(new TimeStamp(8,1,1));
-        track.Add(new TimeStamp(8,1,2));
+        track.Add(new TimeStamp(0,1,1));
+        track.Add(new TimeStamp(0,1,2));
 
-        track.Add(new TimeStamp(18, 0, 0, 5, new Vector3(0.1f,0,0)));
-        track.Add(new TimeStamp(18, 0, 1, 4, new Vector3(5,0,0)));
-        track.Add(new TimeStamp(18, 0, 2, 6, new Vector3(-5,0,0)));
-        track.Add(new TimeStamp(18, 0, 2, 0.5f, Vector3.zero));
+        track.Add(new TimeStamp(0, 0, 0, 5, new Vector3(0.1f,0,0)));
+        track.Add(new TimeStamp(0, 0, 1, 4, new Vector3(5,0,0)));
+        track.Add(new TimeStamp(0, 0, 2, 6, new Vector3(-5,0,0)));
+        track.Add(new TimeStamp(0, 0, 2, 0.5f, Vector3.zero));
 
-        track.Add(new TimeStamp(22, 1, 1, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(22, 1, 2, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(22, 1, 1, 2, 5, new Vector3(0,5,0), new Vector3(0,8,0), new Vector3(5,8,0)));
+        track.Add(new TimeStamp(0, 1, 1, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
+        track.Add(new TimeStamp(0, 1, 2, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
+        track.Add(new TimeStamp(0, 1, 1, 2, 5, new Vector3(0,5,0), new Vector3(0,8,0), new Vector3(5,8,0)));
 
-        
+        if (track.Count == timeValues.Length)
+        {
+            for(int i=0; i< timeValues.Length; i++){
+                track[i].timeSpawn = timeValues[i];
+            }
+        } else Debug.Log ("ERROR : track.Count != timeValues.Length");
+            
+            
     }
 
     // Update is called once per frame

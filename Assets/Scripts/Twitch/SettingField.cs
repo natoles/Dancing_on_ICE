@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-
+/* 
 [CustomEditor(typeof(SettingField))]
 public class SettingFieldEditor : Editor
 {
@@ -12,7 +12,7 @@ public class SettingFieldEditor : Editor
     {
         base.OnInspectorGUI();
     }
-}
+}*/
 
 
 [Serializable]
