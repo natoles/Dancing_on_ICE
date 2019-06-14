@@ -1,8 +1,9 @@
-﻿using UnityEditor;
+﻿using UnityEngine;
+using UnityEditor;
 using UnityEditor.UI;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(SettingField), true)]  
+[CustomEditor(typeof(SettingField)  , true)]  
 public class SettingFieldEditor : InputFieldEditor
 {
     SerializedProperty m_SettingType;
@@ -15,11 +16,13 @@ public class SettingFieldEditor : InputFieldEditor
 
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
+        serializedObject.Update();
+
+        EditorGUILayout.PropertyField(m_SettingType);
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.PropertyField(m_SettingType);
+        base.OnInspectorGUI();
 
         serializedObject.ApplyModifiedProperties();
     }
