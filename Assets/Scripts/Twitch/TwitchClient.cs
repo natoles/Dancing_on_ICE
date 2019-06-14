@@ -123,6 +123,14 @@ public class TwitchClient : Singleton<TwitchClient>
             client.Reconnect();
         }
     }
+    
+    public void Disconnect()
+    {
+        if (client.IsInitialized && client.IsConnected)
+        {
+            client.Disconnect();
+        }
+    }
 
     public void SendMessage(string message, bool dryRun = false)
     {
