@@ -15,6 +15,14 @@ public class TimeStamp
     public float time;
     public NodeCreation creator;
 
+    //Simplified constructor(default values)
+    public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
+        nodeType = nodeType1;
+        joint = joint1;
+        timeSpawn = timeSpawn1;
+    } 
+
+
     //BasicNode Constructor
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1, float timeToFinish1, Vector3 spawnPosition1){
         nodeType = nodeType1;
@@ -24,6 +32,7 @@ public class TimeStamp
         spawnPosition = spawnPosition1;
     }  
 
+    //LineNode Constructor
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1, float timeToFinish1, float timeLine1, Vector3 spawnPosition1, Vector3 pos11, Vector3 pos21){
         nodeType = nodeType1;
         joint = joint1;
