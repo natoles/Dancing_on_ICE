@@ -9,24 +9,38 @@ using TwitchLib.Client.Events;
 public class ConnectButton : Button
 {
     private bool quitting = false;
+    private Text text = null;
 
     protected override void Awake()
     {
         base.Awake();
+        text = GetComponentInChildren<Text>();
+        ChangeButtonLayout("Connect", Color.green);
 
         if (Application.isPlaying) // prevent this part from being executed in EditMode (because TwitchClient is not instancied at this time)
         {
-            onClick.AddListener(ConnectToStreamWrapper);
+            onClick.AddListener(ConnectButton_OnClickHandler);
             TwitchClient.Instance.OnJoinedChannel += ConnectButton_OnJoinedChannel;
             TwitchClient.Instance.OnLeftChannel += ConnectButton_OnLeftChannel;
+            TwitchClient.Instance.OnDisconnected += ConnectButton_OnDisconnected;
             if (TwitchClient.Instance.IsConnected)
-                LayoutConnected();
+                ChangeButtonLayout("Disconnect", Color.red);
         }
     }
 
-    private void ConnectToStreamWrapper()
+    private void ConnectButton_OnClickHandler()
     {
-        StartCoroutine(ConnectToStream());
+        interactable = false;
+        if (!TwitchClient.Instance.IsConnected)
+        {
+            ChangeButtonLayout("Connecting", Color.grey);
+            StartCoroutine(ConnectToStream());
+        }
+        else
+        {
+            ChangeButtonLayout("Disconnecting", Color.grey);
+            TwitchClient.Instance.Disconnect();
+        }
     }
 
     private IEnumerator ConnectToStream()
@@ -52,28 +66,26 @@ public class ConnectButton : Button
 
     private void ConnectButton_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
     {
-        LayoutConnected();
-        interactable = false;
+        ChangeButtonLayout("Disconnect", Color.red);
+        interactable = true;
     }
 
     private void ConnectButton_OnLeftChannel(object sender, OnLeftChannelArgs e)
     {
-        LayoutDisconnected();
+        ChangeButtonLayout("Connect", Color.black);
         interactable = true;
     }
 
-    private void LayoutDisconnected()
+    private void ConnectButton_OnDisconnected(object sender, OnDisconnectedArgs e)
     {
-        Text text = GetComponentInChildren<Text>();
-        text.text = "Connect";
-        text.color = Color.black;
+        ChangeButtonLayout("Connect", Color.green);
+        interactable = true;
     }
 
-    private void LayoutConnected()
+    private void ChangeButtonLayout(string text, Color color)
     {
-        Text text = GetComponentInChildren<Text>();
-        text.text = "Connected";
-        text.color = Color.green;
+        this.text.text = text;
+        this.text.color = color;
     }
 
     private void OnApplicationQuit()
@@ -87,6 +99,7 @@ public class ConnectButton : Button
         {
             TwitchClient.Instance.OnJoinedChannel -= ConnectButton_OnJoinedChannel;
             TwitchClient.Instance.OnLeftChannel -= ConnectButton_OnLeftChannel;
+            TwitchClient.Instance.OnDisconnected -= ConnectButton_OnDisconnected;
         }
         base.OnDestroy();
     }
