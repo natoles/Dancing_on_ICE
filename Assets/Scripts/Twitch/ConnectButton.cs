@@ -61,6 +61,8 @@ public class ConnectButton : Button
         else
         {
             Debug.Log("User not live");
+            ChangeButtonLayout("Connect", Color.green);
+            interactable = true;
         }
     }
 
@@ -72,7 +74,7 @@ public class ConnectButton : Button
 
     private void ConnectButton_OnLeftChannel(object sender, OnLeftChannelArgs e)
     {
-        ChangeButtonLayout("Connect", Color.black);
+        ChangeButtonLayout("Connect", Color.green);
         interactable = true;
     }
 
