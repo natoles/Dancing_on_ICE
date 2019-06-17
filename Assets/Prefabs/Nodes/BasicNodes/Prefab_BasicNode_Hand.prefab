@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d0edce9437a1b54d9907138354b2127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToFinish: 0
+  timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
 --- !u!1 &8189489160633523697

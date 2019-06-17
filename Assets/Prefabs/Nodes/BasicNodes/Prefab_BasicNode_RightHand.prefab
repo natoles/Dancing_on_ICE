@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ae96b83af171d941b400455fce0a59a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToFinish: 0
+  timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
 --- !u!1001 &2531545499777037838
@@ -82,17 +82,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8189489159754451739, guid: eb1e93b58536ad84eac5484a81c6f9ec,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 44f5f5a3d8b8ebb4eb42f8bebac7f623,
-        type: 3}
     - target: {fileID: 8189489160633523699, guid: eb1e93b58536ad84eac5484a81c6f9ec,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: adc25434f704b41429a521ecfa4923d8,
+        type: 3}
+    - target: {fileID: 8189489159754451739, guid: eb1e93b58536ad84eac5484a81c6f9ec,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 44f5f5a3d8b8ebb4eb42f8bebac7f623,
         type: 3}
     m_RemovedComponents:
     - {fileID: -8569011692439584444, guid: eb1e93b58536ad84eac5484a81c6f9ec, type: 3}

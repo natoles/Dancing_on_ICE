@@ -3,24 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BasicNode : Node
+public class AngleNode : Node
 {
+    GameObject mtext;
 
-    
+    public float startAngle;
     void Update()
     {
+        //transform.Rotate(new Vector3(0,0,5));
+        Debug.Log("aaaa");
+        Debug.Log(movingPart.GetComponent<EnterLava>().touchedLava);
+        if (movingPart.GetComponent<EnterLava>().touchedLava){
+            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            Debug.Log("OOOOOOOOOOOOOOOOOOOOOO");
+            ChangeText(mtext.GetComponent<Text>(), "BOOM!", 45, Color.black, 0);  
+            Destroy(gameObject);
+        }   
+
         //Score according to timing
         if (finished){
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
             if (missed){
                 ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
             } else {             
                 if (timeToFinish - progress <= timeFrame){
-                    ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, 15369);  
+                    ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, 15369);
                 }
                 else {
                     if (timeToFinish - progress <= timeFrame * 3){
-                        ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 8345);  
+                        ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 8345);
                     }
                     else {
                         ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, 5621);
@@ -38,7 +49,6 @@ public class BasicNode : Node
         main.GetComponent<Scoring>().Score += score; 
         Debug.Log(displayed);
     }
-    
-    
 
+    
 }
