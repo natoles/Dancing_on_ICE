@@ -30,11 +30,17 @@ public class ConnectButton : Button
 
     private void ConnectButton_OnClickHandler()
     {
+        string user = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
+        if (user == null || user == string.Empty)
+        {
+            return;
+        }
+
         interactable = false;
         if (!TwitchClient.Instance.IsConnected)
         {
             ChangeButtonLayout("Connecting", Color.grey);
-            StartCoroutine(ConnectToStream());
+            StartCoroutine(ConnectToStream(user));
         }
         else
         {
@@ -43,20 +49,19 @@ public class ConnectButton : Button
         }
     }
 
-    private IEnumerator ConnectToStream()
+    private IEnumerator ConnectToStream(string stream)
     {
-        string user = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
         GetStreamsResponse obj = null;
         yield return
             TwitchAPI.Instance.InvokeAsync(
-                TwitchAPI.Instance.Streams.helix.GetStreamsAsync(userLogins: new List<string> { user }),
+                TwitchAPI.Instance.Streams.helix.GetStreamsAsync(userLogins: new List<string> { stream }),
                 (response) => obj = response
                 );
 
         if (obj.Streams.Length > 0)
         {
             Debug.Log($"{obj.Streams[0].ViewerCount} viewers on stream");
-            TwitchClient.Instance.ConnectTo(user);
+            TwitchClient.Instance.ConnectTo(stream);
         }
         else
         {
@@ -88,6 +93,22 @@ public class ConnectButton : Button
     {
         this.text.text = text;
         this.text.color = color;
+    }
+
+    private void Update()
+    {
+        if (Application.isPlaying)
+        {
+            string user = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
+            if (user == null || user == string.Empty)
+            {
+                interactable = false;
+            }
+            else
+            {
+                interactable = true;
+            }
+        }
     }
 
     private void OnApplicationQuit()

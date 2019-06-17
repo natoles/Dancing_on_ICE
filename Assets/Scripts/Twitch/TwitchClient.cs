@@ -109,6 +109,11 @@ public class TwitchClient : Singleton<TwitchClient>
 
     public void ConnectTo(string channelToJoin)
     {
+        if (channelToJoin == null || channelToJoin == string.Empty)
+        {
+            return;
+        }
+
         if (!client.IsInitialized)
         {
             client.Initialize(credentials, channelToJoin);
