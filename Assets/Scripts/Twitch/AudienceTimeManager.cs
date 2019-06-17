@@ -55,7 +55,7 @@ public class AudienceTimeManager : MonoBehaviour
             {
                 GetComponent<Text>().text = $"Time left:\n{TimeSpan.FromSeconds(startTime + duration - Time.time).ToString(@"mm\:ss\:ff")}";
                 timerImage.fillAmount = (startTime + duration - Time.time) / duration;
-                msgTimeoutImage.fillAmount = (Time.time - lastMessageTime) / maxDelay;
+                msgTimeoutImage.fillAmount =  1 - (Time.time - lastMessageTime) / maxDelay;
                 if (Time.time > lastMessageTime + maxDelay)
                 {
                     Debug.Log("TIMEOUT");
@@ -91,6 +91,7 @@ public class AudienceTimeManager : MonoBehaviour
         multiplierText.canvasRenderer.SetAlpha(1f);
         gameObject.GetComponent<CanvasRenderer>().SetAlpha(1f);
         timerImage.canvasRenderer.SetAlpha(1f);
+        msgTimeoutImage.canvasRenderer.SetAlpha(1f);
     }
 
     private void Hide()
@@ -99,6 +100,7 @@ public class AudienceTimeManager : MonoBehaviour
         multiplierText.canvasRenderer.SetAlpha(0f);
         gameObject.GetComponent<CanvasRenderer>().SetAlpha(0f);
         timerImage.canvasRenderer.SetAlpha(0f);
+        msgTimeoutImage.canvasRenderer.SetAlpha(0f);
     }
 
     private void OnApplicationQuit()
