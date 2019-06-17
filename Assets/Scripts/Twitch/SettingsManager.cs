@@ -57,7 +57,7 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    private void SaveConfig()
+    public void SaveConfig()
     {
         Configuration config = new Configuration();
         foreach (KeyValuePair<SettingTyp, StringSetting> c in twitch)
@@ -70,12 +70,12 @@ public class SettingsManager : Singleton<SettingsManager>
 
     private void OnApplicationQuit()
     {
-        SaveConfig();
+        //SaveConfig();
     }
 
     private void OnDestroy()
     {
-        SaveConfig();
+        //SaveConfig();
     }
 
     #endregion
