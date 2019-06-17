@@ -17,14 +17,16 @@ public class NotificationPanel : Image
     private float displayTime = 2.5f;
     
     [SerializeField]
-    private Vector3 initialPosition = new Vector3(0, 0, 0);
+    private Vector3 initialPosition;
 
     [SerializeField]
-    private Vector3 finalPosition = new Vector3(0, 40, 0);
+    private Vector3 finalPosition;
 
     protected override void Awake()
     {
         textComponent = GetComponentInChildren<Text>();
+        initialPosition = new Vector3(0, 0, 0);
+        finalPosition = new Vector3(0, rectTransform.sizeDelta.y * 1.15f, 0);
     }
     
     public void Trigger()
