@@ -17,6 +17,12 @@ public class AudienceTimeManager : MonoBehaviour
     private bool started = false;
     private float multiplier = 1f;
 
+    public Image msgTimeoutImage = null;
+    private float lastMessageTime = float.MaxValue;
+    public float maxDelay = 0f;
+
+    private bool quitting = false;
+
     private void Start()
     {
         Hide();
@@ -24,33 +30,39 @@ public class AudienceTimeManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !started)
+        if (TwitchClient.Instance.IsConnected)
         {
-            startTime = Time.time;
-        }
+            if (Input.GetKeyDown(KeyCode.Space) && !started)
+            {
+                startTime = Time.time;
+                lastMessageTime = startTime;
+                Show();
+                TwitchClient.Instance.SendMessage($"Audience time ! Type {SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value.ToUpperInvariant()} in chat to increase the multiplier !");
+                TwitchClient.Instance.OnMessageReceived += AudienceTime_Handler;
+                Debug.Log("Starting Audience Time");
+                started = true;
+            }
+            else if (started && Time.time > startTime + duration)
+            {
+                Debug.Log("Ending Audience Time");
+                TwitchClient.Instance.OnMessageReceived -= AudienceTime_Handler;
+                TwitchClient.Instance.SendMessage("Audience time is now finished ! Thanks for your participation !");
+                Hide();
+                started = false;
+            }
 
-        if (!started && Time.time >= startTime && Time.time <= startTime + duration)
-        {
-            Debug.Log("Starting Audience Time");
-            Show();
-            TwitchClient.Instance.SendMessage($"Audience time ! Type {SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value.ToUpperInvariant()} in chat to increase the multiplier !");
-            TwitchClient.Instance.OnMessageReceived += AudienceTime_Handler;
-            started = true;
-        }
-        else if (started && Time.time > startTime + duration)
-        {
-            Debug.Log("Ending Audience Time");
-            TwitchClient.Instance.OnMessageReceived -= AudienceTime_Handler;
-            Hide();
-            TwitchClient.Instance.SendMessage("Audience time is now finished ! Thanks for your participation !");
-            started = false;
-        }
-
-        if (started)
-        {
-            GetComponent<Text>().text = $"Time left:\n{TimeSpan.FromSeconds(startTime + duration - Time.time).ToString(@"mm\:ss\:ff")}";
-            timerImage.fillAmount = (startTime + duration - Time.time) / duration;
-            AddToMultiplier(-0.01f * Time.deltaTime);
+            if (started)
+            {
+                GetComponent<Text>().text = $"Time left:\n{TimeSpan.FromSeconds(startTime + duration - Time.time).ToString(@"mm\:ss\:ff")}";
+                timerImage.fillAmount = (startTime + duration - Time.time) / duration;
+                msgTimeoutImage.fillAmount = (Time.time - lastMessageTime) / maxDelay;
+                if (Time.time > lastMessageTime + maxDelay)
+                {
+                    Debug.Log("TIMEOUT");
+                    AddToMultiplier(-0.5f);
+                    lastMessageTime = Time.time;
+                }
+            }
         }
     }
 
@@ -59,6 +71,7 @@ public class AudienceTimeManager : MonoBehaviour
         if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
         {
             AddToMultiplier(0.1f);
+            lastMessageTime = Time.time;
         }
     }
 
@@ -86,5 +99,18 @@ public class AudienceTimeManager : MonoBehaviour
         multiplierText.canvasRenderer.SetAlpha(0f);
         gameObject.GetComponent<CanvasRenderer>().SetAlpha(0f);
         timerImage.canvasRenderer.SetAlpha(0f);
+    }
+
+    private void OnApplicationQuit()
+    {
+        quitting = true;
+    }
+
+    private void OnDestroy()
+    {
+        if (Application.isPlaying && !quitting)
+        {
+            TwitchClient.Instance.OnMessageReceived -= AudienceTime_Handler;
+        }
     }
 }
