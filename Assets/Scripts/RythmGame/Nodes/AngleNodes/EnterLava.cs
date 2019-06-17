@@ -8,7 +8,6 @@ public class EnterLava : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("HEYYYYYYYYYYYYYYYY");
         touchedLava = true;
     }
 }

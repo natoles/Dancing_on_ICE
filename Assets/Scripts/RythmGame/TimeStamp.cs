@@ -9,17 +9,21 @@ public class TimeStamp
     public int joint;
     public float timeToFinish;
     public float timeLine;
+    public float startAngle;
     public Vector3 spawnPosition;
     public Vector3 pos1;
     public Vector3 pos2;
     public float time;
-    public NodeCreation creator;
+    public float defaultTimeToFinish = 3f;
+    public float defaultTimeLine = 5f;
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
         nodeType = nodeType1;
         joint = joint1;
         timeSpawn = timeSpawn1;
+        timeToFinish = defaultTimeToFinish;
+        timeLine = defaultTimeLine;
     } 
 
 
@@ -41,6 +45,16 @@ public class TimeStamp
         pos2 = pos21;
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
+        spawnPosition = spawnPosition1;
+    }  
+
+    //AngleNode Constructor 
+    public TimeStamp(float timeSpawn1, int nodeType1, int joint1, float timeToFinish1, float startAngle1, Vector3 spawnPosition1){
+        nodeType = nodeType1;
+        joint = joint1;
+        timeSpawn = timeSpawn1;
+        timeToFinish = timeToFinish1;
+        startAngle = startAngle1;
         spawnPosition = spawnPosition1;
     }  
 }

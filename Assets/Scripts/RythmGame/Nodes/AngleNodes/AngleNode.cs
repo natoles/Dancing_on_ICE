@@ -8,14 +8,15 @@ public class AngleNode : Node
     GameObject mtext;
 
     public float startAngle;
+
+    public override void Start(){
+        base.Start();
+        transform.Rotate(new Vector3(0,0,startAngle));
+    }
     void Update()
     {
-        //transform.Rotate(new Vector3(0,0,5));
-        Debug.Log("aaaa");
-        Debug.Log(movingPart.GetComponent<EnterLava>().touchedLava);
         if (movingPart.GetComponent<EnterLava>().touchedLava){
             mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
-            Debug.Log("OOOOOOOOOOOOOOOOOOOOOO");
             ChangeText(mtext.GetComponent<Text>(), "BOOM!", 45, Color.black, 0);  
             Destroy(gameObject);
         }   

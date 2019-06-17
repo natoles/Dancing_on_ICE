@@ -7,8 +7,7 @@ public class NodeCreation : MonoBehaviour
     public enum Joint {Hand, RightHand, LeftHand}
     GameObject nodePrefab; 
     Collider zone;
-    float defaultTimeToFinish = 3f;
-    float defaultTimeLine = 5f;
+    TimeStamp ts = new TimeStamp(0,0,0); //To get default values
 
     public static Vector3 RandomPointInBounds(Bounds bounds) {
     return new Vector3(
@@ -78,7 +77,7 @@ public class NodeCreation : MonoBehaviour
     }
 
     public void CreateBasicNode(Joint joint){
-        CreateBasicNode(joint, defaultTimeToFinish);
+        CreateBasicNode(joint, ts.defaultTimeToFinish);
     }
 
     //Creates a LineNode for the body part joint, the node lasts timeToFinish seconds,
@@ -151,6 +150,74 @@ public class NodeCreation : MonoBehaviour
     }
     
     public void CreateLineNode(Joint joint){
-        CreateLineNode(joint, defaultTimeToFinish, defaultTimeLine);
+        CreateLineNode(joint, ts.defaultTimeToFinish, ts.defaultTimeLine);
     }
+
+    public void CreateAngleNode(Joint joint, float timeToFinish, float startAngle, Vector3 spawnPositon){    
+        switch (joint)
+        {
+            case Joint.Hand : 
+                nodePrefab = GameObject.Find("Prefab_AngleNode_Hand");
+                zone = GameObject.Find("SpawnZones/H_zone").GetComponent<BoxCollider>();
+                GameObject newAngleNodeHand = Instantiate(nodePrefab, spawnPositon, Quaternion.Euler(0,0,0));
+                newAngleNodeHand.GetComponent<AngleNode_Hand>().enabled = true;
+                newAngleNodeHand.GetComponent<AngleNode_Hand>().timeToFinish = timeToFinish;
+                newAngleNodeHand.GetComponent<AngleNode_Hand>().startAngle = startAngle;
+                break;
+            case Joint.RightHand : 
+                nodePrefab = GameObject.Find("Prefab_AngleNode_RightHand");
+                zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
+                GameObject newAngleNodeRightHand = Instantiate(nodePrefab, spawnPositon, Quaternion.Euler(0,0,0));
+                newAngleNodeRightHand.GetComponent<AngleNode_RightHand>().enabled = true;
+                newAngleNodeRightHand.GetComponent<AngleNode_RightHand>().timeToFinish = timeToFinish;
+                newAngleNodeRightHand.GetComponent<AngleNode_RightHand>().startAngle = startAngle;
+                break;
+            case Joint.LeftHand : 
+                nodePrefab = GameObject.Find("Prefab_AngleNode_LeftHand");
+                zone = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
+                GameObject newAngleNodeLeftHand = Instantiate(nodePrefab, spawnPositon, Quaternion.Euler(0,0,0));
+                newAngleNodeLeftHand.GetComponent<AngleNode_LeftHand>().enabled = true;
+                newAngleNodeLeftHand.GetComponent<AngleNode_LeftHand>().timeToFinish = timeToFinish;
+                newAngleNodeLeftHand.GetComponent<AngleNode_LeftHand>().startAngle = startAngle;
+                break;
+            default :
+                nodePrefab = GameObject.Find("Prefab_AngleNode_Hand");
+                zone = GameObject.Find("SpawnZones/H_zone").GetComponent<BoxCollider>();
+                GameObject newAngleNodeDefault = Instantiate(nodePrefab, spawnPositon, Quaternion.Euler(0,0,0));
+                newAngleNodeDefault.GetComponent<AngleNode_Hand>().enabled = true;
+                newAngleNodeDefault.GetComponent<AngleNode_Hand>().timeToFinish = timeToFinish;
+                newAngleNodeDefault.GetComponent<AngleNode_Hand>().startAngle = startAngle;
+                break;
+        }
+    }
+
+    public void CreateAngleNode(Joint joint, float timeToFinish){ 
+        Vector3 randomSpawnPosition;
+        switch (joint)
+        {
+            case Joint.Hand :
+                zone = GameObject.Find("SpawnZones/H_zone").GetComponent<BoxCollider>(); 
+                randomSpawnPosition = RandomPointInBounds(zone.bounds);
+                break;
+            case Joint.RightHand : 
+                zone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
+                randomSpawnPosition = RandomPointInBounds(zone.bounds);
+                break;
+            case Joint.LeftHand : 
+                zone = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
+                randomSpawnPosition = RandomPointInBounds(zone.bounds);
+                break;
+            default :
+                zone = GameObject.Find("SpawnZones/H_zone").GetComponent<BoxCollider>();
+                randomSpawnPosition = RandomPointInBounds(zone.bounds);
+                break;
+        }
+        float randomStartAngle = Random.Range(0,360);
+        CreateAngleNode(joint, timeToFinish, randomStartAngle, randomSpawnPosition);
+    }
+
+    public void CreateAngleNode(Joint joint){
+        CreateAngleNode(joint, ts.defaultTimeToFinish);
+    }
+
 }
