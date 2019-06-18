@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Twitch = TwitchLib.Unity;
 using TwitchLib.Client.Models;
 using TwitchLib.Client.Events;
@@ -105,36 +106,50 @@ public class TwitchClient : Singleton<TwitchClient>
 
         // Log client activity
         client.OnLog += (s, e) => Debug.Log(e.Data);
+        client.OnConnected += (s, e) => NotificationManager.Instance.PushNotification("Connected to Twitch servers", Color.white, Color.green);
+        client.OnJoinedChannel += (s, e) => NotificationManager.Instance.PushNotification($"Joined {e.Channel} channel", Color.white, Color.cyan);
+        client.OnLeftChannel += (s, e) => NotificationManager.Instance.PushNotification($"Left {e.Channel} channel", Color.white, Color.yellow);
+        client.OnDisconnected += (s, e) => NotificationManager.Instance.PushNotification("Disconnected from Twitch servers", Color.white, Color.red);
+        client.OnFailureToReceiveJoinConfirmation += (s, e) => NotificationManager.Instance.PushNotification("Failed to join channel", Color.white, Color.magenta);
     }
 
-    public void ConnectTo(string channelToJoin)
+    public bool JoinChannel(string channelToJoin)
     {
         if (channelToJoin == null || channelToJoin == string.Empty)
         {
-            return;
+            return false;
         }
 
         if (!client.IsInitialized)
         {
-            client.Initialize(credentials, channelToJoin);
+            client.Initialize(credentials);
             client.OnJoinedChannel += (s, e) => SendMessage("Hello Twitch chat !");
         }
 
         if (!client.IsConnected)
+        {
             client.Connect();
-        else
-        {
-            client.Initialize(credentials, channelToJoin);
-            client.Reconnect();
         }
+
+        StartCoroutine(JoinChannelOnConnected(channelToJoin));
+        return true;
     }
-    
-    public void Disconnect()
+
+    private IEnumerator JoinChannelOnConnected(string channelToJoin)
     {
-        if (client.IsInitialized && client.IsConnected)
+        yield return new WaitUntil(() => client.IsConnected);
+        
+        client.JoinChannel(channelToJoin);
+    }
+
+    public bool LeaveChannel()
+    {
+        if (client.IsInitialized && client.IsConnected && client.JoinedChannels.Count > 0)
         {
-            client.Disconnect();
+            client.LeaveChannel(client.JoinedChannels[0]);
+            return true;
         }
+        return false;
     }
 
     public void SendMessage(string message, bool dryRun = false)
@@ -149,7 +164,7 @@ public class TwitchClient : Singleton<TwitchClient>
     {
         get
         {
-            return client != null && client.IsInitialized && client.IsConnected;
+            return client != null && client.IsInitialized && client.IsConnected && client.JoinedChannels.Count > 0;
         }
     }
 }
