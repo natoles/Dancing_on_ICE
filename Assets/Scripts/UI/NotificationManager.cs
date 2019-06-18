@@ -1,70 +1,57 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using TwitchLib.Client.Events;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class NotificationManager : Singleton<NotificationManager>
 {
     public NotificationPanel notificationPanelPrefab;
 
-    private string channel = null;
+    [SerializeField]
+    private float fadeDuration = 0.3f;
 
-    bool quitting = false;
+    [SerializeField]
+    private float displayDuration = 2f;
 
-    protected void Start()
-    {
-        TwitchClient.Instance.OnJoinedChannel += Notifier_OnJoinedChannel;
-        TwitchClient.Instance.OnLeftChannel += Notifier_OnLeftChannel;
-        TwitchClient.Instance.OnDisconnected += Notifier_OnDisconnected;
-    }
+    [SerializeField]
+    private float translationDuration = 0.3f;
+
+    private List<NotificationPanel> notifications = new List<NotificationPanel>();
 
     public void PushNotification(string text, Color textColor, Color bgColor)
     {
-        NotificationPanel notif = Instantiate<NotificationPanel>(notificationPanelPrefab);
+        Debug.Log(text);
+        NotificationPanel notif = Instantiate<NotificationPanel>(notificationPanelPrefab, transform);
         notif.name = "NotificationPanel";
-        notif.rectTransform.SetParent(transform);
         notif.textComponent.text = text;
         notif.textComponent.color = textColor;
         notif.color = bgColor;
-        notif.Trigger();
+        notif.startTime = Time.time;
+        notif.stopTime = notif.startTime + 2*fadeDuration + displayDuration;
+        notifications.Add(notif);
     }
 
-    private void Notifier_OnJoinedChannel(object sender, TwitchLib.Client.Events.OnJoinedChannelArgs e)
+    private void Update()
     {
-        PushNotification("Connected to channel " + e.Channel, Color.white, Color.green);
-        channel = e.Channel;
-    }
-
-    private void Notifier_OnLeftChannel(object sender, TwitchLib.Client.Events.OnLeftChannelArgs e)
-    {
-        if (channel != null)
+        for (int i = 0; i < notifications.Count; ++i)
         {
-            PushNotification("Disconnected from channel " + channel, Color.white, Color.red);
-            channel = null;
+            NotificationPanel notif = notifications[i];
+            notif.rectTransform.position = new Vector2(0, (notifications.Count - i - 1) * notificationPanelPrefab.rectTransform.sizeDelta.y);
+            if (Time.time <= notif.startTime + fadeDuration)
+            {
+                notif.SetAlpha((Time.time - notif.startTime) / fadeDuration);
+            }
+            else if (Time.time < notif.startTime + fadeDuration + displayDuration) {}
+            else if (Time.time <= notif.stopTime)
+            {
+                notif.SetAlpha((notif.stopTime - Time.time) / fadeDuration);
+            }
+            else
+            {
+                Destroy(notif.gameObject);
+                notifications[i] = null;
+            }
         }
-    }
-
-    private void Notifier_OnDisconnected(object sender, OnDisconnectedArgs e)
-    {
-        if (channel != null)
-        {
-            PushNotification("Disconnected from channel " + channel, Color.white, Color.red);
-            channel = null;
-        }
-    }
-
-    private void OnApplicationQuit()
-    {
-        quitting = true;
-    }
-
-    protected void OnDestroy()
-    {
-        if (!quitting) // prevent this part from being executed in EditMode or while exiting (because TwitchClient may be not instancied at this time)
-        {
-            TwitchClient.Instance.OnJoinedChannel -= Notifier_OnJoinedChannel;
-            TwitchClient.Instance.OnLeftChannel -= Notifier_OnLeftChannel;
-            TwitchClient.Instance.OnDisconnected -= Notifier_OnDisconnected;
-        }
+        notifications.RemoveAll(item => item == null);
     }
 }
