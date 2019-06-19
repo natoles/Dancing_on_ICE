@@ -16,7 +16,7 @@ public class MainCreator : MonoBehaviour
         creator = self.AddComponent<NodeCreation>();
 
         AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
-        AddMove(new List<TimeStamp>(moves.RLRLRL(10)));
+        AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
 
     }
 
