@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TwitchLib.Client.Events;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class NotificationManager : Singleton<NotificationManager>
@@ -11,15 +9,19 @@ public class NotificationManager : Singleton<NotificationManager>
     [SerializeField]
     private float displayDuration = 2f;
 
-    [SerializeField]
-    private float translationDuration = 0.3f;
-
     private NotificationPanel notificationPanelPrefab = null;
-    private List<NotificationPanel> notifications = new List<NotificationPanel>();
+    private LinkedList<NotificationPanel> notifications = new LinkedList<NotificationPanel>();
+
+    private float notifHeight;
+    private Vector2 baseMove;
+    private Vector2 spawnPosition;
 
     private void Awake()
     {
         notificationPanelPrefab = Resources.Load<NotificationPanel>("Prefabs/NotificationPanel");
+        notifHeight = notificationPanelPrefab.rectTransform.sizeDelta.y;
+        baseMove = new Vector2(0, notifHeight);
+        spawnPosition = notificationPanelPrefab.rectTransform.anchoredPosition;
     }
 
     public void PushNotification(string text, Color textColor, Color bgColor)
@@ -32,30 +34,54 @@ public class NotificationManager : Singleton<NotificationManager>
         notif.color = bgColor;
         notif.startTime = Time.time;
         notif.stopTime = notif.startTime + 2*fadeDuration + displayDuration;
-        notifications.Add(notif);
+        notifications.AddFirst(notif);
     }
 
     private void Update()
     {
-        for (int i = 0; i < notifications.Count; ++i)
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            NotificationPanel notif = notifications[i];
-            notif.rectTransform.position = new Vector2(0, (notifications.Count - i - 1) * notificationPanelPrefab.rectTransform.sizeDelta.y);
+            PushNotification("Debug " + (int)Random.Range(0, 100), Color.black, Color.white);
+        }
+
+        Vector2 previous = Vector2.zero;
+        LinkedListNode<NotificationPanel> lastAlive = null;
+        bool needRemove = false;
+        int i = 0;
+        for (LinkedListNode<NotificationPanel> it = notifications.First; it != null; it = it.Next)
+        {
+            NotificationPanel notif = it.Value;
             if (Time.time <= notif.startTime + fadeDuration)
             {
+                notif.rectTransform.anchoredPosition = Vector2.Lerp(spawnPosition, i * baseMove - spawnPosition, (Time.time - notif.startTime) / fadeDuration);
                 notif.SetAlpha((Time.time - notif.startTime) / fadeDuration);
-            }
-            else if (Time.time < notif.startTime + fadeDuration + displayDuration) {}
-            else if (Time.time <= notif.stopTime)
-            {
-                notif.SetAlpha((notif.stopTime - Time.time) / fadeDuration);
             }
             else
             {
-                Destroy(notif.gameObject);
-                notifications[i] = null;
+                notif.rectTransform.position = previous;
+                if (Time.time < notif.startTime + fadeDuration + displayDuration) { }
+                else if (Time.time <= notif.stopTime)
+                {
+                    notif.SetAlpha((notif.stopTime - Time.time) / fadeDuration);
+                }
+                else
+                {
+                    Destroy(notif.gameObject);
+                    if (!needRemove)
+                    {
+                        lastAlive = it.Previous;
+                        needRemove = true;
+                    }
+                }
             }
+            previous = notif.rectTransform.anchoredPosition + baseMove;
+            ++i;
         }
-        notifications.RemoveAll(item => item == null);
+
+        if (needRemove)
+        {
+            while (notifications.Last != lastAlive)
+                notifications.RemoveLast();
+        }
     }
 }
