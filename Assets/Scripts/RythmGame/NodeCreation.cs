@@ -10,11 +10,11 @@ public class NodeCreation : MonoBehaviour
     TimeStamp ts = new TimeStamp(0,0,0); //To get default values
 
     public static Vector3 RandomPointInBounds(Bounds bounds) {
-    return new Vector3(
-        Random.Range(bounds.min.x, bounds.max.x),
-        Random.Range(bounds.min.y, bounds.max.y),
-        0
-    );
+        return new Vector3(
+            Random.Range(bounds.min.x, bounds.max.x),
+            Random.Range(bounds.min.y, bounds.max.y),
+            0
+        );
     }
 
     //Creates a BasicNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
