@@ -342,12 +342,12 @@ PrefabInstance:
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.09
+      value: -1.18
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.84
+      value: -4.91
       objectReference: {fileID: 0}
     - target: {fileID: 3160504526947011195, guid: 69c54b7a03538e74592d652ab3760d0b,
         type: 3}
@@ -757,6 +757,7 @@ GameObject:
   - component: {fileID: 733231978}
   - component: {fileID: 733231979}
   - component: {fileID: 733231980}
+  - component: {fileID: 733231976}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -764,6 +765,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &733231976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733231975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65b4f4939d9bf445a14e46614ffaac0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &733231977
 Transform:
   m_ObjectHideFlags: 0

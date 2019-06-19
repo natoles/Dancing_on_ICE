@@ -5,17 +5,36 @@ using System;
 
 public class MainCreator : MonoBehaviour
 {
-    
-
     NodeCreation creator;
     public GameObject self;
     List<TimeStamp> track = new List<TimeStamp>();
     public float[] timeValues;
+    Movements moves;
+    List<nbTime> nTs = new List<nbTime>();
+
+    public class nbTime
+    {
+        public int nbNodes;
+        public float time;
+
+        public nbTime(int nbNodes1, float time1){
+            nbNodes = nbNodes1;
+            time = time1;
+        }
+    }
+
 
     void Start()
     {
-        timeValues = new float[] {3,3,3, 7,7, 11,11,11, 18,18,18,18, 22,22,22, 29,29,29,29};
+        moves = GetComponent<Movements>();
         creator = self.AddComponent<NodeCreation>();
+
+        AddMove(new List<TimeStamp>(moves.RLRLRL), 2);
+        AddMove(new List<TimeStamp>(moves.RLRLRL), 7);
+        
+
+        /*  //SHOWCASE
+        timeValues = new float[] {3,3,3, 7,7, 11,11,11, 18,18,18,18, 22,22,22, 29,29,29,29};
 
         track.Add(new TimeStamp(0,0,0));
         track.Add(new TimeStamp(0,0,1));
@@ -41,26 +60,40 @@ public class MainCreator : MonoBehaviour
         track.Add(new TimeStamp(0, 2, 1, 4, 0, new Vector3(5,0,0)));
         track.Add(new TimeStamp(0, 2, 2, 6, 180, new Vector3(-5,0,0)));
         track.Add(new TimeStamp(0, 2, 2, 0.5f, 0, Vector3.zero));
-
+        
         if (track.Count == timeValues.Length)
         {
             for(int i=0; i< timeValues.Length; i++){
                 track[i].timeSpawn = timeValues[i];
             }
         } else Debug.Log ("ERROR : track.Count != timeValues.Length");
+        */
+
     }
 
     void Update()
     {
+        if (track.Count > 0){
+            if (Time.time >= nTs[0].time + track[0].timeSpawn ){
+                spawnNode(track[0]);
+                track.Remove(track[0]);
+                nTs[0].nbNodes -= 1;
+                if (nTs[0].nbNodes == 0){
+                    nTs.Remove(nTs[0]);
+                }
+            }
+        }
+
+        /* 
         int cpt = 0;
         while (cpt < track.Count){
-            if (track[cpt].timeSpawn - track[cpt].timeToFinish <= Time.time){
+            if (track[cpt].timeSpawn <= Time.time){
                 spawnNode(track[cpt]);
                 track.Remove(track[cpt]);
                 cpt--;
             }
             cpt++;
-        }
+        }*/
     }
 
     void spawnNode(TimeStamp ts){
@@ -99,4 +132,15 @@ public class MainCreator : MonoBehaviour
                 break;
         }
     }
+
+    void AddMove(List<TimeStamp> move, int time){
+        nbTime nT = new nbTime(move.Count, time); 
+        nTs.Add(nT);
+
+        for(int i = 0; i< move.Count; i++){
+            track.Add(move[i]);
+        }
+    }
+
 }
+

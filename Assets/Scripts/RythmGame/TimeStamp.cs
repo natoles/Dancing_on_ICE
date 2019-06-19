@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class TimeStamp 
+public class TimeStamp
 {
     public float timeSpawn;
     public int nodeType;
@@ -14,6 +15,8 @@ public class TimeStamp
     public Vector3 pos1;
     public Vector3 pos2;
     public float time;
+    public Uri Uri;
+    public int Count;
     public float defaultTimeToFinish = 3f;
     public float defaultTimeLine = 5f;
 
@@ -56,5 +59,7 @@ public class TimeStamp
         timeToFinish = timeToFinish1;
         startAngle = startAngle1;
         spawnPosition = spawnPosition1;
-    }  
+    } 
+    
+
 }
