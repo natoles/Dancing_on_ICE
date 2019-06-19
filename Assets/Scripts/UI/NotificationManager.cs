@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class NotificationManager : Singleton<NotificationManager>
 {
-    public NotificationPanel notificationPanelPrefab;
-
     [SerializeField]
     private float fadeDuration = 0.3f;
 
@@ -16,12 +14,18 @@ public class NotificationManager : Singleton<NotificationManager>
     [SerializeField]
     private float translationDuration = 0.3f;
 
+    private NotificationPanel notificationPanelPrefab = null;
     private List<NotificationPanel> notifications = new List<NotificationPanel>();
+
+    private void Awake()
+    {
+        notificationPanelPrefab = Resources.Load<NotificationPanel>("Prefabs/NotificationPanel");
+    }
 
     public void PushNotification(string text, Color textColor, Color bgColor)
     {
         Debug.Log(text);
-        NotificationPanel notif = Instantiate<NotificationPanel>(notificationPanelPrefab, transform);
+        NotificationPanel notif = Instantiate(notificationPanelPrefab, transform);
         notif.name = "NotificationPanel";
         notif.textComponent.text = text;
         notif.textComponent.color = textColor;
