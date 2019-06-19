@@ -9,82 +9,19 @@ public class MainCreator : MonoBehaviour
     public GameObject self;
     List<TimeStamp> track = new List<TimeStamp>();
     public float[] timeValues;
-    Movements moves;
-    List<nbTime> nTs = new List<nbTime>();
-
-    public class nbTime
-    {
-        public int nbNodes;
-        public float time;
-
-        public nbTime(int nbNodes1, float time1){
-            nbNodes = nbNodes1;
-            time = time1;
-        }
-    }
-
+    Movements moves = new Movements();
 
     void Start()
     {
-        moves = GetComponent<Movements>();
         creator = self.AddComponent<NodeCreation>();
 
-        AddMove(new List<TimeStamp>(moves.RLRLRL), 2);
-        AddMove(new List<TimeStamp>(moves.RLRLRL), 7);
-        
-
-        /*  //SHOWCASE
-        timeValues = new float[] {3,3,3, 7,7, 11,11,11, 18,18,18,18, 22,22,22, 29,29,29,29};
-
-        track.Add(new TimeStamp(0,0,0));
-        track.Add(new TimeStamp(0,0,1));
-        track.Add(new TimeStamp(0,0,2));
-
-        track.Add(new TimeStamp(0,1,1));
-        track.Add(new TimeStamp(0,1,2));
-
-        track.Add(new TimeStamp(0,2,0));
-        track.Add(new TimeStamp(0,2,1));
-        track.Add(new TimeStamp(0,2,2));
-
-        track.Add(new TimeStamp(0, 0, 0, 5, new Vector3(0.1f,0,0)));
-        track.Add(new TimeStamp(0, 0, 1, 4, new Vector3(5,0,0)));
-        track.Add(new TimeStamp(0, 0, 2, 6, new Vector3(-5,0,0)));
-        track.Add(new TimeStamp(0, 0, 2, 0.5f, Vector3.zero));
-
-        track.Add(new TimeStamp(0, 1, 1, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(0, 1, 2, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(0, 1, 1, 2, 5, new Vector3(0,5,0), new Vector3(0,8,0), new Vector3(5,8,0)));
-
-        track.Add(new TimeStamp(0, 2, 0, 5, 90, new Vector3(0.1f,0,0)));
-        track.Add(new TimeStamp(0, 2, 1, 4, 0, new Vector3(5,0,0)));
-        track.Add(new TimeStamp(0, 2, 2, 6, 180, new Vector3(-5,0,0)));
-        track.Add(new TimeStamp(0, 2, 2, 0.5f, 0, Vector3.zero));
-        
-        if (track.Count == timeValues.Length)
-        {
-            for(int i=0; i< timeValues.Length; i++){
-                track[i].timeSpawn = timeValues[i];
-            }
-        } else Debug.Log ("ERROR : track.Count != timeValues.Length");
-        */
+        AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
+        AddMove(new List<TimeStamp>(moves.RLRLRL(10)));
 
     }
 
     void Update()
     {
-        if (track.Count > 0){
-            if (Time.time >= nTs[0].time + track[0].timeSpawn ){
-                spawnNode(track[0]);
-                track.Remove(track[0]);
-                nTs[0].nbNodes -= 1;
-                if (nTs[0].nbNodes == 0){
-                    nTs.Remove(nTs[0]);
-                }
-            }
-        }
-
-        /* 
         int cpt = 0;
         while (cpt < track.Count){
             if (track[cpt].timeSpawn <= Time.time){
@@ -93,7 +30,7 @@ public class MainCreator : MonoBehaviour
                 cpt--;
             }
             cpt++;
-        }*/
+        }
     }
 
     void spawnNode(TimeStamp ts){
@@ -133,14 +70,10 @@ public class MainCreator : MonoBehaviour
         }
     }
 
-    void AddMove(List<TimeStamp> move, int time){
-        nbTime nT = new nbTime(move.Count, time); 
-        nTs.Add(nT);
-
+    void AddMove(List<TimeStamp> move){
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
     }
-
 }
 
