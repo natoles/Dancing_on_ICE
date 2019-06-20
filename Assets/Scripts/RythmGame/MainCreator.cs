@@ -6,15 +6,15 @@ using System;
 public class MainCreator : MonoBehaviour
 {
     NodeCreation creator;
-    public GameObject self;
     List<TimeStamp> track = new List<TimeStamp>();
     public float[] timeValues;
     Movements moves = new Movements();
 
     void Start()
     {
-        creator = self.AddComponent<NodeCreation>();
+        creator = gameObject.AddComponent<NodeCreation>();
 
+        //Add Moves here
         AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
 
@@ -22,6 +22,7 @@ public class MainCreator : MonoBehaviour
 
     void Update()
     {
+        //Go through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
         while (cpt < track.Count){
             if (track[cpt].timeSpawn <= Time.time){
@@ -33,6 +34,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
+    //Chooses the right constructor according to what is asked
     void spawnNode(TimeStamp ts){
         switch(ts.nodeType)
         {

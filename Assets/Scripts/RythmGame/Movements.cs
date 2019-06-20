@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Movements
 {
+
+    //A function represents an available movement
     public List<TimeStamp> RLRLRL(float t)
     {
         List<TimeStamp> list = new List<TimeStamp>();

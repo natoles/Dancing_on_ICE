@@ -12,7 +12,7 @@ public class Scoring : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    // If displayed score is less than real score, increment it
     void Update()
     {
         if(tmpScore < Score - 151){
