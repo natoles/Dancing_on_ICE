@@ -13,11 +13,12 @@ public class MainCreator : MonoBehaviour
     void Start()
     {
         creator = gameObject.AddComponent<NodeCreation>();
+        string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Test2.csv";
 
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-        AddMove(moves.GetUkiDatas(@"C:\Users\lindi\Desktop\Movements\perso movement updated.csv", 5));
+        AddMove(moves.GetUkiDatas(simpleMovePath,3,10,0,0));
 
         /*//SHOWCASE
         timeValues = new float[] {3,3,3, 7,7, 11,11,11, 18,18,18,18, 22,22,22, 29,29,29,29};
