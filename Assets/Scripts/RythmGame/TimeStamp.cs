@@ -19,6 +19,7 @@ public class TimeStamp
     public int Count;
     public float defaultTimeToFinish = 3f;
     public float defaultTimeLine = 5f;
+    public bool specifiedPosition;
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
@@ -37,6 +38,7 @@ public class TimeStamp
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
         spawnPosition = spawnPosition1;
+        specifiedPosition = true;
     }  
 
     //LineNode Constructor
@@ -49,6 +51,7 @@ public class TimeStamp
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
         spawnPosition = spawnPosition1;
+        specifiedPosition = true;
     }  
 
     //AngleNode Constructor 
@@ -59,6 +62,7 @@ public class TimeStamp
         timeToFinish = timeToFinish1;
         startAngle = startAngle1;
         spawnPosition = spawnPosition1;
+        specifiedPosition = true;
     } 
     
 

@@ -116,9 +116,6 @@ public abstract class LineNode : Node
 
         //First part
         while(progress <= timeLine1){
-            Debug.Log(timeLine);
-            Debug.Log(progress);
-            Debug.Log(timeLine1);
             transform.position = Vector3.Lerp(line.GetPosition(0), line.GetPosition(1), progress/timeLine1);
             progress += Time.deltaTime;
             yield return null;

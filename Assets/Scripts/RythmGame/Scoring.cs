@@ -6,11 +6,6 @@ public class Scoring : MonoBehaviour
 {
     public int Score = 0; //Actual score
     public int tmpScore = 0; //Score displayed
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // If displayed score is less than real score, increment it
     void Update()
