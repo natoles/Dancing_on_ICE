@@ -147,7 +147,7 @@ LineRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 1
-  m_Loop: 0
+  m_Loop: 1
 --- !u!114 &3071063089017853192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +164,8 @@ MonoBehaviour:
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
   timeLine: 5
+  pathPositions: []
+  timePaths: []
 --- !u!1 &3071063089438466743
 GameObject:
   m_ObjectHideFlags: 0

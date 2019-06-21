@@ -53,7 +53,7 @@ public class NodeCreation : MonoBehaviour
     #region LineNode
     //Creates a LineNode for the body part joint, the node lasts timeToFinish seconds,
     //travels for timeLine seconds, from spawnPosition to pos1 to pos2
-    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3 pos1, Vector3 pos2){
+    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3[] pathPositions){
         switch (joint)
         {
             case Joint.RightHand :
@@ -61,16 +61,14 @@ public class NodeCreation : MonoBehaviour
                 LineNode_RightHand objR = nodeInstance.GetComponent<LineNode_RightHand>();
                 objR.timeToFinish = timeToFinish;
                 objR.timeLine = timeLine;
-                objR.pos1 = pos1;
-                objR.pos2 = pos2;
+                objR.pathPositions = pathPositions;
                 break;
             case Joint.LeftHand : 
                 nodeInstance = Instantiate(nodePrefabLLH, spawnPosition, Quaternion.Euler(0,0,0));
                 LineNode_LeftHand objL = nodeInstance.GetComponent<LineNode_LeftHand>();
                 objL.timeToFinish = timeToFinish;
                 objL.timeLine = timeLine;
-                objL.pos1 = pos1;
-                objL.pos2 = pos2;
+                objL.pathPositions = pathPositions;
                 break;
             default :
                 Debug.Log("Pas normal");

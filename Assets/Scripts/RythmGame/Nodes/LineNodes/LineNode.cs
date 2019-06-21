@@ -6,53 +6,45 @@ using UnityEngine.UI;
 public abstract class LineNode : Node
 {
     LineRenderer line; //The line the nde will follow
-    protected Collider spawnZone; //Th Zone in which the lineRenderer will be created
     public float timeLine = 5f; //Time the node will take to make his journey accross the screen. Farewell little node.
-    float timeLine1; //Time to go from initial position to point 1
-    float timeLine2; //Time to go from point 1 to point 2
     private IEnumerator moveLine; 
     bool moving = false; //Is the node moving along the lineRenderer ?
     bool finishedMoving = false; //Has the node finished his journey ?
     protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
     protected bool inCircle = false; //Is the player in the circle ?
-    public Vector3 pos1;
-    public Vector3 pos2;
-    bool init = true;
-    void Awake(){
-        SetJoint();
-    }
+    public Vector3[] pathPositions;
+    public float[] timePaths;
+
     public override void Start()
     {
-        base.Start();  
-        //spawnZone = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
-        line = GetComponent<LineRenderer>();
-        if (pos1 == Vector3.zero && pos2 == Vector3.zero)
-        {
-            pos1 = RandomPointInBounds(spawnZone.bounds);
-            pos2 = RandomPointInBounds(spawnZone.bounds);
+        base.Start(); 
+        SetJoint(); 
+        line = GetComponent<LineRenderer>();  
+        timePaths = new float[pathPositions.Length]; 
+
+        //creation of the path
+        line.positionCount = pathPositions.Length + 1;
+        float dist;
+        float totalDistance = 0;
+        line.SetPosition(0, transform.position);
+        for(int i = 0; i< pathPositions.Length; i++){
+            line.SetPosition(i+1, pathPositions[i]);
+            dist = Vector3.Distance(line.GetPosition(i), line.GetPosition(i+1));
+            totalDistance += dist; 
         }
-          
+        
+
+        //Time calculation
+        for(int i = 0; i< pathPositions.Length; i++){
+            dist = Vector3.Distance(line.GetPosition(i), line.GetPosition(i+1));
+            timePaths[i] = dist/totalDistance * timeLine;
+        }
+ 
     }
     void Update()
     {
-        //init in Update so I can change the values of some variables
-        if (init){
-            init = false;
-
-            //creation of the path
-            line.SetPosition(0, transform.position);
-            line.SetPosition(1, pos1);
-            line.SetPosition(2, pos2);
-            line.loop = false;
-
-            //Time calculation
-            float dist1 = Vector3.Distance(line.GetPosition(0), line.GetPosition(1));
-            float dist2 = Vector3.Distance(line.GetPosition(1), line.GetPosition(2));
-            float totalDistance =  dist1 + dist2;
-            timeLine1 = dist1/totalDistance * timeLine;
-            timeLine2 = dist2/totalDistance * timeLine;
-        }
+        line.loop = false;
         movingPart.transform.Rotate(0f,0f,1f);
 
         //If player completed the entire path
@@ -112,32 +104,18 @@ public abstract class LineNode : Node
     private IEnumerator MoveLine(){
         timeInside = Time.time;
         moving = true;
-        float progress = 0;
+        float progress;
 
-        //First part
-        while(progress <= timeLine1){
-            transform.position = Vector3.Lerp(line.GetPosition(0), line.GetPosition(1), progress/timeLine1);
-            progress += Time.deltaTime;
-            yield return null;
-        }
-        progress = 0f;
-
-        //Second part
-        while(progress <= timeLine2){
-            transform.position = Vector3.Lerp(line.GetPosition(1), line.GetPosition(2), progress/timeLine2);
-            progress += Time.deltaTime;
-            yield return null;
+        for(int i = 0; i< pathPositions.Length; i++){
+            progress = 0f;
+            while(progress <= timePaths[i]){
+                transform.position = Vector3.Lerp(line.GetPosition(i), line.GetPosition(i+1), progress/timePaths[i]);
+                progress += Time.deltaTime;
+                yield return null;
+            }
         }
         finishedMoving = true;
         moving = false;
-    }
-
-    public static Vector3 RandomPointInBounds(Bounds bounds) {
-    return new Vector3(
-        Random.Range(bounds.min.x, bounds.max.x),
-        Random.Range(bounds.min.y, bounds.max.y),
-        0
-    );
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -155,7 +133,7 @@ public abstract class LineNode : Node
     }
 
     public virtual void SetJoint(){
-        Debug.Log("parent");
+        Debug.Log("abstract function");
     }
 
 }

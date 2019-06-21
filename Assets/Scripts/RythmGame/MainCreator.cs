@@ -20,7 +20,9 @@ public class MainCreator : MonoBehaviour
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-        AddMove(moves.GetUkiDatas(simpleMovePath,5,10,0,0, new TimeStamp(0,2,1,1.5f,Vector3.zero)));
+        //AddMove(moves.GetUkiDatas(simpleMovePath,5,10,0,0, new TimeStamp(0,2,1,1.5f,Vector3.zero)));
+        Vector3[] paths = new Vector3[] {new Vector3(5,5,0), new Vector3(5,-5,0), new Vector3(-5,-5,0), new Vector3(-5,5,0)};
+        track.Add(new TimeStamp(0,1,1,3,10, Vector3.zero, paths));
 
     
     }
@@ -47,7 +49,7 @@ public class MainCreator : MonoBehaviour
                     creator.CreateBasicNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.spawnPosition);
                 break;
             case 1 : 
-                    creator.CreateLineNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.timeLine, ts.spawnPosition, ts.pos1, ts.pos2);
+                    creator.CreateLineNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.timeLine, ts.spawnPosition, ts.pathPositions);
                 break; 
             case 2 : 
                     creator.CreateAngleNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.startAngle, ts.spawnPosition);
