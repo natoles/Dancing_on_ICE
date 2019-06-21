@@ -64,6 +64,26 @@ public class TimeStamp
         spawnPosition = spawnPosition1;
         specifiedPosition = true;
     } 
+
+    public TimeStamp DeepCopyTS(TimeStamp ts1){
+        TimeStamp ts2 = new TimeStamp(ts1.timeSpawn, ts1.nodeType, ts1.joint);
+        ts2.timeToFinish = ts1.timeToFinish;
+        ts2.specifiedPosition = true;
+        ts1.spawnPosition = ts2.spawnPosition;
+        switch(ts2.nodeType){
+            case(1):
+                ts2.pos1 = ts1.pos1;
+                ts2.pos2 = ts1.pos2;
+                ts2.timeLine = ts1.timeLine;
+                break;
+            case(2):
+                ts2.startAngle = ts1.startAngle;
+                break;
+            default:
+                break;
+        }
+        return ts2;
+    }
     
 
 }

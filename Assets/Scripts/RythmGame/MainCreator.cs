@@ -5,6 +5,8 @@ using System;
 
 public class MainCreator : MonoBehaviour
 {
+    public enum NodeType {BN = 0, LN = 1, AN = 2}
+    public enum joint {H = 0, RH = 1, LH = 2}
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
     public float[] timeValues;
@@ -18,39 +20,9 @@ public class MainCreator : MonoBehaviour
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-        AddMove(moves.GetUkiDatas(simpleMovePath,3,10,0,0));
+        AddMove(moves.GetUkiDatas(simpleMovePath,5,10,0,0, new TimeStamp(0,2,1,1.5f,Vector3.zero)));
 
-        /*//SHOWCASE
-        timeValues = new float[] {3,3,3, 7,7, 11,11,11, 18,18,18,18, 22,22,22, 29,29,29,29};
-        track.Add(new TimeStamp(0,0,0));
-        track.Add(new TimeStamp(0,0,1));
-        track.Add(new TimeStamp(0,0,2));
-        track.Add(new TimeStamp(0,1,1));
-        track.Add(new TimeStamp(0,1,2));
-        track.Add(new TimeStamp(0,2,0));
-        track.Add(new TimeStamp(0,2,1));
-        track.Add(new TimeStamp(0,2,2));
-        track.Add(new TimeStamp(0, 0, 0, 5, new Vector3(0.1f,0,0)));
-        track.Add(new TimeStamp(0, 0, 1, 4, new Vector3(5,0,0)));
-        track.Add(new TimeStamp(0, 0, 2, 6, new Vector3(-5,0,0)));
-        track.Add(new TimeStamp(0, 0, 2, 0.5f, Vector3.zero));
-        track.Add(new TimeStamp(0, 1, 1, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(0, 1, 2, 2, 2, Vector3.zero, Vector3.zero, Vector3.zero));
-        track.Add(new TimeStamp(0, 1, 1, 2, 5, new Vector3(0,5,0), new Vector3(0,8,0), new Vector3(5,8,0)));
-        track.Add(new TimeStamp(0, 2, 0, 5, 90, new Vector3(0.1f,0,0)));
-        track.Add(new TimeStamp(0, 2, 1, 4, 0, new Vector3(5,0,0)));
-        track.Add(new TimeStamp(0, 2, 2, 6, 180, new Vector3(-5,0,0)));
-        track.Add(new TimeStamp(0, 2, 2, 0.5f, 0, Vector3.zero));
-        
-        if (track.Count == timeValues.Length)
-        {
-            for(int i=0; i< timeValues.Length; i++){
-                track[i].timeSpawn = timeValues[i];
-            }
-        } else Debug.Log ("ERROR : track.Count != timeValues.Length");
-        */
-        
-
+    
     }
 
     void Update()

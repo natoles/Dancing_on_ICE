@@ -32,7 +32,7 @@ public class Movements
         return list;
     }
 
-    public List<TimeStamp> GetUkiDatas(string path, int jump, float scale, float offsetX, float offsetY)
+    public List<TimeStamp> GetUkiDatas(string path, int jump, float scale, float offsetX, float offsetY, TimeStamp DefaultNode)
     {
         #region ReadCSV
         //Get values from CSV file
@@ -97,7 +97,11 @@ public class Movements
             {
                 x -= hipCenterX;
                 y -= hipCenterY;
-                listTS.Add(new TimeStamp(i/5f, 0, 1, 0.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
+                TimeStamp ts = DefaultNode.DeepCopyTS(DefaultNode);
+                ts.timeSpawn = i;
+                ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
+                listTS.Add(ts);
+                //listTS.Add(new TimeStamp(i, 0, 1, 1.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
             } else Debug.Log("Invalid string value");
 
             if (float.TryParse(listLHx[i].Replace(".",","), out x) && float.TryParse(listLHy[i].Replace(".",","), out y) &&
@@ -105,8 +109,9 @@ public class Movements
             {
                 x -= hipCenterX;
                 y -= hipCenterY;
-                listTS.Add(new TimeStamp(i/5f, 0, 2, 0.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
+                listTS.Add(new TimeStamp(i, 0, 2, 1.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
             } else Debug.Log("Invalid string value");
+
             
             
         }
