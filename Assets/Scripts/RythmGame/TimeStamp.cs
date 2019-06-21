@@ -19,7 +19,6 @@ public class TimeStamp
     public int Count;
     public float defaultTimeToFinish = 3f;
     public float defaultTimeLine = 5f;
-    public bool specifiedPosition;
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
@@ -38,7 +37,6 @@ public class TimeStamp
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
         spawnPosition = spawnPosition1;
-        specifiedPosition = true;
     }  
 
     //LineNode Constructor
@@ -51,7 +49,6 @@ public class TimeStamp
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
         spawnPosition = spawnPosition1;
-        specifiedPosition = true;
     }  
 
     //AngleNode Constructor 
@@ -62,13 +59,11 @@ public class TimeStamp
         timeToFinish = timeToFinish1;
         startAngle = startAngle1;
         spawnPosition = spawnPosition1;
-        specifiedPosition = true;
     } 
 
     public TimeStamp DeepCopyTS(TimeStamp ts1){
         TimeStamp ts2 = new TimeStamp(ts1.timeSpawn, ts1.nodeType, ts1.joint);
         ts2.timeToFinish = ts1.timeToFinish;
-        ts2.specifiedPosition = true;
         ts1.spawnPosition = ts2.spawnPosition;
         switch(ts2.nodeType){
             case(1):

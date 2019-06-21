@@ -91,17 +91,18 @@ public class Movements
         float y;
         float hipCenterX = 0;
         float hipCenterY = 0;
+        TimeStamp ts;
         for(int i =0; i < listRHx.Count; i++){
             if (float.TryParse(listRHx[i].Replace(".",","), out x) && float.TryParse(listRHy[i].Replace(".",","), out y) &&
                          float.TryParse(HCX.Replace(".",","), out hipCenterX) && float.TryParse(HCY.Replace(".",","), out hipCenterY) )
             {
                 x -= hipCenterX;
                 y -= hipCenterY;
-                TimeStamp ts = DefaultNode.DeepCopyTS(DefaultNode);
+                ts = DefaultNode.DeepCopyTS(DefaultNode);
+                ts.joint = 1;
                 ts.timeSpawn = i;
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
                 listTS.Add(ts);
-                //listTS.Add(new TimeStamp(i, 0, 1, 1.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
             } else Debug.Log("Invalid string value");
 
             if (float.TryParse(listLHx[i].Replace(".",","), out x) && float.TryParse(listLHy[i].Replace(".",","), out y) &&
@@ -109,7 +110,11 @@ public class Movements
             {
                 x -= hipCenterX;
                 y -= hipCenterY;
-                listTS.Add(new TimeStamp(i, 0, 2, 1.5f, new Vector3(x*scale + offsetX, y*scale + offsetY,0)));
+                ts = DefaultNode.DeepCopyTS(DefaultNode);
+                ts.timeSpawn = i;
+                ts.joint = 2;
+                ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
+                listTS.Add(ts);
             } else Debug.Log("Invalid string value");
 
             

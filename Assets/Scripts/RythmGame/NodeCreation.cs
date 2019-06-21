@@ -23,18 +23,6 @@ public class NodeCreation : MonoBehaviour
         nodePrefabAH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_Hand") as GameObject;
         nodePrefabARH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
         nodePrefabALH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
-
-        zoneH = GameObject.Find("SpawnZones/H_zone").GetComponent<BoxCollider>();
-        zoneRH = GameObject.Find("SpawnZones/RH_zone").GetComponent<BoxCollider>();
-        zoneLH = GameObject.Find("SpawnZones/LH_zone").GetComponent<BoxCollider>();
-    }
-
-    public static Vector3 RandomPointInBounds(Bounds bounds) {
-        return new Vector3(
-            Random.Range(bounds.min.x, bounds.max.x),
-            Random.Range(bounds.min.y, bounds.max.y),
-            0
-        );
     }
 
     #region BasicNode
@@ -60,29 +48,6 @@ public class NodeCreation : MonoBehaviour
         }
     }
 
-    public void CreateBasicNode(Joint joint, float timeToFinish){ 
-        Vector3 randomSpawnPosition;
-        switch (joint)
-        {
-            case Joint.Hand :
-                randomSpawnPosition = RandomPointInBounds(zoneH.bounds);
-                break;
-            case Joint.RightHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneRH.bounds);
-                break;
-            case Joint.LeftHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneLH.bounds);
-                break;
-            default :
-                randomSpawnPosition = RandomPointInBounds(zoneH.bounds);
-                break;
-        }
-        CreateBasicNode(joint, timeToFinish, randomSpawnPosition);
-    }
-
-    public void CreateBasicNode(Joint joint){
-        CreateBasicNode(joint, ts.defaultTimeToFinish);
-    }
     #endregion
 
     #region LineNode
@@ -112,28 +77,6 @@ public class NodeCreation : MonoBehaviour
                 break;
         }
     }
-    
-    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine){
-        Vector3 randomSpawnPosition;
-        switch (joint)
-        {
-            case Joint.RightHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneRH.bounds);
-                break;
-            case Joint.LeftHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneLH.bounds);
-                break;
-            default :
-                randomSpawnPosition = RandomPointInBounds(zoneRH.bounds);
-                break;
-        }
-        CreateLineNode(joint, timeToFinish, timeLine, randomSpawnPosition, Vector3.zero, Vector3.zero);
-        
-    }
-    
-    public void CreateLineNode(Joint joint){
-        CreateLineNode(joint, ts.defaultTimeToFinish, ts.defaultTimeLine);
-    }
     #endregion
 
     #region CreateAngleNode
@@ -161,31 +104,6 @@ public class NodeCreation : MonoBehaviour
                 Debug.Log("Pas normal");
                 break;
         }
-    }
-
-    public void CreateAngleNode(Joint joint, float timeToFinish){ 
-        Vector3 randomSpawnPosition;
-        switch (joint)
-        {
-            case Joint.Hand :
-                randomSpawnPosition = RandomPointInBounds(zoneH.bounds);
-                break;
-            case Joint.RightHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneRH.bounds);
-                break;
-            case Joint.LeftHand : 
-                randomSpawnPosition = RandomPointInBounds(zoneLH.bounds);
-                break;
-            default :
-                randomSpawnPosition = RandomPointInBounds(zoneH.bounds);
-                break;
-        }
-        float randomStartAngle = Random.Range(0,360);
-        CreateAngleNode(joint, timeToFinish, randomStartAngle, randomSpawnPosition);
-    }
-
-    public void CreateAngleNode(Joint joint){
-        CreateAngleNode(joint, ts.defaultTimeToFinish);
     }
     #endregion 
 }

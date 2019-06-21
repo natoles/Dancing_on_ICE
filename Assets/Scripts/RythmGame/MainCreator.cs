@@ -44,32 +44,13 @@ public class MainCreator : MonoBehaviour
         switch(ts.nodeType)
         {
             case 0 : 
-                if (ts.specifiedPosition){
                     creator.CreateBasicNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.spawnPosition);
-                } else {
-                    if (ts.timeToFinish != 0)
-                        creator.CreateBasicNode((NodeCreation.Joint) ts.joint, ts.timeToFinish);
-                    else creator.CreateBasicNode((NodeCreation.Joint) ts.joint);
-                }
                 break;
             case 1 : 
-                if (ts.specifiedPosition){
                     creator.CreateLineNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.timeLine, ts.spawnPosition, ts.pos1, ts.pos2);
-                } else {
-                    if (ts.timeToFinish != ts.defaultTimeToFinish || ts.timeLine != ts.defaultTimeLine){
-                        creator.CreateLineNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.timeLine);
-                    }
-                    else creator.CreateLineNode((NodeCreation.Joint) ts.joint);
-                }
                 break; 
             case 2 : 
-                if (ts.specifiedPosition){
                     creator.CreateAngleNode((NodeCreation.Joint) ts.joint, ts.timeToFinish, ts.startAngle, ts.spawnPosition);
-                } else {
-                    if (ts.timeToFinish != 0)
-                        creator.CreateAngleNode((NodeCreation.Joint) ts.joint, ts.timeToFinish);
-                    else creator.CreateAngleNode((NodeCreation.Joint) ts.joint);
-                }
                 break;
             default :
                 Debug.Log("PAS NORMAL");
