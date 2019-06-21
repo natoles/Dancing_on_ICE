@@ -9,7 +9,6 @@ class MusicLoader : MonoBehaviour
 {
     private AudioSource player = null;
     private Image image = null;
-    public Image cursor = null;
 
     private void Start()
     {
@@ -21,15 +20,16 @@ class MusicLoader : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            string path = SelectAudioFile();
-            LoadAudioClip(path);
-            RenderMusic(path);
+            LoadFile();
         }
+    }
 
-        if (player != null && player.isPlaying)
-            cursor.rectTransform.anchoredPosition = new Vector2(player.time / player.clip.length * image.preferredWidth + image.rectTransform.rect.x, 0);
-        else
-            image.sprite = null;
+    public bool LoadFile()
+    {
+        string path = SelectAudioFile();
+        if (path != null)
+            LoadAudioClip(path);
+        return path != null;
     }
 
     private string SelectAudioFile()
@@ -61,7 +61,6 @@ class MusicLoader : MonoBehaviour
         AudioClip clip = AudioClip.Create(basename, size /  reader.WaveFormat.Channels, reader.WaveFormat.Channels, reader.WaveFormat.SampleRate, false);
         clip.SetData(audioData, 0);
         player.clip = clip;
-        player.Play();
     }
 
     private void RenderMusic(string path)
