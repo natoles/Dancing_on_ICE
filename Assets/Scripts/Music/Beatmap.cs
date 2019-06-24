@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum BeatType
 {
@@ -16,8 +17,15 @@ public class BeatTimestamp
 }
 
 [Serializable]
-public class BeatMap
+public class Beatmap
 {
+    public string AudioFile = null;
     public List<BeatTimestamp> Pool1 = new List<BeatTimestamp>();
     public List<BeatTimestamp> Pool2 = new List<BeatTimestamp>();
+}
+
+public class BeatmapContainer
+{
+    public AudioClip audio;
+    public Beatmap bm;
 }

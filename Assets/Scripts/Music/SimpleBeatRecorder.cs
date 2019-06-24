@@ -17,7 +17,7 @@ public class SimpleBeatRecorder : MonoBehaviour
 
     private float minimalDuration = 0.2f;
 
-    private BeatMap bm = null;
+    private Beatmap bm = null;
     private BeatTimestamp ts1 = null;
     private BeatTimestamp ts2 = null;
 
@@ -37,11 +37,10 @@ public class SimpleBeatRecorder : MonoBehaviour
     {
         if (audioPlayer.clip == null)
         {
-            if (!audioPlayer.GetComponent<MusicLoader>().LoadFile())
-                return;
+            BeatmapLoader.SelectAudioFile();
         }
 
-        bm = new BeatMap();
+        bm = new Beatmap();
         mode = 1;
         audioPlayer.Stop();
         audioPlayer.PlayDelayed(1);
@@ -60,13 +59,12 @@ public class SimpleBeatRecorder : MonoBehaviour
 
     private void LoadBeatmap()
     {
-        string path = FileBrowser.OpenSingleFile("icebm");
+        string path = BeatmapLoader.SelectBeatmapFile();
         if (path != null)
         {
-            StreamReader reader = new StreamReader(path);
-            string json = reader.ReadToEnd();
-            reader.Close();
-            bm = JsonUtility.FromJson<BeatMap>(json);
+            BeatmapContainer bmc = BeatmapLoader.LoadBeatmapFile(path);
+            audioPlayer.clip = bmc.audio;
+            bm = bmc.bm;
         }
     }
 
