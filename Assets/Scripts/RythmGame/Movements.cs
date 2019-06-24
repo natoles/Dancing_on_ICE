@@ -92,6 +92,27 @@ public class Movements
         float hipCenterX = 0;
         float hipCenterY = 0;
         TimeStamp ts;
+
+        /* 
+        ts = DefaultNode.DeepCopyTS(DefaultNode);
+        ts.joint = 1;
+        Vector3[] pathPositions = new Vector3[listRHx.Count-1];
+        for(int i = 0; i < listRHx.Count; i++){
+            float.TryParse(listRHx[i].Replace(".",","), out x);
+            float.TryParse(listRHy[i].Replace(".",","), out y);
+            x -= hipCenterX;
+            y -= hipCenterY;
+            Debug.Log(x + ", " + y);
+            if (i == 0){
+                ts.spawnPosition = new Vector3(x*scale,y*scale,0);
+            } else pathPositions[i-1] = new Vector3(x*scale,y*scale,0);
+            
+        }
+        ts.pathPositions = pathPositions;
+        listTS.Add(ts);*/
+
+
+        
         for(int i =0; i < listRHx.Count; i++){
             if (float.TryParse(listRHx[i].Replace(".",","), out x) && float.TryParse(listRHy[i].Replace(".",","), out y) &&
                          float.TryParse(HCX.Replace(".",","), out hipCenterX) && float.TryParse(HCY.Replace(".",","), out hipCenterY) )
@@ -102,6 +123,7 @@ public class Movements
                 ts.joint = 1;
                 ts.timeSpawn = i;
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
+
                 listTS.Add(ts);
             } else Debug.Log("Invalid string value");
 
@@ -115,10 +137,7 @@ public class Movements
                 ts.joint = 2;
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
                 listTS.Add(ts);
-            } else Debug.Log("Invalid string value");
-
-            
-            
+            } else Debug.Log("Invalid string value");   
         }
         return listTS;
     }

@@ -20,9 +20,9 @@ public class MainCreator : MonoBehaviour
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-        //AddMove(moves.GetUkiDatas(simpleMovePath,5,10,0,0, new TimeStamp(0,2,1,1.5f,Vector3.zero)));
-        Vector3[] paths = new Vector3[] {new Vector3(5,5,0), new Vector3(5,-5,0), new Vector3(-5,-5,0), new Vector3(-5,5,0)};
-        track.Add(new TimeStamp(0,1,1,3,10, Vector3.zero, paths));
+        //AddMove(moves.GetUkiDatas(simpleMovePath,3,10,0,0, new TimeStamp(0,1,1,4f,25f,Vector3.zero,new Vector3[0])));
+        AddMove(moves.GetUkiDatas(simpleMovePath,3,10,0,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
+
 
     
     }
