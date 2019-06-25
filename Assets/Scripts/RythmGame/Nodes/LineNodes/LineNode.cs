@@ -6,13 +6,13 @@ using UnityEngine.UI;
 public abstract class LineNode : Node
 {
     LineRenderer line; //The line the nde will follow
-    public float timeLine = 5f; //Time the node will take to make his journey accross the screen. Farewell little node.
-    private IEnumerator moveLine; 
+    public float timeLine; //Time the node will take to make his journey accross the screen. Farewell little node.
+    IEnumerator moveLine; 
     bool moving = false; //Is the node moving along the lineRenderer ?
     bool finishedMoving = false; //Has the node finished his journey ?
     protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
-    protected bool inCircle = false; //Is the player in the circle ?
+    bool inCircle = false; //Is the player in the circle ?
     public Vector3[] pathPositions;
     public float[] timePaths;
 
@@ -50,7 +50,7 @@ public abstract class LineNode : Node
         //If player completed the entire path
         if (finishedMoving){
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
-            ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, 15369);  
+            ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, scorePerfect);  
 
             //reset variable to avoid entering in other loop after destruction
             moving = false; 
@@ -69,12 +69,12 @@ public abstract class LineNode : Node
         {
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);       
             if (Time.time - timeInside >= timeLine * 2/3.0f){
-                ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 8345);  
+                ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, scoreGreat);  
             }
             else {
                 if (Time.time - timeInside >= timeLine * 1/3.0f)
-                    ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, 5621);
-                else ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
+                    ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, scoreBad);
+                else ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, scoreMissed);
             }
             Destroy(gameObject);
         }

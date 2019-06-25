@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class Scoring : MonoBehaviour
 {
-    public int Score = 0; //Actual score
-    public int tmpScore = 0; //Score displayed
+    public int score = 0; //Actual score
+    public int tmpScore = 0; //Displayed score
 
     // If displayed score is less than real score, increment it
     void Update()
     {
-        if(tmpScore < Score - 151){
+        if(tmpScore < score - 151){
             tmpScore += 151;
         } else {
-            if ((tmpScore < Score))
-            tmpScore += Score-tmpScore;
+            if ((tmpScore < score))
+            tmpScore += score-tmpScore;
         }
+    }
+
+    //in case of point multiplicator add it here
+    public void AddScore(int scoreAdded){
+        score += scoreAdded;
     }
 }

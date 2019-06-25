@@ -13,17 +13,17 @@ public class BasicNode : Node
         if (finished){
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             if (missed){
-                ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
+                ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, scoreMissed);
             } else {             
                 if (timeToFinish - progress <= timeFrame){
-                    ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, 15369);  
+                    ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, scorePerfect);  
                 }
                 else {
                     if (timeToFinish - progress <= timeFrame * 3){
-                        ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 8345);  
+                        ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, scoreGreat);  
                     }
                     else {
-                        ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, 5621);
+                        ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, scoreBad);
                     }
                 }
             }

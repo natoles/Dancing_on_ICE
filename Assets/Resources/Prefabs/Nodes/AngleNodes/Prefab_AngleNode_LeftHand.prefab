@@ -15,6 +15,7 @@ MonoBehaviour:
   timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
+  startAngle: 0
 --- !u!1001 &679086161775807522
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88,6 +89,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 28db39f4658e85f459d75dd0820725d1,
         type: 3}
+    - target: {fileID: 8659332441519337749, guid: 7a0743230de928144bd4ec3992476f14,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8659332441519337749, guid: 7a0743230de928144bd4ec3992476f14,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8659332441519337749, guid: 7a0743230de928144bd4ec3992476f14,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8659332440740893186, guid: 7a0743230de928144bd4ec3992476f14, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7a0743230de928144bd4ec3992476f14, type: 3}
