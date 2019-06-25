@@ -19,6 +19,11 @@ public class Node : MonoBehaviour
     protected bool missed = false; //Did the player miss the node ?
     protected GameObject UI;
     string UIname = "UI";
+    protected int scoreMissed = 0;
+    protected int scoreBad = 5621;
+    protected int scoreGreat = 8345;
+    protected int scorePerfect = 15787;
+    protected Scoring scoring;
 
     public virtual void Start()
     {
@@ -35,6 +40,7 @@ public class Node : MonoBehaviour
         StartCoroutine(_growth);
         main = GameObject.Find("Main");
         UI = GameObject.Find(UIname);
+        scoring = main.GetComponent<Scoring>();
 
     }
 
@@ -58,7 +64,7 @@ public class Node : MonoBehaviour
         theText.text = displayed;
         theText.fontSize += font;
         theText.color = color;
-        main.GetComponent<Scoring>().Score += score; 
+        scoring.AddScore(score); 
         //Debug.Log(displayed);
     }
     
