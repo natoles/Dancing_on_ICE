@@ -50,11 +50,7 @@ public abstract class LineNode : Node
         //If player completed the entire path
         if (finishedMoving){
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
-            mtext.GetComponent<Text>().text = "PERFECT";
-            mtext.GetComponent<Text>().fontSize += 30;
-            mtext.GetComponent<Text>().color = Color.yellow;
-            main.GetComponent<Scoring>().Score += 15369;
-            Debug.Log("PERFECT");
+            ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, 15369);  
 
             //reset variable to avoid entering in other loop after destruction
             moving = false; 
@@ -71,30 +67,14 @@ public abstract class LineNode : Node
         //If the player fail to follow the entire path
         if(moving && !inCircle)
         {
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
+            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);       
             if (Time.time - timeInside >= timeLine * 2/3.0f){
-                mtext.GetComponent<Text>().text = "GREAT";
-                mtext.GetComponent<Text>().fontSize += 0;
-                mtext.GetComponent<Text>().color = Color.magenta;
-                main.GetComponent<Scoring>().Score += 8345;
-                Debug.Log("GOOD");
+                ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 8345);  
             }
             else {
-                if (Time.time - timeInside >= timeLine * 1/3.0f){
-                    mtext.GetComponent<Text>().text = "BAD";
-                    mtext.GetComponent<Text>().fontSize -= 20;
-                    mtext.GetComponent<Text>().color = Color.blue;
-                    main.GetComponent<Scoring>().Score += 5621;
-                    Debug.Log("BAD");
-                }
-                else 
-                {
-                    mtext.GetComponent<Text>().text = "MISSED";
-                    mtext.GetComponent<Text>().fontSize -= 50;
-                    mtext.GetComponent<Text>().color = Color.red;
-                    main.GetComponent<Scoring>().Score += 0; //CHANGE TO 0
-                    Debug.Log("MISSED");
-                }
+                if (Time.time - timeInside >= timeLine * 1/3.0f)
+                    ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, 5621);
+                else ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
             }
             Destroy(gameObject);
         }
@@ -134,6 +114,14 @@ public abstract class LineNode : Node
 
     public virtual void SetJoint(){
         Debug.Log("abstract function");
+    }
+
+    void ChangeText(Text theText, string displayed, int font, Color color, int score){
+        theText.text = displayed;
+        theText.fontSize += font;
+        theText.color = color;
+        main.GetComponent<Scoring>().Score += score; 
+        Debug.Log(displayed);
     }
 
 }

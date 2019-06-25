@@ -74,9 +74,6 @@ public class Movements
                 listLHy.Remove(listLHy[i]);
             }
         }
-        
-        
-        
         #endregion
         
         
@@ -87,7 +84,7 @@ public class Movements
         float hipCenterY = 0;
         TimeStamp ts;
 
-        /* 
+        
         ts = DefaultNode.DeepCopyTS(DefaultNode);
         ts.joint = 1;
         Vector3[] pathPositions = new Vector3[listRHx.Count-1];
@@ -103,10 +100,10 @@ public class Movements
             
         }
         ts.pathPositions = pathPositions;
-        listTS.Add(ts);*/
+        listTS.Add(ts);
 
 
-        
+        /* 
         for(int i =0; i < listRHx.Count; i++){
             if (float.TryParse(listRHx[i].Replace(".",","), out x) && float.TryParse(listRHy[i].Replace(".",","), out y) &&
                          float.TryParse(HCX.Replace(".",","), out hipCenterX) && float.TryParse(HCY.Replace(".",","), out hipCenterY) )
@@ -132,7 +129,7 @@ public class Movements
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
                 listTS.Add(ts);
             } else Debug.Log("Invalid string value");   
-        }
+        }*/
         return listTS;
     }
     
