@@ -63,26 +63,20 @@ public class Movements
                 }
                 cpt++;
             }
-        string[] arrayRHx = listRHx.ToArray();
-        string[] arrayRHy = listRHy.ToArray();
-        string[] arrayLHx = listLHx.ToArray();
-        string[] arrayLHy = listLHy.ToArray();
-        listRHx.Clear();
-        listRHy.Clear();
-        listLHx.Clear();
-        listLHy.Clear();
-
-        //Start from the end to get the last point right
-        for(int i = arrayRHx.Length-1; i >= 0; i -= jump){
-            listRHx.Add(arrayRHx[i]);
-            listRHy.Add(arrayRHy[i]);
-            listLHx.Add(arrayLHx[i]);
-            listLHy.Add(arrayLHy[i]);
+             
+         
+        int length = listRHx.Count;
+        for (int i = 1; i <= length/(jump+1); i++){
+            for (int j = 0; j < jump; j++){
+                listRHx.Remove(listRHx[i]);
+                listRHy.Remove(listRHy[i]);
+                listLHx.Remove(listLHx[i]);
+                listLHy.Remove(listLHy[i]);
+            }
         }
-        listRHx.Reverse();
-        listRHy.Reverse();
-        listLHx.Reverse();
-        listLHy.Reverse();
+        
+        
+        
         #endregion
         
         
@@ -121,7 +115,7 @@ public class Movements
                 y -= hipCenterY;
                 ts = DefaultNode.DeepCopyTS(DefaultNode);
                 ts.joint = 1;
-                ts.timeSpawn = i;
+                ts.timeSpawn = i/3f;
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
 
                 listTS.Add(ts);
@@ -133,7 +127,7 @@ public class Movements
                 x -= hipCenterX;
                 y -= hipCenterY;
                 ts = DefaultNode.DeepCopyTS(DefaultNode);
-                ts.timeSpawn = i;
+                ts.timeSpawn = i/3f;
                 ts.joint = 2;
                 ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
                 listTS.Add(ts);
