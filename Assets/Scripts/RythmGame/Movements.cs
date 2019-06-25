@@ -32,7 +32,7 @@ public class Movements
         return list;
     }
 
-    public List<TimeStamp> GetUkiDatas(string path, int jump, float scale, float offsetX, float offsetY, TimeStamp DefaultNode)
+    public List<TimeStamp> GetUkiDatas(string path, int jump, float speed, float scale, float offsetX, float offsetY, TimeStamp DefaultNode)
     {
         #region ReadCSV
         //Get values from CSV file
@@ -89,8 +89,8 @@ public class Movements
                 InitAddLineNode(listTS, 2, 2, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
             default : 
-                InitAddNode(listTS, 1, 2, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
-                InitAddNode(listTS, 2, 2, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddNode(listTS, 1, 2, speed, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddNode(listTS, 2, 2, speed, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
         }
         return listTS;
@@ -98,7 +98,7 @@ public class Movements
     }
 
     //Add any type of node except LineNodes
-    void InitAddNode(List<TimeStamp> listTS, int joint, float timeSpawn, float scale, List<string> PosX, List<string> PosY, float hipCenterX, float hipCenterY, float offsetX, float offsetY, TimeStamp DefaultNode){
+    void InitAddNode(List<TimeStamp> listTS, int joint, float timeSpawn, float speed, float scale, List<string> PosX, List<string> PosY, float hipCenterX, float hipCenterY, float offsetX, float offsetY, TimeStamp DefaultNode){
         float x = 0;
         float y = 0;
         for(int i =0; i < PosX.Count; i++){
@@ -108,7 +108,7 @@ public class Movements
             y -= hipCenterY;
             TimeStamp ts = DefaultNode.DeepCopyTS(DefaultNode);
             ts.joint = joint;
-            ts.timeSpawn = i + timeSpawn;
+            ts.timeSpawn = i/speed + timeSpawn;
             ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
             listTS.Add(ts);
         }
@@ -131,7 +131,7 @@ public class Movements
             } else pathPositions[i-1] = new Vector3(x*scale + offsetX,y*scale + offsetY,0);
         }
         ts.pathPositions = pathPositions;
-        ts.timeSpawn = 
+        ts.timeSpawn = timeSpawn;
         listTS.Add(ts);
     }
     

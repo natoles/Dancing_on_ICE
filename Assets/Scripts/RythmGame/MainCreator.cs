@@ -20,8 +20,8 @@ public class MainCreator : MonoBehaviour
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
         //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-        AddMove(moves.GetUkiDatas(simpleMovePath,3,10,0,0, new TimeStamp(0,1,1,4f,25f,Vector3.zero,new Vector3[0])));
-        //AddMove(moves.GetUkiDatas(simpleMovePath,5,10,0,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
+        AddMove(moves.GetUkiDatas(simpleMovePath,3,0,10,0,0, new TimeStamp(0,1,1,4f,25f,Vector3.zero,new Vector3[0])));
+        //AddMove(moves.GetUkiDatas(simpleMovePath,5,0.8f,10,0,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
     }
 
     void Update()

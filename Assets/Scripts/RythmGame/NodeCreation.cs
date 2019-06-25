@@ -31,21 +31,19 @@ public class NodeCreation
         switch (joint)
         {
             case Joint.Hand :
-                nodeInstance = Object.Instantiate(nodePrefabBH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<BasicNode_Hand>().timeToFinish = timeToFinish;
+                nodeInstance = Object.Instantiate(nodePrefabBH, spawnPositon, Quaternion.Euler(0,0,0)); 
                 break;
             case Joint.RightHand : 
                 nodeInstance = Object.Instantiate(nodePrefabBRH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<BasicNode_RightHand>().timeToFinish = timeToFinish;
                 break;
             case Joint.LeftHand : 
                 nodeInstance = Object.Instantiate(nodePrefabBLH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<BasicNode_LeftHand>().timeToFinish = timeToFinish;
                 break;
             default :
                 Debug.Log("Pas normal");
                 break;
         }
+        nodeInstance.GetComponent<BasicNode>().timeToFinish = timeToFinish;
     }
 
     #endregion
@@ -58,22 +56,18 @@ public class NodeCreation
         {
             case Joint.RightHand :
                 nodeInstance = Object.Instantiate(nodePrefabLRH, spawnPosition, Quaternion.Euler(0,0,0));
-                LineNode_RightHand objR = nodeInstance.GetComponent<LineNode_RightHand>();
-                objR.timeToFinish = timeToFinish;
-                objR.timeLine = timeLine;
-                objR.pathPositions = pathPositions;
                 break;
             case Joint.LeftHand : 
                 nodeInstance = Object.Instantiate(nodePrefabLLH, spawnPosition, Quaternion.Euler(0,0,0));
-                LineNode_LeftHand objL = nodeInstance.GetComponent<LineNode_LeftHand>();
-                objL.timeToFinish = timeToFinish;
-                objL.timeLine = timeLine;
-                objL.pathPositions = pathPositions;
                 break;
             default :
                 Debug.Log("Pas normal");
                 break;
         }
+        LineNode obj = nodeInstance.GetComponent<LineNode>();
+        obj.timeToFinish = timeToFinish;
+        obj.timeLine = timeLine;
+        obj.pathPositions = pathPositions;
     }
     #endregion
 
@@ -85,23 +79,19 @@ public class NodeCreation
         {
             case Joint.Hand : 
                 nodeInstance = Object.Instantiate(nodePrefabAH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<AngleNode_Hand>().timeToFinish = timeToFinish;
-                nodeInstance.GetComponent<AngleNode_Hand>().startAngle = startAngle;
                 break;
             case Joint.RightHand : 
                 nodeInstance = Object.Instantiate(nodePrefabARH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<AngleNode_RightHand>().timeToFinish = timeToFinish;
-                nodeInstance.GetComponent<AngleNode_RightHand>().startAngle = startAngle;
                 break;
             case Joint.LeftHand : 
                 nodeInstance = Object.Instantiate(nodePrefabALH, spawnPositon, Quaternion.Euler(0,0,0));
-                nodeInstance.GetComponent<AngleNode_LeftHand>().timeToFinish = timeToFinish;
-                nodeInstance.GetComponent<AngleNode_LeftHand>().startAngle = startAngle;
                 break;
             default :
                 Debug.Log("Pas normal");
                 break;
         }
+        nodeInstance.GetComponent<AngleNode>().timeToFinish = timeToFinish;
+        nodeInstance.GetComponent<AngleNode>().startAngle = startAngle;
     }
     #endregion 
 }
