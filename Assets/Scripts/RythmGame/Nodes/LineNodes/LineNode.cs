@@ -49,7 +49,7 @@ public abstract class LineNode : Node
 
         //If player completed the entire path
         if (finishedMoving){
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             mtext.GetComponent<Text>().text = "PERFECT";
             mtext.GetComponent<Text>().fontSize += 30;
             mtext.GetComponent<Text>().color = Color.yellow;
@@ -71,7 +71,7 @@ public abstract class LineNode : Node
         //If the player fail to follow the entire path
         if(moving && !inCircle)
         {
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             if (Time.time - timeInside >= timeLine * 2/3.0f){
                 mtext.GetComponent<Text>().text = "GREAT";
                 mtext.GetComponent<Text>().fontSize += 0;

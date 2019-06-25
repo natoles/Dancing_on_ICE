@@ -16,6 +16,8 @@ public class Node : MonoBehaviour
     protected GameObject main;
     protected float progress = 0; //progress of the node
     protected bool missed = false; //Did the player miss the node ?
+    protected GameObject UI;
+    string UIname = "UI";
 
     public virtual void Start()
     {
@@ -31,7 +33,8 @@ public class Node : MonoBehaviour
         _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
         main = GameObject.Find("Main");
-        
+        UI = GameObject.Find(UIname);
+
     }
 
 

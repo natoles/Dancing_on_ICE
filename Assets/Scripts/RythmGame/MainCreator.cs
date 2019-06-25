@@ -15,7 +15,7 @@ public class MainCreator : MonoBehaviour
     void Start()
     {
         creator = gameObject.AddComponent<NodeCreation>();
-        string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Test2.csv";
+        string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Test1.csv";
 
         //Add Moves here
         //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));

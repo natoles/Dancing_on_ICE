@@ -11,7 +11,7 @@ public class BasicNode : Node
     {
         //Score according to timing
         if (finished){
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             if (missed){
                 ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
             } else {             

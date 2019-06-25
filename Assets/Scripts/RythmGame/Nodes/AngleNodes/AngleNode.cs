@@ -8,6 +8,8 @@ public class AngleNode : Node
     GameObject mtext;
 
     public float startAngle;
+    
+    
 
     public override void Start(){
         base.Start();
@@ -16,14 +18,14 @@ public class AngleNode : Node
     void Update()
     {
         if (movingPart.GetComponent<EnterLava>().touchedLava){
-            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             ChangeText(mtext.GetComponent<Text>(), "BOOM!", 45, Color.black, 0);  
             Destroy(gameObject);
         }   
 
         //Score according to timing
         if (finished){
-            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, GameObject.Find("Canvas").transform);
+            mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             if (missed){
                 ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, 0);
             } else {             
