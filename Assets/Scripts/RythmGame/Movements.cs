@@ -76,61 +76,62 @@ public class Movements
         }
         #endregion
         
-        
+        #region Add to list
         List<TimeStamp> listTS = new List<TimeStamp>();
-        float x;
-        float y;
         float hipCenterX = 0;
         float hipCenterY = 0;
-        TimeStamp ts;
+        float.TryParse(HCY.Replace(".",","), out hipCenterY);
+        float.TryParse(HCX.Replace(".",","), out hipCenterX);
 
-        
-        ts = DefaultNode.DeepCopyTS(DefaultNode);
-        ts.joint = 1;
-        Vector3[] pathPositions = new Vector3[listRHx.Count-1];
-        for(int i = 0; i < listRHx.Count; i++){
-            float.TryParse(listRHx[i].Replace(".",","), out x);
-            float.TryParse(listRHy[i].Replace(".",","), out y);
+        switch(DefaultNode.nodeType){
+            case 1 :
+                InitAddLineNode(listTS, 1, 2, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddLineNode(listTS, 2, 2, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                break;
+            default : 
+                InitAddNode(listTS, 1, 2, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddNode(listTS, 2, 2, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                break;
+        }
+        return listTS;
+        #endregion
+    }
+
+    //Add any type of node except LineNodes
+    void InitAddNode(List<TimeStamp> listTS, int joint, float timeSpawn, float scale, List<string> PosX, List<string> PosY, float hipCenterX, float hipCenterY, float offsetX, float offsetY, TimeStamp DefaultNode){
+        float x = 0;
+        float y = 0;
+        for(int i =0; i < PosX.Count; i++){
+            float.TryParse(PosX[i].Replace(".",","), out x);
+            float.TryParse(PosY[i].Replace(".",","), out y); 
             x -= hipCenterX;
             y -= hipCenterY;
-            Debug.Log(x + ", " + y);
+            TimeStamp ts = DefaultNode.DeepCopyTS(DefaultNode);
+            ts.joint = joint;
+            ts.timeSpawn = i + timeSpawn;
+            ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
+            listTS.Add(ts);
+        }
+    }
+
+    //Add a LineNode
+    void InitAddLineNode(List<TimeStamp> listTS, int joint, float timeSpawn, float scale, List<string> PosX, List<string> PosY, float hipCenterX, float hipCenterY, float offsetX, float offsetY, TimeStamp DefaultNode){
+        TimeStamp ts = DefaultNode.DeepCopyTS(DefaultNode);
+        ts.joint = joint;
+        Vector3[] pathPositions = new Vector3[PosX.Count-1];
+        float x = 0;
+        float y = 0;
+        for(int i = 0; i < PosX.Count; i++){
+            float.TryParse(PosX[i].Replace(".",","), out x);
+            float.TryParse(PosY[i].Replace(".",","), out y);
+            x -= hipCenterX;
+            y -= hipCenterY;
             if (i == 0){
-                ts.spawnPosition = new Vector3(x*scale,y*scale,0);
-            } else pathPositions[i-1] = new Vector3(x*scale,y*scale,0);
-            
+                ts.spawnPosition = new Vector3(x*scale + offsetX,y*scale + offsetY,0);
+            } else pathPositions[i-1] = new Vector3(x*scale + offsetX,y*scale + offsetY,0);
         }
         ts.pathPositions = pathPositions;
         listTS.Add(ts);
-
-
-        /* 
-        for(int i =0; i < listRHx.Count; i++){
-            if (float.TryParse(listRHx[i].Replace(".",","), out x) && float.TryParse(listRHy[i].Replace(".",","), out y) &&
-                         float.TryParse(HCX.Replace(".",","), out hipCenterX) && float.TryParse(HCY.Replace(".",","), out hipCenterY) )
-            {
-                x -= hipCenterX;
-                y -= hipCenterY;
-                ts = DefaultNode.DeepCopyTS(DefaultNode);
-                ts.joint = 1;
-                ts.timeSpawn = i/3f;
-                ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
-
-                listTS.Add(ts);
-            } else Debug.Log("Invalid string value");
-
-            if (float.TryParse(listLHx[i].Replace(".",","), out x) && float.TryParse(listLHy[i].Replace(".",","), out y) &&
-                         float.TryParse(HCX.Replace(".",","), out hipCenterX) && float.TryParse(HCY.Replace(".",","), out hipCenterY) )
-            {
-                x -= hipCenterX;
-                y -= hipCenterY;
-                ts = DefaultNode.DeepCopyTS(DefaultNode);
-                ts.timeSpawn = i/3f;
-                ts.joint = 2;
-                ts.spawnPosition = new Vector3(x*scale + offsetX, y*scale + offsetY,0);
-                listTS.Add(ts);
-            } else Debug.Log("Invalid string value");   
-        }*/
-        return listTS;
     }
     
 
