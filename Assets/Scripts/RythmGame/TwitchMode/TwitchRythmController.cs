@@ -11,10 +11,10 @@ public class TwitchRythmController : MonoBehaviour
 
     private Bounds bounds;
     private float sliderPlotTime = 0.01f;
-    private float bx = 0.30f;
-    private float dx = 0.20f;
-    private float by = 0.30f;
-    private float dy = 0.40f;
+    private float bx = 0.225f;
+    private float dx = 0.150f;
+    private float by = 0.275f;
+    private float dy = 0.375f;
     private float approachTime = 1f;
     private float speed = 2f;
 
@@ -74,7 +74,7 @@ public class TwitchRythmController : MonoBehaviour
                     else
                     {
                         LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                        for (float t = 0; t < bts1.duration; t += sliderPlotTime)
+                        for (float t = sliderPlotTime; t < bts1.duration; t += sliderPlotTime)
                         {
                             lnk.AddLast(ComputePosLeft(Time.time + t));
                         }
@@ -99,7 +99,7 @@ public class TwitchRythmController : MonoBehaviour
                     else
                     {
                         LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                        for (float t = 0; t < bts2.duration; t += sliderPlotTime)
+                        for (float t = sliderPlotTime; t < bts2.duration; t += sliderPlotTime)
                         {
                             lnk.AddLast(ComputePosRight(Time.time + t));
                         }
