@@ -131,6 +131,7 @@ public class Movements
             } else pathPositions[i-1] = new Vector3(x*scale + offsetX,y*scale + offsetY,0);
         }
         ts.pathPositions = pathPositions;
+        ts.timeSpawn = 
         listTS.Add(ts);
     }
     

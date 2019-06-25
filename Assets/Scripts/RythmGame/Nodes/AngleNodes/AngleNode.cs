@@ -44,14 +44,5 @@ public class AngleNode : Node
             Destroy(gameObject);
         } 
     }
-
-    void ChangeText(Text theText, string displayed, int font, Color color, int score){
-        theText.text = displayed;
-        theText.fontSize += font;
-        theText.color = color;
-        main.GetComponent<Scoring>().Score += score; 
-        Debug.Log(displayed);
-    }
-
     
 }

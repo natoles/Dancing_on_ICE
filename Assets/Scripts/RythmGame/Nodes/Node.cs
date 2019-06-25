@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Node : MonoBehaviour
 {
@@ -51,6 +52,14 @@ public class Node : MonoBehaviour
         movingPart.transform.localScale = finalScale;
         missed = true;
         finished = true;
+    }
+
+    protected void ChangeText(Text theText, string displayed, int font, Color color, int score){
+        theText.text = displayed;
+        theText.fontSize += font;
+        theText.color = color;
+        main.GetComponent<Scoring>().Score += score; 
+        //Debug.Log(displayed);
     }
     
 }
