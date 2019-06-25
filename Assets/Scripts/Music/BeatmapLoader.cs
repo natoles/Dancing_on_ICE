@@ -32,7 +32,7 @@ static class BeatmapLoader
                 baseFolder = Application.persistentDataPath;
         }
 
-        return FileBrowser.OpenSingleFile("Open sound file", baseFolder, "icebm");
+        return FileBrowser.OpenSingleFile("Open beatmap", baseFolder, "icebm");
     }
 
     public static BeatmapContainer LoadBeatmapFile(string path)
