@@ -11,8 +11,8 @@ public class NodeCreation
     GameObject nodePrefabBH, nodePrefabBRH, nodePrefabBLH;
     GameObject nodePrefabLRH, nodePrefabLLH;
     GameObject nodePrefabAH, nodePrefabARH, nodePrefabALH;
-    Collider zoneH, zoneRH, zoneLH;
     GameObject nodeInstance;
+    GameObject main;
 
     public NodeCreation(){
         nodePrefabBH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_Hand") as GameObject;
@@ -23,6 +23,7 @@ public class NodeCreation
         nodePrefabAH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_Hand") as GameObject;
         nodePrefabARH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
         nodePrefabALH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
+        main = GameObject.Find("Main");
     }
 
     #region BasicNode
@@ -43,7 +44,9 @@ public class NodeCreation
                 Debug.Log("Pas normal");
                 break;
         }
-        nodeInstance.GetComponent<BasicNode>().timeToFinish = timeToFinish;
+        BasicNode obj = nodeInstance.GetComponent<BasicNode>();
+        obj.timeToFinish = timeToFinish;
+        obj.transform.parent = main.transform;
     }
 
     #endregion
@@ -68,6 +71,7 @@ public class NodeCreation
         obj.timeToFinish = timeToFinish;
         obj.timeLine = timeLine;
         obj.pathPositions = pathPositions;
+        obj.transform.parent = main.transform;
     }
     #endregion
 
@@ -90,8 +94,10 @@ public class NodeCreation
                 Debug.Log("Pas normal");
                 break;
         }
-        nodeInstance.GetComponent<AngleNode>().timeToFinish = timeToFinish;
-        nodeInstance.GetComponent<AngleNode>().startAngle = startAngle;
+        AngleNode obj = nodeInstance.GetComponent<AngleNode>();
+        obj.timeToFinish = timeToFinish;
+        obj.startAngle = startAngle;
+        obj.transform.parent = main.transform;
     }
     #endregion 
 }
