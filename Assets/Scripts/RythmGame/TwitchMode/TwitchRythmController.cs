@@ -4,25 +4,46 @@ using UnityEngine;
 
 public class TwitchRythmController : MonoBehaviour
 {
-    BeatmapContainer bmc = null;
-    AudioSource player = null;
-    NodeCreation creator = null;
+    private BeatmapContainer bmc = null;
+    private AudioSource player = null;
+    private NodeCreation creator = null;
+    private Camera mainCamera = null;
 
-    float approachTime = 1f;
-    Vector3 spawnLeft = new Vector3(-10, 0, 0);
-    Vector3 spawnRight = new Vector3( 10, 0, 0);
+    private Bounds bounds;
+    private float sliderPlotTime = 0.01f;
+    private float bx = 0.30f;
+    private float dx = 0.20f;
+    private float by = 0.30f;
+    private float dy = 0.40f;
+    private float approachTime = 1f;
+    private float speed = 2f;
 
-    [SerializeField]
-    float speed = 3f;
+    private int i1 = 0;
+    private int i2 = 0;
 
-    int i1 = 0;
-    int i2 = 0;
+    private Vector3 ComputePosLeft(float time)
+    {
+        return new Vector3(
+            bounds.center.x - (bx + dx * Mathf.Cos(time * speed)) * bounds.extents.x,
+            bounds.center.y + (by + dy * Mathf.Sin(time * speed)) * bounds.extents.y
+            );
+    }
+
+    private Vector3 ComputePosRight(float time)
+    {
+        return new Vector3(
+            bounds.center.x + (bx + dx * Mathf.Cos(time * speed)) * bounds.extents.x,
+            bounds.center.y + (by + dy * Mathf.Sin(time * speed)) * bounds.extents.y
+            );
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<AudioSource>();
         creator = new NodeCreation();
+        mainCamera = Camera.main;
+        bounds = mainCamera.OrthographicBounds();
     }
 
     // Update is called once per frame
@@ -39,6 +60,8 @@ public class TwitchRythmController : MonoBehaviour
 
         if (player.isPlaying && bmc != null)
         {
+            bounds = mainCamera.OrthographicBounds();
+
             if (i1 < bmc.bm.Pool1.Count)
             {
                 BeatTimestamp bts1 = bmc.bm.Pool1[i1];
@@ -46,11 +69,19 @@ public class TwitchRythmController : MonoBehaviour
                 {
                     if (bts1.type == BeatType.Simple)
                     {
-                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, spawnLeft);
+                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, ComputePosLeft(Time.time));
                     }
                     else
                     {
-                        creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, spawnLeft, new Vector3[] { spawnLeft + Vector3.up * 10f, spawnLeft + Vector3.up * 10f + Vector3.left * 10f });
+                        LinkedList<Vector3> lnk = new LinkedList<Vector3>();
+                        for (float t = 0; t < bts1.duration; t += sliderPlotTime)
+                        {
+                            lnk.AddLast(ComputePosLeft(Time.time + t));
+                        }
+                        lnk.AddLast(ComputePosLeft(Time.time + bts1.duration));
+                        Vector3[] points = new Vector3[lnk.Count];
+                        lnk.CopyTo(points, 0);
+                        creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, ComputePosLeft(Time.time), points);
                     }
                     i1++;
                 }
@@ -63,11 +94,19 @@ public class TwitchRythmController : MonoBehaviour
                 {
                     if (bts2.type == BeatType.Simple)
                     {
-                        creator.CreateBasicNode(NodeCreation.Joint.RightHand, approachTime, spawnRight);
+                        creator.CreateBasicNode(NodeCreation.Joint.RightHand, approachTime, ComputePosRight(Time.time));
                     }
                     else
                     {
-                        creator.CreateLineNode(NodeCreation.Joint.RightHand, approachTime, bts2.duration, spawnRight, new Vector3[] { spawnRight + Vector3.up * 10f, spawnRight + Vector3.up * 10f + Vector3.right * 10f });
+                        LinkedList<Vector3> lnk = new LinkedList<Vector3>();
+                        for (float t = 0; t < bts2.duration; t += sliderPlotTime)
+                        {
+                            lnk.AddLast(ComputePosRight(Time.time + t));
+                        }
+                        lnk.AddLast(ComputePosRight(Time.time + bts2.duration));
+                        Vector3[] points = new Vector3[lnk.Count];
+                        lnk.CopyTo(points, 0);
+                        creator.CreateLineNode(NodeCreation.Joint.RightHand, approachTime, bts2.duration, ComputePosRight(Time.time), points);
                     }
                     i2++;
                 }
