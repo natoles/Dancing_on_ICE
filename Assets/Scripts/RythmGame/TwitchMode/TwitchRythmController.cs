@@ -36,26 +36,29 @@ public class TwitchRythmController : MonoBehaviour
             bounds.center.y + (by + dy * Mathf.Sin(time * speed)) * bounds.extents.y
             );
     }
-
-    // Start is called before the first frame update
-    void Start()
+    
+    private void Start()
     {
         player = GetComponent<AudioSource>();
         creator = new NodeCreation();
         mainCamera = Camera.main;
         bounds = mainCamera.OrthographicBounds();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             string path = BeatmapLoader.SelectBeatmapFile();
             if (path != null)
                 bmc = BeatmapLoader.LoadBeatmapFile(path);
-            player.clip = bmc.audio;
-            player.PlayDelayed(3);
+
+            if (bmc != null)
+            {
+                NotificationManager.Instance.PushNotification(bmc.audio.name + "loaded", Color.white, Color.green);
+                player.clip = bmc.audio;
+                player.PlayDelayed(3);
+            }
         }
 
         if (player.isPlaying && bmc != null)
