@@ -2,17 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HoldNode_RightHand : MonoBehaviour
+public class HoldNode_RightHand : HoldNode
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public override void SetJoint(){
+        joint = "RightHand";
     }
 }

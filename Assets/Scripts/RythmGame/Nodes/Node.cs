@@ -33,8 +33,8 @@ public class Node : MonoBehaviour
         timeFrame = timeToFinish/8;
         
         //Graphical adjustment
-        size[0] += size[0]/13;
-        size[1] += size[1]/13;
+        size[0] += size[0]/8;
+        size[1] += size[1]/8;
 
         _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
