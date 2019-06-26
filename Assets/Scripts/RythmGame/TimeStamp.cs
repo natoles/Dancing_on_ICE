@@ -11,21 +11,18 @@ public class TimeStamp
     public float timeToFinish;
     public float timeLine;
     public float startAngle;
+    public float timeHold;
     public Vector3 spawnPosition;
     public Vector3[] pathPositions;
     public float time;
     public Uri Uri;
     public int Count;
-    public float defaultTimeToFinish = 3f;
-    public float defaultTimeLine = 5f;
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
         nodeType = nodeType1;
         joint = joint1;
         timeSpawn = timeSpawn1;
-        timeToFinish = defaultTimeToFinish;
-        timeLine = defaultTimeLine;
     } 
 
 
@@ -49,15 +46,16 @@ public class TimeStamp
         spawnPosition = spawnPosition1;
     }  
 
-    //AngleNode Constructor 
-    public TimeStamp(float timeSpawn1, int nodeType1, int joint1, float timeToFinish1, float startAngle1, Vector3 spawnPosition1){
+    //AngleNode and Holdnode Constructor 
+    public TimeStamp(float timeSpawn1, int nodeType1, int joint1, float timeToFinish1, float startAngleTimeHold, Vector3 spawnPosition1){
         nodeType = nodeType1;
         joint = joint1;
         timeSpawn = timeSpawn1;
         timeToFinish = timeToFinish1;
-        startAngle = startAngle1;
+        startAngle = startAngleTimeHold;
+        timeHold = startAngleTimeHold;
         spawnPosition = spawnPosition1;
-    } 
+    }  
 
     public TimeStamp DeepCopyTS(TimeStamp ts1){
         TimeStamp ts2 = new TimeStamp(ts1.timeSpawn, ts1.nodeType, ts1.joint);
@@ -70,6 +68,9 @@ public class TimeStamp
                 break;
             case(2):
                 ts2.startAngle = ts1.startAngle;
+                break;
+            case(3):
+                ts2.timeHold = ts1.timeHold;
                 break;
             default:
                 break;

@@ -32,7 +32,7 @@ public class Movements
         return list;
     }
 
-    public List<TimeStamp> GetUkiDatas(string path, int jump, float speed, float scale, float offsetX, float offsetY, TimeStamp DefaultNode)
+    public List<TimeStamp> GetUkiDatas(string path, float timeSpawn, int jump, float speed, float scale, float offsetX, float offsetY, TimeStamp DefaultNode)
     {
         #region ReadCSV
         //Get values from CSV file
@@ -85,12 +85,12 @@ public class Movements
 
         switch(DefaultNode.nodeType){
             case 1 :
-                InitAddLineNode(listTS, 1, 2, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
-                InitAddLineNode(listTS, 2, 2, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddLineNode(listTS, 1, timeSpawn, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddLineNode(listTS, 2, timeSpawn, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
             default : 
-                InitAddNode(listTS, 1, 2, speed, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
-                InitAddNode(listTS, 2, 2, speed, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddNode(listTS, 1, timeSpawn, speed, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                InitAddNode(listTS, 2, timeSpawn, speed, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
         }
         return listTS;

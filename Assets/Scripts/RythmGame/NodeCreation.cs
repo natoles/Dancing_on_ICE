@@ -6,11 +6,10 @@ public class NodeCreation
 {
     public enum Joint {Hand, RightHand, LeftHand}
     GameObject nodePrefab; 
-    TimeStamp ts = new TimeStamp(0,0,0); //To get default values
-
     GameObject nodePrefabBH, nodePrefabBRH, nodePrefabBLH;
     GameObject nodePrefabLRH, nodePrefabLLH;
     GameObject nodePrefabAH, nodePrefabARH, nodePrefabALH;
+    GameObject nodePrefabHRH, nodePrefabHLH;
     GameObject nodeInstance;
     GameObject main;
 
@@ -23,6 +22,8 @@ public class NodeCreation
         nodePrefabAH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_Hand") as GameObject;
         nodePrefabARH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
         nodePrefabALH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
+        nodePrefabHRH = Resources.Load("Prefabs/Nodes/HoldNodes/Prefab_HoldNode_RightHand") as GameObject;
+        nodePrefabHLH = Resources.Load("Prefabs/Nodes/HoldNodes/Prefab_HoldNode_LeftHand") as GameObject;
         main = GameObject.Find("Main");
     }
 
@@ -48,7 +49,6 @@ public class NodeCreation
         obj.timeToFinish = timeToFinish;
         obj.transform.parent = main.transform;
     }
-
     #endregion
 
     #region LineNode
@@ -100,4 +100,26 @@ public class NodeCreation
         obj.transform.parent = main.transform;
     }
     #endregion 
+
+    #region HoldNode
+    //Creates a BasicNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
+    public void CreateHoldNode(Joint joint, float timeToFinish, float timeHold, Vector3 spawnPositon){    
+        switch (joint)
+        {
+            case Joint.RightHand : 
+                nodeInstance = Object.Instantiate(nodePrefabHRH, spawnPositon, Quaternion.Euler(0,0,0));
+                break;
+            case Joint.LeftHand : 
+                nodeInstance = Object.Instantiate(nodePrefabHLH, spawnPositon, Quaternion.Euler(0,0,0));
+                break;
+            default :
+                Debug.Log("Pas normal");
+                break;
+        }
+        HoldNode obj = nodeInstance.GetComponent<HoldNode>();
+        obj.timeToFinish = timeToFinish;
+        obj.timeHold = timeHold;
+        obj.transform.parent = main.transform;
+    }
+    #endregion
 }
