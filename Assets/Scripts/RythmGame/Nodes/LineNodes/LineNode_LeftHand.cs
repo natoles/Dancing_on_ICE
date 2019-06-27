@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class LineNode_LeftHand : HoldNode
+public class LineNode_LeftHand : LineNode
 {
     
     public override void SetJoint(){
