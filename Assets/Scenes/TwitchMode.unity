@@ -208,7 +208,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 5, y: -5}
-  m_SizeDelta: {x: 200, y: 30}
+  m_SizeDelta: {x: 1250.42, y: 237.49}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &356393864
 MonoBehaviour:
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 733231977}
   - component: {fileID: 733231976}
   - component: {fileID: 477588149}
-  - component: {fileID: 477588151}
+  - component: {fileID: 477588150}
   m_Layer: 0
   m_Name: Main
   m_TagString: Untagged
@@ -380,7 +380,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &477588151
+--- !u!114 &477588150
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -389,11 +389,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 477588148}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 668d29647220da34c925c7d63394815d, type: 3}
+  m_Script: {fileID: 11500000, guid: 5ced546185601594cbed8141618d8317, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreUpdateTickValue: 127
+  scoreUpdateMaxDelay: 1
   score: 0
   tmpScore: 0
+  multiplier: 1
 --- !u!1 &494265148
 GameObject:
   m_ObjectHideFlags: 0

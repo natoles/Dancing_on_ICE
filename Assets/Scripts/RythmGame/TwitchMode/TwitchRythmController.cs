@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TwitchRythmController : MonoBehaviour
 {
+    public static string beatmapToLoad = null;
+
     private BeatmapContainer bmc = null;
     private AudioSource player = null;
     private NodeCreation creator = null;
@@ -43,22 +45,26 @@ public class TwitchRythmController : MonoBehaviour
         creator = new NodeCreation();
         mainCamera = Camera.main;
         bounds = mainCamera.OrthographicBounds();
+        
+        if (beatmapToLoad == null)
+            beatmapToLoad = BeatmapLoader.SelectBeatmapFile();
+
+        bmc = BeatmapLoader.LoadBeatmapFile(beatmapToLoad);
+
+        if (bmc != null)
+        {
+            NotificationManager.Instance.PushNotification(bmc.audio.name + "loaded", Color.white, Color.green);
+            player.clip = bmc.audio;
+            player.PlayDelayed(3);
+        }
     }
     
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            string path = BeatmapLoader.SelectBeatmapFile();
-            if (path != null)
-                bmc = BeatmapLoader.LoadBeatmapFile(path);
-
-            if (bmc != null)
-            {
-                NotificationManager.Instance.PushNotification(bmc.audio.name + "loaded", Color.white, Color.green);
-                player.clip = bmc.audio;
+            if (player.clip != null)
                 player.PlayDelayed(3);
-            }
         }
 
         if (player.isPlaying && bmc != null)
