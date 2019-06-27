@@ -18,6 +18,6 @@ public class ScoreUpdate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textScore.GetComponent<Text>().text = "SCORE : " + main.GetComponent<Scoring>().tmpScore;
+        textScore.GetComponent<Text>().text = "SCORE : " + (int)main.GetComponent<Scoring>().tmpScore;
     }
 }
