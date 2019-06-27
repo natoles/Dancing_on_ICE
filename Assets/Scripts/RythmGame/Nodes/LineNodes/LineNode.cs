@@ -85,18 +85,48 @@ public abstract class LineNode : Node
         timeInside = Time.time;
         moving = true;
         float progress;
+        float tmpTime;
+        float fraction;
+        float dist;
 
-        for(int i = 0; i< pathPositions.Length; i++){
-            progress = 0f;
-            while(progress <= timePaths[i]){
-                transform.position = Vector3.Lerp(line.GetPosition(i), line.GetPosition(i+1), progress/timePaths[i]);
-                progress += Time.deltaTime;
+        for(int i = 0; i < pathPositions.Length; i++){
+            tmpTime = 0;
+            if (timePaths[i] > Time.deltaTime){
+                progress = 0f;
+                while(progress <= timePaths[i]){
+                    if (i != 0)
+                        transform.position = Vector3.Lerp(pathPositions[i - 1], pathPositions[i], progress/timePaths[i]);
+                    else 
+                        transform.position = Vector3.Lerp(line.GetPosition(0), pathPositions[i], progress/timePaths[i]);
+                    progress += Time.deltaTime;
+                    yield return null;
+                }
+            } else {
+                tmpTime = timePaths[i++];
+                while(tmpTime < Time.deltaTime) {
+                    if (i == pathPositions.Length-1){
+                        transform.position = pathPositions[i];
+                        finishedMoving = true;
+                        moving = false;
+                        yield break;
+                    }   
+                    tmpTime += timePaths[i];
+                    i += 1;
+                }
+                i -= 1;
+                tmpTime = timePaths[i] - (tmpTime - Time.deltaTime);
+                fraction = tmpTime/timePaths[i];
+                transform.position = new Vector3((pathPositions[i].x - pathPositions[i-1].x) * fraction + pathPositions[i-1].x , 
+                                                 (pathPositions[i].y - pathPositions[i-1].y) * fraction + pathPositions[i-1].y,
+                                                 0);
+                pathPositions[i-1] = transform.position;
                 yield return null;
             }
         }
         finishedMoving = true;
         moving = false;
     }
+
 
     void OnTriggerEnter2D(Collider2D col)
     {

@@ -16,6 +16,8 @@ MonoBehaviour:
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
   timeLine: 5
+  pathPositions: []
+  timePaths: []
 --- !u!1001 &1898354537782390886
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -113,17 +115,17 @@ PrefabInstance:
       propertyPath: m_Parameters.colorGradient.key1.b
       value: 0.6556604
       objectReference: {fileID: 0}
-    - target: {fileID: 3071063089438466741, guid: 98850c8572f530143a30086ad3b9a594,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 28db39f4658e85f459d75dd0820725d1,
-        type: 3}
     - target: {fileID: 3071063089631073084, guid: 98850c8572f530143a30086ad3b9a594,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: d6cb046ea97294f4084d2ebb7006ee1c,
+        type: 3}
+    - target: {fileID: 3071063089438466741, guid: 98850c8572f530143a30086ad3b9a594,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 28db39f4658e85f459d75dd0820725d1,
         type: 3}
     m_RemovedComponents:
     - {fileID: 3071063089017853192, guid: 98850c8572f530143a30086ad3b9a594, type: 3}

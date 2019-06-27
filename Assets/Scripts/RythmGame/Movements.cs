@@ -7,6 +7,18 @@ using System;
 public class Movements
 {
 
+    public List<TimeStamp> TestMovement(float t)
+    {
+        List<TimeStamp> list = new List<TimeStamp>();
+        List<Vector3> PP = new List<Vector3>();
+        for (int i = 0; i < 10000; i++){
+            PP.Add(new Vector3(0,i*0.001f,0));
+        }
+        list.Add(new TimeStamp(t + 0,1,1,3f,4f,Vector3.zero,PP.ToArray()));
+        //list.Add(new TimeStamp(t + 0,1,1,3f,1.34f,Vector3.zero,PP.ToArray()));
+        return list;
+    }
+
     //A function represents an available movement
     public List<TimeStamp> RLRLRL(float t)
     {
