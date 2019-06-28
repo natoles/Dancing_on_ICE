@@ -87,7 +87,6 @@ public abstract class LineNode : Node
         float progress;
         float tmpTime;
         float fraction;
-        float dist;
 
         for(int i = 0; i < pathPositions.Length; i++){
             tmpTime = 0;
@@ -101,7 +100,7 @@ public abstract class LineNode : Node
                     progress += Time.deltaTime;
                     yield return null;
                 }
-            } else {
+            } else {  //If the time to reach the other point is < to deltaTime
                 tmpTime = timePaths[i++];
                 while(tmpTime < Time.deltaTime) {
                     if (i == pathPositions.Length-1){
