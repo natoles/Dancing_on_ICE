@@ -9,21 +9,20 @@ public class MainCreator : MonoBehaviour
     public enum joint {H = 0, RH = 1, LH = 2}
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
-    public float[] timeValues;
     Movements moves = new Movements();
-    float[] currentRates = new float[2];
-    public float[] wantedRates = new float[2];
-    int numberMoves = 0; //Do not touch
-    List<MovementFile> allMoves = new List<MovementFile>();
-    int movePoolSize = 1;
+    float[] currentRates = new float[2]{80,20}; //See AddMove()
+    public float[] wantedRates = new float[2]; //Wanted joints rates needs to be initialise in inspector
+    int numberMoves = 2; //Increases each time a move is added
+    List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
+    int movePoolSize = 1; //See SelectMove()
 
     void Start()
     {
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 100, 0));
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 0, 100));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 81, 19));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 30, 70));
         ComputeGlobalRate(allMoves);
         MovementFile chosenMove = SelectMove();
         AddMove(chosenMove, moves.GetUkiDatas(chosenMove.path ,0,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
@@ -78,20 +77,26 @@ public class MainCreator : MonoBehaviour
     }
 
     void AddMove(MovementFile MF, List<TimeStamp> move){
+        //Changes the value od the currentRates
         numberMoves += 1;
+        ComputeGlobalRate(allMoves);
+        /* 
         if (numberMoves == 1){
             currentRates[0] = MF.jointsRates[0];
             currentRates[1] = MF.jointsRates[1];
         } else {
             currentRates[0] = currentRates[0] * (numberMoves-1)/numberMoves + MF.jointsRates[0]/numberMoves;
             currentRates[1] = currentRates[1] * (numberMoves-1)/numberMoves + MF.jointsRates[1]/numberMoves;
-        }
+        }*/
 
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
     }
 
+    //Returns one of the moves to match correctly with the desire rates
+    //Randomization is added to vary moves, decrease accuracy to augment variety amongs chosen moves
+    //Increase movePoolSize to augment variety among chosen moves
     MovementFile SelectMove(){
         MovementFile[] movePool = new MovementFile[movePoolSize];
         int r;
@@ -99,12 +104,11 @@ public class MainCreator : MonoBehaviour
         for (int i = 0; i < movePoolSize; i++){  //Initialize movePool
             movePool[i] = allMoves[i];
         }
-        Array.Reverse(movePool);
+            Array.Reverse(movePool);
         SortMoves(movePool);
         float maxRate = movePool[movePoolSize-1].globalRate;
-        Debug.Log("maxRate : " + maxRate);
 
-        //Choose movePollSize moves among the lower globalRate ones
+        //Chooses movePollSize moves among the lower globalRate ones
         for (int i = 0; i < accuracy; i++){
             r = (int) Math.Floor(UnityEngine.Random.Range(0f, allMoves.Count));
             if (allMoves[r].globalRate <= maxRate){
@@ -146,12 +150,19 @@ public class MainCreator : MonoBehaviour
     }
 
     void ComputeGlobalRate(List<MovementFile> moves){
+        float[] curDiff = new float[wantedRates.Length];//difference between curenet and wanted rates
+        if (numberMoves > 1){
+            for (int i = 0; i< wantedRates.Length; i++){
+                curDiff[i] = wantedRates[i] - currentRates[i];
+            }
+        } 
+
         for (int i = 0; i < moves.Count; i++){
             moves[i].globalRate = 0;
             for (int k = 0; k < wantedRates.Length; k++){
-                moves[i].globalRate += wantedRates[k]/100 * Math.Abs(wantedRates[k] - moves[i].jointsRates[k]);
+                moves[i].globalRate += wantedRates[k]/100 * Math.Abs(wantedRates[k] - moves[i].jointsRates[k] + curDiff[k]);
             }
-            //Debug.Log(moves[i].globalRate);
+            Debug.Log(moves[i].globalRate);
         }
     }
 }
