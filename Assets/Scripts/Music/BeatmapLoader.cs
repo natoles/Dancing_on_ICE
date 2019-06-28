@@ -41,15 +41,16 @@ static class BeatmapLoader
         string json = reader.ReadToEnd();
         reader.Close();
 
-        Beatmap beatmap = JsonUtility.FromJson<Beatmap>(json);
-        if (beatmap == null)
+        Beatmap bm = JsonUtility.FromJson<Beatmap>(json);
+        if (bm == null)
             return null;
 
-        AudioClip audioClip = LoadAudioFile(Path.Combine(Path.GetDirectoryName(path), beatmap.AudioFile));
-        if (audioClip == null)
-            return null;
+        return new BeatmapContainer { sourceFile = Path.GetFileName(path), directory = Path.GetDirectoryName(path), bm = bm };
+    }
 
-        return new BeatmapContainer { bm = beatmap, audio = audioClip };
+    public static AudioClip LoadBeatmapAudio(BeatmapContainer bmc)
+    {
+        return LoadAudioFile(Path.Combine(bmc.directory, bmc.bm.AudioFile));
     }
 
     public static AudioClip LoadAudioFile(string path)

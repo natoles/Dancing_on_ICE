@@ -63,7 +63,8 @@ public class SimpleBeatRecorder : MonoBehaviour
         if (path != null)
         {
             BeatmapContainer bmc = BeatmapLoader.LoadBeatmapFile(path);
-            audioPlayer.clip = bmc.audio;
+            AudioClip audio = BeatmapLoader.LoadBeatmapAudio(bmc);
+            audioPlayer.clip = audio;
             bm = bmc.bm;
         }
     }

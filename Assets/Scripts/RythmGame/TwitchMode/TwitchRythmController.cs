@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TwitchRythmController : MonoBehaviour
 {
-    public static string beatmapToLoad = null;
+    public static BeatmapContainer beatmapToLoad = null;
 
     private BeatmapContainer bmc = null;
     private AudioSource player = null;
@@ -45,16 +45,18 @@ public class TwitchRythmController : MonoBehaviour
         creator = new NodeCreation();
         mainCamera = Camera.main;
         bounds = mainCamera.OrthographicBounds();
-        
+
         if (beatmapToLoad == null)
-            beatmapToLoad = BeatmapLoader.SelectBeatmapFile();
-
-        bmc = BeatmapLoader.LoadBeatmapFile(beatmapToLoad);
-
-        if (bmc != null)
         {
-            NotificationManager.Instance.PushNotification(bmc.audio.name + "loaded", Color.white, Color.green);
-            player.clip = bmc.audio;
+            string path = BeatmapLoader.SelectBeatmapFile();
+            beatmapToLoad = BeatmapLoader.LoadBeatmapFile(path);
+        }
+
+        AudioClip audio = BeatmapLoader.LoadBeatmapAudio(bmc);
+        if (audio != null)
+        {
+            NotificationManager.Instance.PushNotification(bmc.sourceFile + " loaded", Color.white, Color.green);
+            player.clip = audio;
             player.PlayDelayed(3);
         }
     }
