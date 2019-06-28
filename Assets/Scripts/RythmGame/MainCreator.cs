@@ -22,7 +22,7 @@ public class MainCreator : MonoBehaviour
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        //allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 100, 0));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 100, 0));
         allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 0, 100));
         ComputeGlobalRate(allMoves);
         MovementFile chosenMove = SelectMove();
@@ -106,10 +106,10 @@ public class MainCreator : MonoBehaviour
 
         //Choose movePollSize moves among the lower globalRate ones
         for (int i = 0; i < accuracy; i++){
-            r = (int) Math.Floor(UnityEngine.Random.Range(0f, allMoves.Count-1));
+            r = (int) Math.Floor(UnityEngine.Random.Range(0f, allMoves.Count));
             if (allMoves[r].globalRate <= maxRate){
                 InsertMove(allMoves[r], movePool);
-                maxRate = movePool[r].globalRate;
+                maxRate = movePool[movePoolSize-1].globalRate;
             } 
         }
         r = (int) Math.Floor(UnityEngine.Random.Range(0f, movePoolSize));
