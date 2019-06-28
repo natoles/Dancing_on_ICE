@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class SongEntry : MonoBehaviour
+public class SongEntry : Button, IPointerClickHandler
 {
     [SerializeField]
     private Image Thumbnail;
@@ -20,14 +21,31 @@ public class SongEntry : MonoBehaviour
     [SerializeField]
     private Text Duration;
 
-    private BeatmapContainer bmc;
+    private BeatmapContainer bmc = null;
+    private int id = 0;
 
-    public void SetSong(string icebmFile)
+    private bool selected = false;
+
+    public override void OnPointerClick(PointerEventData pointerEventData)
+    {
+        if (!selected)
+        {
+            selected = true;
+            base.OnPointerClick(pointerEventData);
+        }
+        else
+        {
+            PlaySong();
+        }
+    }
+
+    public void SetSong(int id, string icebmFile)
     {
         if (System.IO.Path.GetExtension(icebmFile) != ".icebm")
             return;
 
-        BeatmapContainer bmc = BeatmapLoader.LoadBeatmapFile(icebmFile);
+        this.id = id;
+        bmc = BeatmapLoader.LoadBeatmapFile(icebmFile);
         SongName.text = bmc.bm.Metadata.SongName;
         Artist.text = bmc.bm.Metadata.Artist;
         Difficulty.text = Math.Round(bmc.bm.Metadata.Difficulty, 1).ToString();

@@ -7,6 +7,8 @@ public class SongScrollView : ScrollRect
     [SerializeField]
     protected SongEntry m_SongEntry = null;
 
+    public int SongCount = 0;
+
     protected override void Start()
     {
         if (Application.isPlaying)
@@ -18,8 +20,9 @@ public class SongScrollView : ScrollRect
                 foreach (string bmFile in bmFiles)
                 {
                     SongEntry entry = Instantiate(m_SongEntry, content);
-                    entry.gameObject.name = Path.GetFileNameWithoutExtension(bmFile);
-                    entry.SetSong(bmFile);
+                    entry.gameObject.name = SongCount + " - " + Path.GetFileNameWithoutExtension(bmFile);
+                    entry.SetSong(SongCount, bmFile);
+                    SongCount++;
                 }
             }
         }
