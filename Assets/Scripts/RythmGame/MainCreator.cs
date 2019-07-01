@@ -15,7 +15,7 @@ public class MainCreator : MonoBehaviour
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    int movePoolSize = 2; //See SelectMove()
+    int movePoolSize = 1; //See SelectMove()
 
     void Start()
     {
@@ -24,15 +24,20 @@ public class MainCreator : MonoBehaviour
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 100, 0));
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 0, 100));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv"));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv"));
+        for (int i = 0; i< allMoves.Count; i++){
+            allMoves[i].InitDistances();
+        }
+
+        
         ComputeGlobalRate(allMoves);
 
         float tmpTime;
         for (int i = 0; i < 100; i++){
             MovementFile chosenMove = SelectMove();
             tmpTime = GetSpawnTime();
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
         }
 
 
@@ -118,9 +123,7 @@ public class MainCreator : MonoBehaviour
                 maxRate = movePool[movePoolSize-1].globalRate;
             } 
         }
-        Debug.Log("movepool : " + movePool[0].path);
         r = (int) Math.Floor(UnityEngine.Random.Range(0f, movePoolSize));
-        Debug.Log("r : " + r);
         return movePool[r];
     }
 

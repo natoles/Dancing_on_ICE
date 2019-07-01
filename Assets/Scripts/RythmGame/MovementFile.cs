@@ -6,19 +6,22 @@ using System;
 
 public class MovementFile
 {
+
+    //TODO : an array for jointExclusion with 1's and 0's
     public string path;
     public float[] jointsRates;
 
     public float globalRate;
+    bool init = false;
+    int nbJoints = 2;
 
-    public MovementFile(string paths1, float RHrate1, float LHrate1){
+    public MovementFile(string paths1){
         path = paths1;
-        jointsRates = new float[2] {RHrate1, LHrate1};
-
+        jointsRates = new float[nbJoints];
     }
 
     public MovementFile(){
-
+        jointsRates = new float[nbJoints];
     }
 
     public List<TimeStamp> GetUkiDatas(MovementFile move, float timeSpawn, int jump, float speed, float scale, float offsetX, float offsetY
@@ -54,6 +57,16 @@ public class MovementFile
                 cpt++;
             }
 
+         
+        if (!init){
+            init = true;
+            List<List<string>> jointsPos = new List<List<string>>();
+            jointsPos.Add(listRHx);
+            jointsPos.Add(listRHy);
+            jointsPos.Add(listLHx);
+            jointsPos.Add(listLHy);
+            ComputeMoveDistance(move, jointsPos);
+        }
              
          
         int length = listRHx.Count;
@@ -92,6 +105,60 @@ public class MovementFile
         #endregion
     }
 
+    public void InitDistances(){
+        StreamReader reader = new StreamReader(File.OpenRead(path));
+        List<string> listRHx = new List<string>();
+        List<string> listRHy = new List<string>();
+        List<string> listLHx = new List<string>();
+        List<string> listLHy = new List<string>();
+        Debug.Log("len : " + listRHx.Count);
+        int cpt = 0;
+        while (!reader.EndOfStream)
+        {
+            string line = reader.ReadLine();
+            if (!string.IsNullOrWhiteSpace(line) & cpt > 0) //cpt to remove colomn title
+                {
+                string[] values = line.Split(',');
+                listRHx.Add(values[29]);
+                listRHy.Add(values[30]);
+                listLHx.Add(values[26]);
+                listLHy.Add(values[27]);
+                }
+            cpt++;
+        }
+
+        List<List<string>> jointsPos = new List<List<string>>();
+        jointsPos.Add(listRHx);
+        jointsPos.Add(listRHy);
+        jointsPos.Add(listLHx);
+        jointsPos.Add(listLHy);
+
+        float x;
+        int len = jointsPos[0].Count;
+        float[][] jointsPosF = new float[jointsPos.Count][];
+
+        for (int i = 0; i < jointsPos.Count; i++){
+            jointsPosF[i] = new float[len];
+            for(int j = 0; j < len; j++){
+                float.TryParse(jointsPos[i][j].Replace(".",","), out x);
+                jointsPosF[i][j] = x;
+            }
+        }
+
+        float totalDist = 0;   
+        for (int i = 0; i< jointsPos.Count-1; i+= 2){
+            for(int j = 0; j < len - 1; j++){
+                jointsRates[i/2] += (float) Math.Sqrt(Math.Pow(jointsPosF[i][j+1] - jointsPosF[i][j],2) + Math.Pow(jointsPosF[i+1][j+1] - jointsPosF[i+1][j],2));
+            }
+            totalDist += jointsRates[i/2]; 
+        }
+
+        for(int i = 0; i < jointsRates.Length; i++){
+            jointsRates[i] = jointsRates[i]/totalDist * 100;
+            Debug.Log(jointsRates[i]);
+        }
+    }
+
     //Add any type of node except LineNodes
     void InitAddNode(List<TimeStamp> listTS, int joint, float timeSpawn, float speed, float scale, List<string> PosX, List<string> PosY, float hipCenterX, float hipCenterY, float offsetX, float offsetY, TimeStamp DefaultNode){
         float x = 0;
@@ -128,5 +195,26 @@ public class MovementFile
         ts.pathPositions = pathPositions;
         ts.timeSpawn = timeSpawn;
         listTS.Add(ts);
+    }
+
+    void ComputeMoveDistance(MovementFile move, List<List<string>> jointsPos){
+        float x;
+        int len = jointsPos[0].Count;
+        float[][] jointsPosF = new float[jointsPos.Count][];
+        
+
+        for (int i = 0; i < jointsPos.Count; i++){
+            jointsPosF[i] = new float[len];
+            for(int j = 0; j < len; j++){
+                float.TryParse(jointsPos[i][j].Replace(".",","), out x);
+                jointsPosF[i][j] = x;
+            }
+        }
+           
+        for (int i = 0; i< jointsPos.Count/2; i += 2){
+            for(int j = 0; j < len - 1; j++){
+                jointsRates[i/2] += (float) Math.Sqrt(Math.Pow(jointsPosF[i][j+1] - jointsPosF[i][j],2) + Math.Pow(jointsPosF[i+1][j+1] - jointsPosF[i+1][j],2));
+            }
+        }
     }    
 }
