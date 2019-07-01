@@ -13,14 +13,16 @@ public class MainCreator : MonoBehaviour
     public int nbJoints = 2;
     public float[] currentRates; //See AddMove()
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
-    public int numberMoves = 0; //Increases each time a move is added
+    [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     int movePoolSize = 1; //See SelectMove()
+    IEnumerator trackCreation;
+    float maxSpawnTime = 0f;
 
     void Start()
     {
         currentRates = new float[nbJoints];
-        //wantedRates = new float[nbJoints];
+
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
@@ -29,19 +31,13 @@ public class MainCreator : MonoBehaviour
         for (int i = 0; i< allMoves.Count; i++){
             allMoves[i].InitDistances();
         }
+        trackCreation = TrackCreation();
+        StartCoroutine(trackCreation);
 
         
-        ComputeGlobalRate(allMoves);
+        
 
-        float tmpTime;
-        for (int i = 0; i < 100; i++){
-            MovementFile chosenMove = SelectMove();
-            tmpTime = GetSpawnTime();
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-        }
-
-
-    
+        /* DATABASE */
         //AddMove(allMoves[0], moves.GetUkiDatas(allMoves[0].path ,0,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
         //AddMove(moves.GetUkiDatas(simpleMovePath,0,3,0,9,0,-1,1, new TimeStamp(0,1,1,4f,7f,Vector3.zero,new Vector3[0])));
         //AddMove(moves.GetUkiDatas(simpleMovePath,0,5,0.8f,10,0,0,0, new TimeStamp(0,3,1,4f,5f,Vector3.zero)));
@@ -59,6 +55,21 @@ public class MainCreator : MonoBehaviour
                 cpt--;
             }
             cpt++;
+        }
+        //Debug.Log(currentRates[0]);
+    }
+
+    IEnumerator TrackCreation(){
+        for (int i = 0; i < 100; i++){
+            ComputeGlobalRate(allMoves);
+            MovementFile chosenMove = SelectMove();
+            float r = UnityEngine.Random.Range(1.5f,3f);
+            float tmpTime = maxSpawnTime + r;
+            Debug.Log("maxT1 : " + maxSpawnTime);
+            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,3f,9,0,-1,0, new TimeStamp(0,0,1,1f,Vector3.zero)));
+            Debug.Log("SpawnT : " + maxSpawnTime);
+            yield return new WaitForSeconds(maxSpawnTime - tmpTime + r );//Pause during the move to select with recent datas
         }
     }
 
@@ -87,19 +98,12 @@ public class MainCreator : MonoBehaviour
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
         ComputeGlobalRate(allMoves); 
-        //Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
+        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
+        SetMaxSpawnTime();
         numberMoves += 1;
-        /*
-        for(int k = 0; k < wantedRates.Length; k++){
-            if (numberMoves == 1){
-                currentRates[k] = MF.jointsRates[k];
-            } else {
-                currentRates[k] = currentRates[k] * (numberMoves-1)/numberMoves + MF.jointsRates[k]/numberMoves;
-            }
-        }*/
     }
 
     //Returns one of the moves to match correctly with the desire rates
@@ -170,14 +174,13 @@ public class MainCreator : MonoBehaviour
         }
     }
 
-    float GetSpawnTime(){
-        float maxTime = 0;
+    void SetMaxSpawnTime(){
         for (int i = 0; i < track.Count; i++){
-            if (track[i].timeSpawn > maxTime){
-                maxTime = track[i].timeSpawn;
+            if (track[i].timeSpawn > maxSpawnTime){
+                maxSpawnTime = track[i].timeSpawn;
             }
         }
-        return maxTime + UnityEngine.Random.Range(1.5f,3f);
     }
+    
 }
 
