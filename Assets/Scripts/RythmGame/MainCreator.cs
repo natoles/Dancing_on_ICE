@@ -10,19 +10,22 @@ public class MainCreator : MonoBehaviour
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
     Movements moves = new Movements();
-    float[] currentRates = new float[2]{0,0}; //See AddMove()
-    public float[] wantedRates = new float[2]; //Wanted joints rates needs to be initialise in inspector
+    const int nbJoints = 4;
+    float[] currentRates; //See AddMove()
+    public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     int movePoolSize = 2; //See SelectMove()
 
     void Start()
     {
+        currentRates = new float[nbJoints];
+        //wantedRates = new float[nbJoints];
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 37, 62));
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 88, 12));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 60, 5, 20, 15));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 10, 40, 12, 38));
         ComputeGlobalRate(allMoves);
 
         for (int i = 0; i < 100; i++){
@@ -86,17 +89,17 @@ public class MainCreator : MonoBehaviour
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
         ComputeGlobalRate(allMoves); 
-        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
+        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1] + ", " + currentRates[2] + ", " + currentRates[3]);
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
         numberMoves += 1;
-        if (numberMoves == 1){
-            currentRates[0] = MF.jointsRates[0];
-            currentRates[1] = MF.jointsRates[1];
-        } else {
-            currentRates[0] = currentRates[0] * (numberMoves-1)/numberMoves + MF.jointsRates[0]/numberMoves;
-            currentRates[1] = currentRates[1] * (numberMoves-1)/numberMoves + MF.jointsRates[1]/numberMoves;
+        for(int k = 0; k < wantedRates.Length; k++){
+            if (numberMoves == 1){
+                currentRates[k] = MF.jointsRates[k];
+            } else {
+                currentRates[k] = currentRates[k] * (numberMoves-1)/numberMoves + MF.jointsRates[k]/numberMoves;
+            }
         }
     }
 
@@ -162,7 +165,7 @@ public class MainCreator : MonoBehaviour
             for (int k = 0; k < wantedRates.Length; k++){
                 moves[i].globalRate += Math.Abs(wantedRates[k] - (currentRates[k] * numberMoves/(numberMoves+1) + moves[i].jointsRates[k]/(numberMoves + 1)));
             }
-            Debug.Log(moves[i].path + " : " + moves[i].globalRate);
+            //Debug.Log(moves[i].path + " : " + moves[i].globalRate);
         }
 
 

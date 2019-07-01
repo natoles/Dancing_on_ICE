@@ -9,9 +9,9 @@ public class MovementFile
 
     public float globalRate;
 
-    public MovementFile(string paths1, float RHrate1, float LHrate1 ){
+    public MovementFile(string paths1, float RHrate1, float LHrate1,float RLrate1,float LLrate1){
         path = paths1;
-        jointsRates = new float[2] {RHrate1, LHrate1};
+        jointsRates = new float[4] {RHrate1, LHrate1, RLrate1, LLrate1};
 
     }
 }
