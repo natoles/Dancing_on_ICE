@@ -1,14 +1,22 @@
-﻿using System.IO;
+﻿using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TwitchRythmController : MonoBehaviour
 {
     public static BeatmapContainer beatmapToLoad = null;
+    private Thread loader = null;
+    private bool loaded = false;
+    private bool loading = false;
+    private AudioClipData clipData = null;
     
     private AudioSource player = null;
     private NodeCreation creator = null;
     private Camera mainCamera = null;
+
+    [SerializeField]
+    private LoadingMusicScreen loadingScreen = null;
 
     private Bounds bounds;
     private float sliderPlotTime = 0.01f;
@@ -37,15 +45,9 @@ public class TwitchRythmController : MonoBehaviour
             bounds.center.y + (by + dy * Mathf.Sin(time * speed)) * bounds.extents.y
             );
     }
-    
-    private void Start()
-    {
-        Debug.Log(TwitchRythmController.beatmapToLoad);
-        player = GetComponent<AudioSource>();
-        creator = new NodeCreation();
-        mainCamera = Camera.main;
-        bounds = mainCamera.OrthographicBounds();
 
+    private void LoadBeatmapForPlay()
+    {
         if (beatmapToLoad == null)
         {
             string path = BeatmapLoader.SelectBeatmapFile();
@@ -54,74 +56,98 @@ public class TwitchRythmController : MonoBehaviour
             beatmapToLoad = BeatmapLoader.LoadBeatmapFile(path);
         }
 
-        AudioClip audio = BeatmapLoader.LoadBeatmapAudio(beatmapToLoad);
-        if (audio != null)
-        {
-            NotificationManager.Instance.PushNotification(beatmapToLoad.sourceFile + " loaded", Color.white, Color.green);
-            player.clip = audio;
-            player.PlayDelayed(3);
-        }
+        clipData = BeatmapLoader.LoadBeatmapAudio(beatmapToLoad);
+
+        loaded = true;
+        loading = false;
+    }
+
+    private void Start()
+    {
+        player = GetComponent<AudioSource>();
+        creator = new NodeCreation();
+        mainCamera = Camera.main;
+        bounds = mainCamera.OrthographicBounds();
     }
     
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!loaded)
         {
-            if (player.clip != null)
-                player.PlayDelayed(3);
-        }
-
-        if (player.isPlaying && beatmapToLoad != null)
-        {
-            bounds = mainCamera.OrthographicBounds();
-
-            if (i1 < beatmapToLoad.bm.Pool1.Count)
+            if (!loading)
             {
-                BeatTimestamp bts1 = beatmapToLoad.bm.Pool1[i1];
-                if (player.time >= bts1.time - approachTime)
-                {
-                    if (bts1.type == BeatType.Simple)
-                    {
-                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, ComputePosLeft(Time.time));
-                    }
-                    else
-                    {
-                        LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                        for (float t = sliderPlotTime; t < bts1.duration; t += sliderPlotTime)
-                        {
-                            lnk.AddLast(ComputePosLeft(Time.time + t));
-                        }
-                        lnk.AddLast(ComputePosLeft(Time.time + bts1.duration));
-                        Vector3[] points = new Vector3[lnk.Count];
-                        lnk.CopyTo(points, 0);
-                        creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, ComputePosLeft(Time.time), points);
-                    }
-                    i1++;
-                }
+                loading = true;
+                loader = new Thread(new ThreadStart(LoadBeatmapForPlay));
+                loader.Start();
+                loadingScreen.Display(System.IO.Path.GetFileNameWithoutExtension(beatmapToLoad.sourceFile));
+            }
+        }
+        else
+        {
+            if (loader != null)
+            {
+                loader.Join();
+                loader = null;
+                
+                player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
+                player.PlayDelayed(3);
+                clipData = null;
+
+                loadingScreen.Hide();
             }
 
-            if (i2 < beatmapToLoad.bm.Pool2.Count)
+            if (player.isPlaying && beatmapToLoad != null)
             {
-                BeatTimestamp bts2 = beatmapToLoad.bm.Pool2[i2];
-                if (player.time >= bts2.time - approachTime)
+                bounds = mainCamera.OrthographicBounds();
+
+                if (i1 < beatmapToLoad.bm.Pool1.Count)
                 {
-                    if (bts2.type == BeatType.Simple)
+                    BeatTimestamp bts1 = beatmapToLoad.bm.Pool1[i1];
+                    if (player.time >= bts1.time - approachTime)
                     {
-                        creator.CreateBasicNode(NodeCreation.Joint.RightHand, approachTime, ComputePosRight(Time.time));
-                    }
-                    else
-                    {
-                        LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                        for (float t = sliderPlotTime; t < bts2.duration; t += sliderPlotTime)
+                        if (bts1.type == BeatType.Simple)
                         {
-                            lnk.AddLast(ComputePosRight(Time.time + t));
+                            creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, ComputePosLeft(Time.time));
                         }
-                        lnk.AddLast(ComputePosRight(Time.time + bts2.duration));
-                        Vector3[] points = new Vector3[lnk.Count];
-                        lnk.CopyTo(points, 0);
-                        creator.CreateLineNode(NodeCreation.Joint.RightHand, approachTime, bts2.duration, ComputePosRight(Time.time), points);
+                        else
+                        {
+                            LinkedList<Vector3> lnk = new LinkedList<Vector3>();
+                            for (float t = sliderPlotTime; t < bts1.duration; t += sliderPlotTime)
+                            {
+                                lnk.AddLast(ComputePosLeft(Time.time + t));
+                            }
+                            lnk.AddLast(ComputePosLeft(Time.time + bts1.duration));
+                            Vector3[] points = new Vector3[lnk.Count];
+                            lnk.CopyTo(points, 0);
+                            creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, ComputePosLeft(Time.time), points);
+                        }
+                        i1++;
                     }
-                    i2++;
+                }
+
+                if (i2 < beatmapToLoad.bm.Pool2.Count)
+                {
+                    BeatTimestamp bts2 = beatmapToLoad.bm.Pool2[i2];
+                    if (player.time >= bts2.time - approachTime)
+                    {
+                        if (bts2.type == BeatType.Simple)
+                        {
+                            creator.CreateBasicNode(NodeCreation.Joint.RightHand, approachTime, ComputePosRight(Time.time));
+                        }
+                        else
+                        {
+                            LinkedList<Vector3> lnk = new LinkedList<Vector3>();
+                            for (float t = sliderPlotTime; t < bts2.duration; t += sliderPlotTime)
+                            {
+                                lnk.AddLast(ComputePosRight(Time.time + t));
+                            }
+                            lnk.AddLast(ComputePosRight(Time.time + bts2.duration));
+                            Vector3[] points = new Vector3[lnk.Count];
+                            lnk.CopyTo(points, 0);
+                            creator.CreateLineNode(NodeCreation.Joint.RightHand, approachTime, bts2.duration, ComputePosRight(Time.time), points);
+                        }
+                        i2++;
+                    }
                 }
             }
         }
