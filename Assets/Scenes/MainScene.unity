@@ -765,8 +765,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wantedRates:
-  - 70
-  - 30
+  - 82
+  - 18
+  - 18
+  - 18
 --- !u!82 &1584557257
 AudioSource:
   m_ObjectHideFlags: 0

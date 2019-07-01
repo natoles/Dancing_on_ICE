@@ -28,11 +28,11 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 10, 40, 12, 38));
         ComputeGlobalRate(allMoves);
 
+        float tmpTime;
         for (int i = 0; i < 100; i++){
             MovementFile chosenMove = SelectMove();
-            if(chosenMove.path == @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv") Debug.Log(0);
-            else Debug.Log(1);
-            AddMove(chosenMove, moves.GetUkiDatas(chosenMove.path,i*5,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
+            tmpTime = GetSpawnTime();
+            AddMove(chosenMove, moves.GetUkiDatas(chosenMove.path,tmpTime,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
         }
 
 
@@ -158,6 +158,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
+    //Compute the score of each move according to the current Rate
     void ComputeGlobalRate(List<MovementFile> moves){
 
         for (int i = 0; i < moves.Count; i++){
@@ -167,10 +168,16 @@ public class MainCreator : MonoBehaviour
             }
             //Debug.Log(moves[i].path + " : " + moves[i].globalRate);
         }
+    }
 
-
-
-
+    float GetSpawnTime(){
+        float maxTime = 0;
+        for (int i = 0; i < track.Count; i++){
+            if (track[i].timeSpawn > maxTime){
+                maxTime = track[i].timeSpawn;
+            }
+        }
+        return maxTime + UnityEngine.Random.Range(1.5f,3f);
     }
 }
 
