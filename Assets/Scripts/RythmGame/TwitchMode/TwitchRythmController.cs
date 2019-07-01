@@ -5,8 +5,7 @@ using UnityEngine;
 public class TwitchRythmController : MonoBehaviour
 {
     public static BeatmapContainer beatmapToLoad = null;
-
-    private BeatmapContainer bmc = null;
+    
     private AudioSource player = null;
     private NodeCreation creator = null;
     private Camera mainCamera = null;
@@ -41,6 +40,7 @@ public class TwitchRythmController : MonoBehaviour
     
     private void Start()
     {
+        Debug.Log(TwitchRythmController.beatmapToLoad);
         player = GetComponent<AudioSource>();
         creator = new NodeCreation();
         mainCamera = Camera.main;
@@ -49,13 +49,15 @@ public class TwitchRythmController : MonoBehaviour
         if (beatmapToLoad == null)
         {
             string path = BeatmapLoader.SelectBeatmapFile();
+            if (path == null || path == "")
+                return;
             beatmapToLoad = BeatmapLoader.LoadBeatmapFile(path);
         }
 
-        AudioClip audio = BeatmapLoader.LoadBeatmapAudio(bmc);
+        AudioClip audio = BeatmapLoader.LoadBeatmapAudio(beatmapToLoad);
         if (audio != null)
         {
-            NotificationManager.Instance.PushNotification(bmc.sourceFile + " loaded", Color.white, Color.green);
+            NotificationManager.Instance.PushNotification(beatmapToLoad.sourceFile + " loaded", Color.white, Color.green);
             player.clip = audio;
             player.PlayDelayed(3);
         }
@@ -69,13 +71,13 @@ public class TwitchRythmController : MonoBehaviour
                 player.PlayDelayed(3);
         }
 
-        if (player.isPlaying && bmc != null)
+        if (player.isPlaying && beatmapToLoad != null)
         {
             bounds = mainCamera.OrthographicBounds();
 
-            if (i1 < bmc.bm.Pool1.Count)
+            if (i1 < beatmapToLoad.bm.Pool1.Count)
             {
-                BeatTimestamp bts1 = bmc.bm.Pool1[i1];
+                BeatTimestamp bts1 = beatmapToLoad.bm.Pool1[i1];
                 if (player.time >= bts1.time - approachTime)
                 {
                     if (bts1.type == BeatType.Simple)
@@ -98,9 +100,9 @@ public class TwitchRythmController : MonoBehaviour
                 }
             }
 
-            if (i2 < bmc.bm.Pool2.Count)
+            if (i2 < beatmapToLoad.bm.Pool2.Count)
             {
-                BeatTimestamp bts2 = bmc.bm.Pool2[i2];
+                BeatTimestamp bts2 = beatmapToLoad.bm.Pool2[i2];
                 if (player.time >= bts2.time - approachTime)
                 {
                     if (bts2.type == BeatType.Simple)

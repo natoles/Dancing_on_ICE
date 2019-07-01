@@ -6,9 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/Scene1.unity
+    path: 
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: afe007db5675f3b4e9ceca7e2418be30
+  - enabled: 1
+    path: Assets/Scenes/MusicSelectionScreen.unity
+    guid: e28eb0d107f79004888a9635e7367706
+  - enabled: 1
+    path: Assets/Scenes/TwitchMode.unity
+    guid: 1049e92854832bf439faeca7f3455260
   m_configObjects: {}
