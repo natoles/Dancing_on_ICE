@@ -40,3 +40,25 @@ public class BeatmapContainer
     public string directory;
     public Beatmap bm;
 }
+
+public class AudioClipData
+{
+    public string name;
+    public int lengthSamples;
+    public int channels;
+    public int frequency;
+    public bool stream;
+    public float[] data;
+    public int offsetSamples;
+
+    public AudioClipData(string name, int lengthSamples, int channels, int frequency, bool stream, float[] data, int offsetSamples)
+    {
+        this.name = name;
+        this.lengthSamples = lengthSamples;
+        this.channels = channels;
+        this.frequency = frequency;
+        this.stream = stream;
+        this.data = data;
+        this.offsetSamples = offsetSamples;
+    }
+}

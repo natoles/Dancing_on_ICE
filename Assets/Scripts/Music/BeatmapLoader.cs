@@ -1,9 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 using Crosstales.FB;
 using NAudio.Wave;
-using WaveFormRendererLib;
 
 static class BeatmapLoader
 {
@@ -48,12 +46,19 @@ static class BeatmapLoader
         return new BeatmapContainer { sourceFile = Path.GetFileName(path), directory = Path.GetDirectoryName(path), bm = bm };
     }
 
-    public static AudioClip LoadBeatmapAudio(BeatmapContainer bmc)
+    public static AudioClip CreateAudioClipFromData(AudioClipData cd)
+    {
+        AudioClip audio = AudioClip.Create(cd.name, cd.lengthSamples, cd.channels, cd.frequency, cd.stream);
+        audio.SetData(cd.data, cd.offsetSamples);
+        return audio;
+    }
+
+    public static AudioClipData LoadBeatmapAudio(BeatmapContainer bmc)
     {
         return LoadAudioFile(Path.Combine(bmc.directory, bmc.bm.AudioFile));
     }
 
-    public static AudioClip LoadAudioFile(string path)
+    public static AudioClipData LoadAudioFile(string path)
     {
         string basename = Path.GetFileNameWithoutExtension(path);
         string extension = Path.GetExtension(path);
@@ -70,8 +75,6 @@ static class BeatmapLoader
         float[] audioData = new float[size];
         reader.Read(audioData, 0, size);
 
-        AudioClip clip = AudioClip.Create(basename, size /  reader.WaveFormat.Channels, reader.WaveFormat.Channels, reader.WaveFormat.SampleRate, false);
-        clip.SetData(audioData, 0);
-        return clip;
+        return new AudioClipData (basename, size / reader.WaveFormat.Channels, reader.WaveFormat.Channels, reader.WaveFormat.SampleRate, false, audioData, 0);
     }
 }
