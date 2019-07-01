@@ -9,7 +9,7 @@ public class MainCreator : MonoBehaviour
     public enum joint {H = 0, RH = 1, LH = 2}
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
-    Movements moves = new Movements();
+    MovementFile decoyMove = new MovementFile();
     const int nbJoints = 4;
     float[] currentRates; //See AddMove()
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
@@ -24,26 +24,19 @@ public class MainCreator : MonoBehaviour
         creator = new NodeCreation();
 
         //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 60, 5, 20, 15));
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 10, 40, 12, 38));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv", 100, 0));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv", 0, 100));
         ComputeGlobalRate(allMoves);
 
         float tmpTime;
         for (int i = 0; i < 100; i++){
             MovementFile chosenMove = SelectMove();
             tmpTime = GetSpawnTime();
-            AddMove(chosenMove, moves.GetUkiDatas(chosenMove.path,tmpTime,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
         }
 
 
-        
-
-
-        //Add Moves here
-        //AddMove(new List<TimeStamp>(moves.TestMovement(0)));
-        //AddMove(new List<TimeStamp>(moves.RLRLRL(3)));
-        //AddMove(new List<TimeStamp>(moves.RLRLRL2(10)));
-
+    
         //AddMove(allMoves[0], moves.GetUkiDatas(allMoves[0].path ,0,8,0.8f,9,0,-1,1, new TimeStamp(0,0,1,4f,Vector3.zero)));
         //AddMove(moves.GetUkiDatas(simpleMovePath,0,3,0,9,0,-1,1, new TimeStamp(0,1,1,4f,7f,Vector3.zero,new Vector3[0])));
         //AddMove(moves.GetUkiDatas(simpleMovePath,0,5,0.8f,10,0,0,0, new TimeStamp(0,3,1,4f,5f,Vector3.zero)));
@@ -52,7 +45,7 @@ public class MainCreator : MonoBehaviour
 
     void Update()
     {
-        //Go through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
+        //Goes through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
         while (cpt < track.Count){
             if (track[cpt].timeSpawn <= Time.time){
@@ -89,7 +82,7 @@ public class MainCreator : MonoBehaviour
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
         ComputeGlobalRate(allMoves); 
-        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1] + ", " + currentRates[2] + ", " + currentRates[3]);
+        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
@@ -113,24 +106,26 @@ public class MainCreator : MonoBehaviour
         for (int i = 0; i < movePoolSize; i++){  //Initialize movePool
             movePool[i] = allMoves[i];
         }
-            Array.Reverse(movePool);
         SortMoves(movePool);
+        Array.Reverse(movePool);
         float maxRate = movePool[movePoolSize-1].globalRate;
 
         //Chooses movePollSize moves among the lower globalRate ones
         for (int i = 0; i < accuracy; i++){
             r = (int) Math.Floor(UnityEngine.Random.Range(0f, allMoves.Count));
-            if (allMoves[r].globalRate <= maxRate){
+            if (allMoves[r].globalRate <= maxRate && !Array.Exists(movePool, element => element == allMoves[r])){
                 InsertMove(allMoves[r], movePool);
                 maxRate = movePool[movePoolSize-1].globalRate;
             } 
         }
+        Debug.Log("movepool : " + movePool[0].path);
         r = (int) Math.Floor(UnityEngine.Random.Range(0f, movePoolSize));
+        Debug.Log("r : " + r);
         return movePool[r];
     }
 
 
-
+    //Sort the moves accroding to their globalRate
     public void SortMoves(MovementFile[] moves){
         MovementFile temp; 
         for (int i = 0; i < moves.Length - 1; i++){
@@ -144,6 +139,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
+    //insert a move into the array of moves
     public void InsertMove(MovementFile move, MovementFile[] moves){
         int cpt = 0;
         while(cpt < moves.Length){

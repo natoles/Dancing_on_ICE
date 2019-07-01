@@ -12,6 +12,8 @@ public class BodySourceView : MonoBehaviour
     public GameObject rightFoot;
     public GameObject leftFoot;
     int cpt = 0;
+    float near = 0;
+    bool initBody;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -53,12 +55,34 @@ public class BodySourceView : MonoBehaviour
         {
             if (body == null)
                 continue;
+
+            if(body.IsTracked){
+                    trackedIds.Add (body.TrackingId);
+                    //near = mBodies[body.TrackingId].transform.position.z;
+                    break;
+                } 
                 
-            if(body.IsTracked)
-                trackedIds.Add (body.TrackingId);
+            /* 
+            if(!initBody){
+                initBody = true;
+                if(body.IsTracked){
+                    trackedIds.Add (body.TrackingId);
+                    near = mBodies[body.TrackingId].transform.position.z;
+                    break;
+                } 
+            } else {
+                if(body.IsTracked &&  mBodies[body.TrackingId].transform.position.z <= near + 10 &&  mBodies[body.TrackingId].transform.position.z >= near - 10){
+                    trackedIds.Add (body.TrackingId);
+                    break;
+                }
+            }*/
+            
         }
         #endregion
         
+        
+
+
         #region Delete Kinect bodies
         List<ulong> knownIds = new List<ulong>(mBodies.Keys);
         
