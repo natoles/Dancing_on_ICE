@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Windows.Kinect;
 using Joint = Windows.Kinect.Joint;
+using System;
 
 public class BodySourceView : MonoBehaviour 
 {
@@ -14,6 +15,12 @@ public class BodySourceView : MonoBehaviour
     int cpt = 0;
     float near = 0;
     bool initBody;
+    float[] realJointsMovements;
+    float[] previousJointsPos;
+    float[] jointPos;
+    MainCreator main;
+    int nbFrames = 0;
+
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -25,20 +32,19 @@ public class BodySourceView : MonoBehaviour
     };
 
     private GameObject[] _sprites = new GameObject[4];
-    /* 
-    private List<GameObject> _sprites = new List<GameObject>{
-        rightHand,
-        leftHand,
-        rightFoot,
-        leftFoot,
-    };
-    */
+
     void Start()
     {
         _sprites[0] = leftHand;
         _sprites[1] = rightHand;
         _sprites[2] = leftFoot;
         _sprites[3] = rightFoot;
+
+        main = GameObject.Find("Main").GetComponent<MainCreator>();
+
+        realJointsMovements = new float[main.nbJoints];
+        previousJointsPos = new float[main.nbJoints*2];
+        jointPos = new float[main.nbJoints*2];
     }
     void Update () 
     {   
@@ -61,21 +67,6 @@ public class BodySourceView : MonoBehaviour
                     //near = mBodies[body.TrackingId].transform.position.z;
                     break;
                 } 
-                
-            /* 
-            if(!initBody){
-                initBody = true;
-                if(body.IsTracked){
-                    trackedIds.Add (body.TrackingId);
-                    near = mBodies[body.TrackingId].transform.position.z;
-                    break;
-                } 
-            } else {
-                if(body.IsTracked &&  mBodies[body.TrackingId].transform.position.z <= near + 10 &&  mBodies[body.TrackingId].transform.position.z >= near - 10){
-                    trackedIds.Add (body.TrackingId);
-                    break;
-                }
-            }*/
             
         }
         #endregion
@@ -113,9 +104,13 @@ public class BodySourceView : MonoBehaviour
                     mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
                 //Update positions
                 UpdateBodyObject(body, mBodies[body.TrackingId]);
+                UpdateCurrentRates(mBodies[body.TrackingId]);
             }
         }
         #endregion
+
+        
+        nbFrames ++;
     }
     
     private GameObject CreateBodyObject(ulong id)
@@ -154,5 +149,32 @@ public class BodySourceView : MonoBehaviour
     private static Vector3 GetVector3FromJoint(Joint joint)
     {
         return new Vector3(joint.Position.X * 10, joint.Position.Y * 10, joint.Position.Z * 10);
+    }
+
+    void UpdateCurrentRates(GameObject bodyObject){
+        if (nbFrames > 0){
+            jointPos[0] = bodyObject.transform.Find((JointType.HandRight).ToString()).position.x;
+            jointPos[1] = bodyObject.transform.Find((JointType.HandRight).ToString()).position.y;
+            jointPos[2] = bodyObject.transform.Find((JointType.HandLeft).ToString()).position.x;
+            jointPos[3] = bodyObject.transform.Find((JointType.HandLeft).ToString()).position.y;
+            float totalDist = 0;
+
+            for (int i = 0; i<= previousJointsPos.Length/2; i+=2){
+                realJointsMovements[i/2] += (float) Math.Sqrt(Math.Pow(jointPos[i] - previousJointsPos[i],2) + Math.Pow(jointPos[i+1] - previousJointsPos[i+1],2));
+                totalDist += realJointsMovements[i/2];
+            }
+    
+            for (int i = 0; i<realJointsMovements.Length; i++){
+                main.currentRates[i] = realJointsMovements[i]/totalDist * 100;
+            }
+
+            previousJointsPos[0] = jointPos[0];
+            previousJointsPos[1] = jointPos[1];
+            previousJointsPos[2] = jointPos[2];
+            previousJointsPos[3] = jointPos[3];
+
+        }
+        //Debug.Log(main.currentRates[0] + ", " + main.currentRates[1]);
+        
     }
 }

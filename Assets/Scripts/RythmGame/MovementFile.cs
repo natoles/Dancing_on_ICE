@@ -111,7 +111,6 @@ public class MovementFile
         List<string> listRHy = new List<string>();
         List<string> listLHx = new List<string>();
         List<string> listLHy = new List<string>();
-        Debug.Log("len : " + listRHx.Count);
         int cpt = 0;
         while (!reader.EndOfStream)
         {
@@ -155,7 +154,7 @@ public class MovementFile
 
         for(int i = 0; i < jointsRates.Length; i++){
             jointsRates[i] = jointsRates[i]/totalDist * 100;
-            Debug.Log(jointsRates[i]);
+            //Debug.Log(jointsRates[i]);
         }
     }
 

@@ -10,10 +10,10 @@ public class MainCreator : MonoBehaviour
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
     MovementFile decoyMove = new MovementFile();
-    const int nbJoints = 4;
-    float[] currentRates; //See AddMove()
+    public int nbJoints = 2;
+    public float[] currentRates; //See AddMove()
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
-    int numberMoves = 0; //Increases each time a move is added
+    public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     int movePoolSize = 1; //See SelectMove()
 
@@ -87,18 +87,19 @@ public class MainCreator : MonoBehaviour
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
         ComputeGlobalRate(allMoves); 
-        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
+        //Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
         numberMoves += 1;
+        /*
         for(int k = 0; k < wantedRates.Length; k++){
             if (numberMoves == 1){
                 currentRates[k] = MF.jointsRates[k];
             } else {
                 currentRates[k] = currentRates[k] * (numberMoves-1)/numberMoves + MF.jointsRates[k]/numberMoves;
             }
-        }
+        }*/
     }
 
     //Returns one of the moves to match correctly with the desire rates
