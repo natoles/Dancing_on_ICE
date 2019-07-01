@@ -2,41 +2,34 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 public class SongEntry : Button, IPointerClickHandler
 {
     [SerializeField]
-    private Image Thumbnail;
+    private Image Thumbnail = null;
 
     [SerializeField]
-    private Text SongName;
+    private Text SongName = null;
 
     [SerializeField]
-    private Text Artist;
+    private Text Artist = null;
 
     [SerializeField]
-    private Text Difficulty;
+    private Text Difficulty = null;
 
     [SerializeField]
-    private Text Duration;
+    private Text Duration = null;
 
     private BeatmapContainer bmc = null;
     private int id = 0;
 
-    private bool selected = false;
+    public SongScrollView ScrollView = null;
 
-    public override void OnPointerClick(PointerEventData pointerEventData)
+    public override void OnSelect(BaseEventData eventData)
     {
-        if (!selected)
-        {
-            selected = true;
-            base.OnPointerClick(pointerEventData);
-        }
-        else
-        {
-            PlaySong();
-        }
+        base.OnSelect(eventData);
+        ScrollView.ScrollToSong(id);
+        TwitchRythmController.beatmapToLoad = bmc;
     }
 
     public void SetSong(int id, string icebmFile)
@@ -46,16 +39,11 @@ public class SongEntry : Button, IPointerClickHandler
 
         this.id = id;
         bmc = BeatmapLoader.LoadBeatmapFile(icebmFile);
+        Thumbnail.sprite = null;
         SongName.text = bmc.bm.Metadata.SongName;
         Artist.text = bmc.bm.Metadata.Artist;
         Difficulty.text = Math.Round(bmc.bm.Metadata.Difficulty, 1).ToString();
         Difficulty.color = Color.Lerp(Color.green, Color.red, bmc.bm.Metadata.Difficulty / 5f);
         Duration.text = TimeSpan.FromSeconds(bmc.bm.Metadata.Duration).ToString(@"mm\:ss");
-    }
-
-    public void PlaySong()
-    {
-        TwitchRythmController.beatmapToLoad = bmc;
-        SceneManager.LoadScene("TwitchMode");
     }
 }

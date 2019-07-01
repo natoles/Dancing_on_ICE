@@ -31,10 +31,10 @@ public class SongEntryEditor : ButtonEditor
         EditorGUILayout.PropertyField(Difficulty);
         EditorGUILayout.PropertyField(Duration);
 
+        serializedObject.ApplyModifiedProperties();
+
         EditorGUILayout.Space();
 
         base.OnInspectorGUI();
-
-        serializedObject.ApplyModifiedProperties();
     }
 }
