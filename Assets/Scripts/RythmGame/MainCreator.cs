@@ -60,16 +60,16 @@ public class MainCreator : MonoBehaviour
     }
 
     IEnumerator TrackCreation(){
+        ComputeGlobalRate(allMoves);
         for (int i = 0; i < 100; i++){
-            ComputeGlobalRate(allMoves);
             MovementFile chosenMove = SelectMove();
             float r = UnityEngine.Random.Range(1.5f,3f);
             float tmpTime = maxSpawnTime + r;
-            Debug.Log("maxT1 : " + maxSpawnTime);
+            //Debug.Log("maxT1 : " + maxSpawnTime);
             //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
             AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,3f,9,0,-1,0, new TimeStamp(0,0,1,1f,Vector3.zero)));
-            Debug.Log("SpawnT : " + maxSpawnTime);
-            yield return new WaitForSeconds(maxSpawnTime - tmpTime + r );//Pause during the move to select with recent datas
+            //Debug.Log("SpawnT : " + maxSpawnTime);
+            yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
     }
 
@@ -97,12 +97,12 @@ public class MainCreator : MonoBehaviour
 
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
-        ComputeGlobalRate(allMoves); 
-        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);
+        //Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);   //Current amount the player has moved
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
         SetMaxSpawnTime();
+        ComputeGlobalRate(allMoves); 
         numberMoves += 1;
     }
 
@@ -170,7 +170,7 @@ public class MainCreator : MonoBehaviour
             for (int k = 0; k < wantedRates.Length; k++){
                 moves[i].globalRate += Math.Abs(wantedRates[k] - (currentRates[k] * numberMoves/(numberMoves+1) + moves[i].jointsRates[k]/(numberMoves + 1)));
             }
-            //Debug.Log(moves[i].path + " : " + moves[i].globalRate);
+            //Debug.Log(moves[i].path + " : " + moves[i].globalRate); Score of the move
         }
     }
 
