@@ -18,7 +18,7 @@ public class MainCreator : MonoBehaviour
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     List<Action> allMovementFilesLine = new List<Action>();
     List<Action> allMovementFilesBasic = new List<Action>();
-    int movePoolSize = 1; //See SelectMove()
+    int movePoolSize = 2; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
