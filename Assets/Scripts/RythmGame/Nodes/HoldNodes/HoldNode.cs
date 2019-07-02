@@ -28,7 +28,7 @@ public class HoldNode : Node
         if (showScore){
             showScore = false;
             GameObject mtext = Instantiate(textMissed, this.transform.position + new Vector3(0,1f,0), Quaternion.identity, UI.transform);
-            if (inCircle){
+            if (jointIn){
                 ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, 0);  
             } else ChangeText(mtext.GetComponent<Text>(), "MISSED", 0, Color.red, scoreMissed);  
         }
@@ -37,14 +37,14 @@ public class HoldNode : Node
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
-            inCircle = true;
+            jointIn = true;
         } 
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
-            inCircle = false;
+            jointIn = false;
         } 
     }
  

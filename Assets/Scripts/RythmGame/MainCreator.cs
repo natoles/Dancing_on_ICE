@@ -18,6 +18,7 @@ public class MainCreator : MonoBehaviour
     int movePoolSize = 2; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
+    float globalscale = 9;
 
     void Start()
     {
@@ -71,7 +72,7 @@ public class MainCreator : MonoBehaviour
             float tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
             //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,3f,9,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.5f,globalscale,0,-1,0, new TimeStamp(0,0,0,2f,Vector3.zero)));
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }

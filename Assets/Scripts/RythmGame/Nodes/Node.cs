@@ -16,7 +16,7 @@ public class Node : MonoBehaviour
     public GameObject textMissed; //Score text : MISSED, BAD, GREAT, PERFECT
     protected GameObject main;
     protected float progress = 0; //progress of the node
-    protected bool missed = false; //Did the player miss the node ?
+    protected bool jointIn = false; //Did the player miss the node ?
     protected GameObject UI;
     string UIname = "UI";
     protected int scoreMissed = 0;
@@ -25,6 +25,7 @@ public class Node : MonoBehaviour
     protected int scorePerfect = 15787;
     protected Scoring scoring;
     protected string joint;
+    public bool destroyOnTouch;
 
     public virtual void Start()
     {
@@ -58,7 +59,6 @@ public class Node : MonoBehaviour
             yield return null;
         }
         movingPart.transform.localScale = finalScale;
-        missed = true;
         finished = true;
     }
 
