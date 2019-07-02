@@ -19,7 +19,6 @@ public abstract class LineNode : Node
     public override void Start()
     {
         base.Start(); 
-        SetJoint(); 
         line = GetComponent<LineRenderer>();  
         timePaths = new float[pathPositions.Length]; 
 

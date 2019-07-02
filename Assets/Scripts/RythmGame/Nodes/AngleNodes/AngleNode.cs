@@ -43,4 +43,10 @@ public class AngleNode : Node
         } 
     }
     
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == joint){
+            finished = true;
+        } 
+    }
 }

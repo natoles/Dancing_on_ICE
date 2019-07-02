@@ -14,12 +14,10 @@ public class NodeCreation
     GameObject main;
 
     public NodeCreation(){
-        nodePrefabBH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_Hand") as GameObject;
         nodePrefabBRH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_RightHand") as GameObject;
         nodePrefabBLH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_LeftHand") as GameObject;
         nodePrefabLRH = Resources.Load("Prefabs/Nodes/LineNodes/Prefab_LineNode_RightHand") as GameObject;
         nodePrefabLLH = Resources.Load("Prefabs/Nodes/LineNodes/Prefab_LineNode_LeftHand") as GameObject;
-        nodePrefabAH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_Hand") as GameObject;
         nodePrefabARH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
         nodePrefabALH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
         nodePrefabHRH = Resources.Load("Prefabs/Nodes/HoldNodes/Prefab_HoldNode_RightHand") as GameObject;
@@ -32,9 +30,6 @@ public class NodeCreation
     public void CreateBasicNode(Joint joint, float timeToFinish, Vector3 spawnPositon){    
         switch (joint)
         {
-            case Joint.Hand :
-                nodeInstance = Object.Instantiate(nodePrefabBH, spawnPositon, Quaternion.Euler(0,0,0)); 
-                break;
             case Joint.RightHand : 
                 nodeInstance = Object.Instantiate(nodePrefabBRH, spawnPositon, Quaternion.Euler(0,0,0));
                 break;
@@ -81,9 +76,6 @@ public class NodeCreation
     public void CreateAngleNode(Joint joint, float timeToFinish, float startAngle, Vector3 spawnPositon){    
         switch (joint)
         {
-            case Joint.Hand : 
-                nodeInstance = Object.Instantiate(nodePrefabAH, spawnPositon, Quaternion.Euler(0,0,0));
-                break;
             case Joint.RightHand : 
                 nodeInstance = Object.Instantiate(nodePrefabARH, spawnPositon, Quaternion.Euler(0,0,0));
                 break;
@@ -102,7 +94,7 @@ public class NodeCreation
     #endregion 
 
     #region HoldNode
-    //Creates a BasicNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
+    //Creates a HoldNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
     public void CreateHoldNode(Joint joint, float timeToFinish, float timeHold, Vector3 spawnPositon){    
         switch (joint)
         {

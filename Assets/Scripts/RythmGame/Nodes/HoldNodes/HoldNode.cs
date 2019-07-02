@@ -16,12 +16,6 @@ public class HoldNode : Node
 
     IEnumerator holdIt;
 
-    public override void Start()
-    {
-        base.Start(); 
-        SetJoint();
-    }
-
     void Update(){
         if (finished && !hold){
             holdIt = Hold();
@@ -67,7 +61,5 @@ public class HoldNode : Node
         holdFinished = true;
     }
 
-    public virtual void SetJoint(){
-        Debug.Log("abstract function");
-    }
+    
 }

@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class BasicNode_LeftHand : BasicNode
 {
-    string joint = "LeftHand"; //Choice of the joint who will activate the node (Hand or Foot)
-
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        if (col.gameObject.tag == joint){
-            finished = true;
-        } 
+    public override void SetJoint(){
+        joint = "LeftHand";
     }
 }

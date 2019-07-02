@@ -24,6 +24,7 @@ public class Node : MonoBehaviour
     protected int scoreGreat = 8345;
     protected int scorePerfect = 15787;
     protected Scoring scoring;
+    protected string joint;
 
     public virtual void Start()
     {
@@ -41,6 +42,7 @@ public class Node : MonoBehaviour
         main = GameObject.Find("Main");
         UI = GameObject.Find(UIname);
         scoring = main.GetComponent<Scoring>();
+        SetJoint();
 
     }
 
@@ -66,6 +68,10 @@ public class Node : MonoBehaviour
         theText.color = color;
         scoring.AddScore(score); 
         //Debug.Log(displayed);
+    }
+
+    public virtual void SetJoint(){
+        Debug.Log("abstract function");
     }
     
 }

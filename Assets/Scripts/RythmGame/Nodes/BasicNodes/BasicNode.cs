@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class BasicNode : Node
 {
-
+    
     
     void Update()
     {
@@ -28,6 +28,13 @@ public class BasicNode : Node
                 }
             }
             Destroy(gameObject);
+        } 
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == joint){
+            finished = true;
         } 
     }
 
