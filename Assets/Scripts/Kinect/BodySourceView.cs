@@ -13,7 +13,6 @@ public class BodySourceView : MonoBehaviour
     public GameObject rightFoot;
     public GameObject leftFoot;
     int cpt = 0;
-    float near = 0;
     bool initBody;
     float[] realJointsMovements;
     float[] previousJointsPos;

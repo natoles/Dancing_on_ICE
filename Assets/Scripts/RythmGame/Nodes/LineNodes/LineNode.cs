@@ -11,7 +11,6 @@ public abstract class LineNode : Node
     bool moving = false; //Is the node moving along the lineRenderer ?
     bool finishedMoving = false; //Has the node finished his journey ?
     float timeInside; //the time the player has to stay inside the node to get a certain score
-    bool inCircle = false; //Is the player in the circle ?
     public Vector3[] pathPositions;
     public float[] timePaths;
 
