@@ -6,9 +6,7 @@ using UnityEngine.UI;
 
 public class HoldNode : Node
 {
-    protected bool inCircle = false;
     public float timeHold;
-    protected string joint = "Default";
     int holdScore = 15;
     bool hold = false; 
     bool holdFinished = false;
@@ -53,7 +51,7 @@ public class HoldNode : Node
         while (timeLeft > 0){
             timeLeft -= Time.deltaTime;
             movingPart.transform.Rotate(0f,0f,7f * (timeHold-timeLeft)/timeHold);
-            if (inCircle) scoring.AddScore(holdScore);
+            if (jointIn) scoring.AddScore(holdScore);
             //Debug.Log((Math.Floor(timeLeft + Time.deltaTime) != Math.Floor(timeLeft)));
             if (Math.Floor(timeLeft + Time.deltaTime) != Math.Floor(timeLeft)) showScore = true;
             yield return null;

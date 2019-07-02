@@ -50,6 +50,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Nodes
+    uniqueID: 1808544501
+    locked: 0
   - name: top
     uniqueID: 3748110325
     locked: 0

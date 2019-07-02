@@ -16,10 +16,10 @@ public class MainCreator : MonoBehaviour
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    int movePoolSize = 5; //See SelectMove()
+    int movePoolSize = 4; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
-    float globalscale = 9;
+    float globalscale = 8;
 
     void Start()
     {
@@ -31,7 +31,7 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile("basic2"));      //0,100
         allMoves.Add(new MovementFile("basic3"));      //100,0
         allMoves.Add(new MovementFile("basic4"));      //0,100
-        allMoves.Add(new MovementFile("Test1"));       //64,36
+        //allMoves.Add(new MovementFile("Test1"));       //64,36
 
 
         for (int i = 0; i< allMoves.Count; i++){
@@ -72,8 +72,9 @@ public class MainCreator : MonoBehaviour
             float r = UnityEngine.Random.Range(1.5f,3f);
             float tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,globalscale,0,-1,0, new TimeStamp(0,0,0,3.5f,Vector3.zero)));
+            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.3f,globalscale,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1f,globalscale,0,-1,0, new TimeStamp(0,1,0,1.5f,3f,Vector3.zero, new Vector3[0])));
+
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
@@ -182,8 +183,14 @@ public class MainCreator : MonoBehaviour
 
     void SetMaxSpawnTime(){
         for (int i = 0; i < track.Count; i++){
-            if (track[i].timeSpawn > maxSpawnTime){
-                maxSpawnTime = track[i].timeSpawn;
+            if(track[i].nodeType != 1){
+                if (track[i].timeSpawn > maxSpawnTime){
+                    maxSpawnTime = track[i].timeSpawn;
+                }
+            } else {
+                if (track[i].timeSpawn + track[i].timeLine > maxSpawnTime){
+                    maxSpawnTime = track[i].timeSpawn + track[i].timeLine;
+                }
             }
         }
     }
