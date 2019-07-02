@@ -15,7 +15,7 @@ public class MainCreator : MonoBehaviour
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    int movePoolSize = 1; //See SelectMove()
+    int movePoolSize = 2; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
 
@@ -25,9 +25,13 @@ public class MainCreator : MonoBehaviour
 
         creator = new NodeCreation();
 
-        //string simpleMovePath = @"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv";
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Basic1\basic1.csv"));
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Desktop\Movements\Test1.csv"));
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic1.csv"));      //84,16
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic2.csv"));      //31,68
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic3.csv"));      //57,43
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic4.csv"));      //10,90
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\Test1.csv"));       //64,36
+
+
         for (int i = 0; i< allMoves.Count; i++){
             allMoves[i].InitDistances();
         }

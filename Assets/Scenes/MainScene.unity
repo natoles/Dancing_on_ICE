@@ -698,8 +698,8 @@ MonoBehaviour:
   nbJoints: 2
   currentRates: []
   wantedRates:
-  - 85
-  - 15
+  - 50
+  - 50
   numberMoves: 0
 --- !u!82 &1584557257
 AudioSource:
