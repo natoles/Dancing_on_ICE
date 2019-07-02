@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.IO;
 
 public class MainCreator : MonoBehaviour
 {
@@ -26,11 +27,11 @@ public class MainCreator : MonoBehaviour
 
         creator = new NodeCreation();
 
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic1.csv"));      //100,0
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic2.csv"));      //0,100
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic3.csv"));      //100,0
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic4.csv"));      //0,100
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\Test1.csv"));       //64,36
+        allMoves.Add(new MovementFile("basic1"));      //100,0
+        allMoves.Add(new MovementFile("basic2"));      //0,100
+        allMoves.Add(new MovementFile("basic3"));      //100,0
+        allMoves.Add(new MovementFile("basic4"));      //0,100
+        allMoves.Add(new MovementFile("Test1"));       //64,36
 
 
         for (int i = 0; i< allMoves.Count; i++){

@@ -16,7 +16,7 @@ public class MovementFile
     int nbJoints = 2;
 
     public MovementFile(string paths1){
-        path = paths1;
+        path = Path.Combine(Application.streamingAssetsPath, "Moves", paths1 + ".csv");
         jointsRates = new float[nbJoints];
     }
 
