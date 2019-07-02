@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TwitchMode.unity
     guid: 1049e92854832bf439faeca7f3455260
+  - enabled: 1
+    path: Assets/Scenes/TwitchTest.unity
+    guid: 0efd362469e71c44ba6295c2f86f68af
   m_configObjects: {}

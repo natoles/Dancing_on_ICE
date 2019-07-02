@@ -51,28 +51,6 @@ public class ConnectButton : Button
         }
     }
 
-    //private IEnumerator ConnectToStream(string stream)
-    //{
-    //    GetStreamsResponse obj = null;
-    //    yield return
-    //        TwitchAPI.Instance.InvokeAsync(
-    //            TwitchAPI.Instance.Streams.helix.GetStreamsAsync(userLogins: new List<string> { stream }),
-    //            (response) => obj = response
-    //            );
-
-    //    if (obj.Streams.Length > 0)
-    //    {
-    //        Debug.Log($"{obj.Streams[0].ViewerCount} viewers on stream");
-    //        TwitchClient.Instance.JoinChannel(stream);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("User not live");
-    //        NotificationManager.Instance.PushNotification("User not live", Color.white, Color.blue);
-    //        ChangeButtonLayout("Connect", Color.green, true);
-    //    }
-    //}
-
     private void ConnectButton_OnJoinedChannel(object sender, OnJoinedChannelArgs e)
     {
         ChangeButtonLayout("Disconnect", Color.red, true);
