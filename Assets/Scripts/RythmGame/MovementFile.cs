@@ -154,7 +154,7 @@ public class MovementFile
 
         for(int i = 0; i < jointsRates.Length; i++){
             jointsRates[i] = jointsRates[i]/totalDist * 100;
-            //Debug.Log(jointsRates[i]);   //Percentage of every joint for a movement
+            Debug.Log(jointsRates[i]);   //Percentage of every joint for a movement
         }
     }
 

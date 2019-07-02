@@ -15,7 +15,7 @@ public class MainCreator : MonoBehaviour
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    int movePoolSize = 2; //See SelectMove()
+    int movePoolSize = 1; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 9;
@@ -26,10 +26,10 @@ public class MainCreator : MonoBehaviour
 
         creator = new NodeCreation();
 
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic1.csv"));      //84,16
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic2.csv"));      //31,68
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic3.csv"));      //57,43
-        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic4.csv"));      //10,90
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic1.csv"));      //100,0
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic2.csv"));      //0,100
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic3.csv"));      //100,0
+        allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\basic4.csv"));      //0,100
         allMoves.Add(new MovementFile(@"C:\Users\lindi\Documents\GitHub\Dancing_on_ICE\Assets\Resources\Moves\Test1.csv"));       //64,36
 
 
@@ -72,7 +72,7 @@ public class MainCreator : MonoBehaviour
             float tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
             //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.5f,globalscale,0,-1,0, new TimeStamp(0,0,0,2f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,6,1f,globalscale,0,-1,0, new TimeStamp(0,0,0,3.5f,Vector3.zero)));
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
