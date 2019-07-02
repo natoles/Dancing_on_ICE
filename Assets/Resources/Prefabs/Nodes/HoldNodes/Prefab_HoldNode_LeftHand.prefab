@@ -15,6 +15,8 @@ MonoBehaviour:
   timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
+  destroyOnTouch: 0
+  timeHold: 0
 --- !u!1001 &6905649983962813470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,8 +88,23 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 28db39f4658e85f459d75dd0820725d1,
+      objectReference: {fileID: 21300000, guid: 6b98e81f4b1bc944cb76a80243ec40b0,
         type: 3}
+    - target: {fileID: 3086925448437687566, guid: 6ebf3d338c9c23c4d88add7888655926,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1808544501
+      objectReference: {fileID: 0}
+    - target: {fileID: 3086925448437687566, guid: 6ebf3d338c9c23c4d88add7888655926,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3086925448437687566, guid: 6ebf3d338c9c23c4d88add7888655926,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3086925448774906854, guid: 6ebf3d338c9c23c4d88add7888655926,
         type: 3}
       propertyPath: m_Color.r
