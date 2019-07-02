@@ -6,7 +6,7 @@ using System;
 public class MainCreator : MonoBehaviour
 {
     public enum NodeType {BN = 0, LN = 1, AN = 2, HN = 3}
-    public enum joint {H = 0, RH = 1, LH = 2}
+    public enum joint {RH = 0, LH = 1}
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
     MovementFile decoyMove = new MovementFile();
@@ -71,7 +71,7 @@ public class MainCreator : MonoBehaviour
             float tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
             //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,3f,9,0,-1,0, new TimeStamp(0,0,1,1f,Vector3.zero)));
+            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,3f,9,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }

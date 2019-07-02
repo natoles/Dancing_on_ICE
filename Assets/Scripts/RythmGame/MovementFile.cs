@@ -90,15 +90,15 @@ public class MovementFile
         switch(DefaultNode.nodeType){
             case 1 :
                 if (jointExclusion == 1 || jointExclusion == 0)
-                    InitAddLineNode(listTS, 1, timeSpawn, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                    InitAddLineNode(listTS, 0, timeSpawn, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
-                    InitAddLineNode(listTS, 2, timeSpawn, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                    InitAddLineNode(listTS, 1, timeSpawn, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
             default :
                 if (jointExclusion == 1 || jointExclusion == 0) 
-                    InitAddNode(listTS, 1, timeSpawn, speed, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                    InitAddNode(listTS, 0, timeSpawn, speed, scale, listRHx, listRHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
-                    InitAddNode(listTS, 2, timeSpawn, speed, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
+                    InitAddNode(listTS, 1, timeSpawn, speed, scale, listLHx, listLHy, hipCenterX, hipCenterY, offsetX, offsetY, DefaultNode);
                 break;
         }
         return listTS;

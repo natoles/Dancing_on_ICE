@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NodeCreation
 {
-    public enum Joint {Hand, RightHand, LeftHand}
+    public enum Joint {RightHand, LeftHand}
     GameObject nodePrefab; 
     GameObject nodePrefabBH, nodePrefabBRH, nodePrefabBLH;
     GameObject nodePrefabLRH, nodePrefabLLH;
