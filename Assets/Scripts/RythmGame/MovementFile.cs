@@ -66,18 +66,22 @@ public class MovementFile
             jointsPos.Add(listLHx);
             jointsPos.Add(listLHy);
             ComputeMoveDistance(move, jointsPos);
-        }
+        }Debug.Log(listLHx.Count);
              
          
         int length = listRHx.Count;
-        for (int i = 1; i <= length/(jump+1); i++){
+        for (int i = 1; i <= length/jump + 1; i++){
             for (int j = 0; j < jump; j++){
-                listRHx.Remove(listRHx[i]);
-                listRHy.Remove(listRHy[i]);
-                listLHx.Remove(listLHx[i]);
-                listLHy.Remove(listLHy[i]);
+                Debug.Log("i, j : " + i + ", " + j);
+                if (i < listRHx.Count - 1){
+                    listRHx.Remove(listRHx[i]);
+                    listRHy.Remove(listRHy[i]);
+                    listLHx.Remove(listLHx[i]);
+                    listLHy.Remove(listLHy[i]);
+                }
             }
         }
+        Debug.Log(listLHx.Count);
         #endregion
         
         #region Add to list
