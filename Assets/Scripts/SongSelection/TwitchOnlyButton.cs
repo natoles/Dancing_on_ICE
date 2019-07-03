@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class AskChatButton : Button, IPointerClickHandler
+/// <summary>
+/// Button that can be clicked only when TwitchClient is connected
+/// </summary>
+public class TwitchOnlyButton : Button
 {
     private void Update()
     {
@@ -15,11 +18,5 @@ public class AskChatButton : Button, IPointerClickHandler
             else
                 interactable = false;
         }
-    }
-
-    public override void OnPointerClick(PointerEventData eventData)
-    {
-        base.OnPointerClick(eventData);
-        Debug.Log("Ask chat");
     }
 }
