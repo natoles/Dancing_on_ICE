@@ -38,11 +38,11 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile("basic2"));      //0,100
         allMoves.Add(new MovementFile("basic3"));      //100,0
         allMoves.Add(new MovementFile("basic4"));      //0,100
-        allMoves.Add(new MovementFile("basic5"));
-        allMoves.Add(new MovementFile("basic6"));
-        allMoves.Add(new MovementFile("basic7"));
-        allMoves.Add(new MovementFile("basic8"));
-        allMoves.Add(new MovementFile("basic9"));
+        allMoves.Add(new MovementFile("basic5"));      //49.5 50.5
+        allMoves.Add(new MovementFile("basic6"));      //46 54
+        allMoves.Add(new MovementFile("basic7"));      //62 38
+        allMoves.Add(new MovementFile("basic8"));      //84 15
+        allMoves.Add(new MovementFile("basic9"));      //19 81
 
 
         allMovementFilesBasic.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
@@ -135,7 +135,9 @@ public class MainCreator : MonoBehaviour
     IEnumerator ExitGame(){
         yield return new WaitForSeconds(gameLength);
         Debug.Log("End of the game !");
-        UnityEditor.EditorApplication.Exit(0);
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.ExitPlaymode();
+        #endif
     }
 
     //Chooses the right constructor according to what is asked
