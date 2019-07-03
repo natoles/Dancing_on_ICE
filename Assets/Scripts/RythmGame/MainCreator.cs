@@ -25,6 +25,7 @@ public class MainCreator : MonoBehaviour
     float tmpTime;
     public int globalNodeType; //TODO : menu deroulant dans l'inspecteur
     public float d = 1;
+    public float gameLength; 
     
 
     void Start()
@@ -75,6 +76,7 @@ public class MainCreator : MonoBehaviour
         }
         trackCreation = TrackCreation();
         StartCoroutine(trackCreation);
+        StartCoroutine(ExitGame());
 
         
         
@@ -128,6 +130,12 @@ public class MainCreator : MonoBehaviour
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
+    }
+
+    IEnumerator ExitGame(){
+        yield return new WaitForSeconds(gameLength);
+        Debug.Log("End of the game !");
+        UnityEditor.EditorApplication.Exit(0);
     }
 
     //Chooses the right constructor according to what is asked

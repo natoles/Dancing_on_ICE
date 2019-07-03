@@ -703,8 +703,9 @@ MonoBehaviour:
   - 50
   - 50
   numberMoves: 0
-  globalNodeType: 0
+  globalNodeType: 1
   d: 1
+  gameLength: 3
 --- !u!82 &1584557257
 AudioSource:
   m_ObjectHideFlags: 0
