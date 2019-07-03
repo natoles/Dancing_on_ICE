@@ -18,7 +18,7 @@ public class MainCreator : MonoBehaviour
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     List<Action> allMovementFilesLine = new List<Action>();
     List<Action> allMovementFilesBasic = new List<Action>();
-    int movePoolSize = 2; //See SelectMove()
+    int movePoolSize = 3; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
@@ -37,17 +37,35 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile("basic2"));      //0,100
         allMoves.Add(new MovementFile("basic3"));      //100,0
         allMoves.Add(new MovementFile("basic4"));      //0,100
-        //allMoves.Add(new MovementFile("Test1"));       //64,36
+        allMoves.Add(new MovementFile("basic5"));
+        allMoves.Add(new MovementFile("basic6"));
+        allMoves.Add(new MovementFile("basic7"));
+        allMoves.Add(new MovementFile("basic8"));
+        allMoves.Add(new MovementFile("basic9"));
+
 
         allMovementFilesBasic.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
         allMovementFilesBasic.Add(() => AddMove(allMoves[1], decoyMove.GetUkiDatas(allMoves[1],tmpTime,16,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero))));
         allMovementFilesBasic.Add(() => AddMove(allMoves[2], decoyMove.GetUkiDatas(allMoves[2],tmpTime,15,1.3f*d,globalscale*d + 3,0,5,0, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero))));
         allMovementFilesBasic.Add(() => AddMove(allMoves[3], decoyMove.GetUkiDatas(allMoves[3],tmpTime,5,1.3f*d,globalscale*d + 2,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[4], decoyMove.GetUkiDatas(allMoves[4],tmpTime,17,1.3f*d,globalscale*d + 2,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[5], decoyMove.GetUkiDatas(allMoves[5],tmpTime,15,1.3f*d,globalscale*d + 2,0,-1,0, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[6], decoyMove.GetUkiDatas(allMoves[6],tmpTime,12,1f*d,globalscale*d + 2,0,-1,0, new TimeStamp(0,0,0,1.3f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[7], decoyMove.GetUkiDatas(allMoves[7],tmpTime,25,1f*d,globalscale*d + 2,0,-1,1, new TimeStamp(0,0,0,1.6f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[8], decoyMove.GetUkiDatas(allMoves[8],tmpTime,15,1.1f*d,globalscale*d,0,2,2, new TimeStamp(0,0,0,1.3f*(1/d),Vector3.zero))));
+
+
 
         allMovementFilesLine.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]))));
         allMovementFilesLine.Add(() => AddMove(allMoves[1], decoyMove.GetUkiDatas(allMoves[1],tmpTime,8,1f,globalscale*d,0,-1,0, new TimeStamp(0,1,0,1.5f,4.5f*(1/d),Vector3.zero, new Vector3[0]))));
         allMovementFilesLine.Add(() => AddMove(allMoves[2], decoyMove.GetUkiDatas(allMoves[2],tmpTime,15,1f,globalscale*d + 3,0,5,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]))));
         allMovementFilesLine.Add(() => AddMove(allMoves[3], decoyMove.GetUkiDatas(allMoves[3],tmpTime,12,1f,globalscale*d + 3,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[4], decoyMove.GetUkiDatas(allMoves[4],tmpTime,17,1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,2.5f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[5], decoyMove.GetUkiDatas(allMoves[5],tmpTime,17,1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3.5f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[6], decoyMove.GetUkiDatas(allMoves[6],tmpTime,9,1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3.5f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[7], decoyMove.GetUkiDatas(allMoves[7],tmpTime,25,1f,globalscale*d + 1.5f,0,-1,1, new TimeStamp(0,1,0,1.5f,5.5f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[8], decoyMove.GetUkiDatas(allMoves[8],tmpTime,20,1f,globalscale*d,0,0,2, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]))));
+
 
 
 
@@ -87,7 +105,7 @@ public class MainCreator : MonoBehaviour
         ComputeGlobalRate(allMoves);
         for (int i = 0; i < 100; i++){
             MovementFile chosenMove = SelectMove();
-            float r = UnityEngine.Random.Range(0.5f,1.3f);
+            float r = UnityEngine.Random.Range(0.5f,1.1f);
             tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
             //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.3f,globalscale,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));

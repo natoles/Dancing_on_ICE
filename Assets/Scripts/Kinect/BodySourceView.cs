@@ -19,7 +19,7 @@ public class BodySourceView : MonoBehaviour
     float[] jointPos;
     MainCreator main;
     int nbFrames = 0;
-
+    float maxTrackDistance = 20;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -61,9 +61,8 @@ public class BodySourceView : MonoBehaviour
             if (body == null)
                 continue;
 
-            if(body.IsTracked){
+            if(body.IsTracked && TrackOnDistance(body)){
                     trackedIds.Add (body.TrackingId);
-                    //near = mBodies[body.TrackingId].transform.position.z;
                     break;
                 } 
             
@@ -92,18 +91,26 @@ public class BodySourceView : MonoBehaviour
 
         #region Create Kinect bodies
         //Add a body if it is tracked but not stored
+
         foreach(var body in data)
         {
+
             if (body == null)
                 continue;
+
             
+            //Debug.Log("saveId : " + saveId);
             if(body.IsTracked)
             {
-                if(!mBodies.ContainsKey(body.TrackingId))
-                    mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
-                //Update positions
-                UpdateBodyObject(body, mBodies[body.TrackingId]);
-                UpdateCurrentRates(mBodies[body.TrackingId]);
+                if (TrackOnDistance(body)){
+                    if(!mBodies.ContainsKey(body.TrackingId))
+                        mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
+                    //Update positions
+                    UpdateBodyObject(body, mBodies[body.TrackingId]);
+                    UpdateCurrentRates(mBodies[body.TrackingId]);
+                    
+                }
+                
             }
         }
         #endregion
@@ -130,6 +137,20 @@ public class BodySourceView : MonoBehaviour
         return body;
     }
     
+
+    private bool TrackOnDistance(Body body)
+    {
+        foreach(JointType _joint in _joints)
+        {
+            Joint sourceJoint = body.Joints[_joint];
+            Vector3 targetPosition = GetVector3FromJoint(sourceJoint);
+            if (targetPosition.z > maxTrackDistance) return false;
+        }
+
+        return true;
+    }
+
+
     private void UpdateBodyObject(Body body, GameObject bodyObject)
     {
         //Update joints
@@ -138,6 +159,7 @@ public class BodySourceView : MonoBehaviour
             //Get new target position
             Joint sourceJoint = body.Joints[_joint];
             Vector3 targetPosition = GetVector3FromJoint(sourceJoint);
+            //Debug.Log(targetPosition);
             targetPosition.z = 0; //for 2D
 
             //Get joint, set new position

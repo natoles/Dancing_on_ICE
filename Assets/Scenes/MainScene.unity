@@ -703,7 +703,7 @@ MonoBehaviour:
   - 50
   - 50
   numberMoves: 0
-  globalNodeType: 1
+  globalNodeType: 0
   d: 1
 --- !u!82 &1584557257
 AudioSource:
@@ -712,7 +712,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1584557254}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: cb6486f5da05e794e99669be8f8e21ce, type: 3}

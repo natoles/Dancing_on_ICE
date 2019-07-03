@@ -94,7 +94,7 @@ public abstract class LineNode : Node
 
         for(int i = 0; i < pathPositions.Length; i++){
             tmpTime = 0;
-            if (timePaths[i] > Time.deltaTime || i == 0){
+            if (timePaths[i] > Time.deltaTime || i == 0 || i == pathPositions.Length-1){
                 progress = 0f;
                 while(progress <= timePaths[i]){
                     if (i != 0)

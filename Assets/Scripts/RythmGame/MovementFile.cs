@@ -8,6 +8,7 @@ public class MovementFile
 {
 
     //TODO : an array for jointExclusion with 1's and 0's
+    //TODO : remember distance in an array
     public string path;
     public float[] jointsRates;
 
