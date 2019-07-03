@@ -19,7 +19,8 @@ public class BodySourceView : MonoBehaviour
     float[] jointPos;
     MainCreator main;
     int nbFrames = 0;
-
+    ulong saveId;
+    int IdCpt = 0;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -63,7 +64,11 @@ public class BodySourceView : MonoBehaviour
 
             if(body.IsTracked){
                     trackedIds.Add (body.TrackingId);
-                    //near = mBodies[body.TrackingId].transform.position.z;
+                    if (IdCpt == 0){
+                        saveId = body.TrackingId;
+                        IdCpt++;
+                    }
+
                     break;
                 } 
             
@@ -92,18 +97,27 @@ public class BodySourceView : MonoBehaviour
 
         #region Create Kinect bodies
         //Add a body if it is tracked but not stored
+
         foreach(var body in data)
         {
+
             if (body == null)
                 continue;
+
             
+            //Debug.Log("saveId : " + saveId);
             if(body.IsTracked)
             {
-                if(!mBodies.ContainsKey(body.TrackingId))
-                    mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
-                //Update positions
-                UpdateBodyObject(body, mBodies[body.TrackingId]);
-                UpdateCurrentRates(mBodies[body.TrackingId]);
+                if (body.TrackingId == saveId){
+                    if(!mBodies.ContainsKey(body.TrackingId) && mBodies.Count <= 1)
+                        mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
+                    //Debug.Log("added Id : " + mBodies[body.TrackingId]);
+                    //Update positions
+                    UpdateBodyObject(body, mBodies[body.TrackingId]);
+                    UpdateCurrentRates(mBodies[body.TrackingId]);
+                    
+                }
+                
             }
         }
         #endregion
@@ -138,6 +152,7 @@ public class BodySourceView : MonoBehaviour
             //Get new target position
             Joint sourceJoint = body.Joints[_joint];
             Vector3 targetPosition = GetVector3FromJoint(sourceJoint);
+            //Debug.Log(targetPosition);
             targetPosition.z = 0; //for 2D
 
             //Get joint, set new position
