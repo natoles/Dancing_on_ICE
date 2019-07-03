@@ -19,8 +19,7 @@ public class BodySourceView : MonoBehaviour
     float[] jointPos;
     MainCreator main;
     int nbFrames = 0;
-    ulong saveId;
-    int IdCpt = 0;
+    float maxTrackDistance = 20;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -62,13 +61,8 @@ public class BodySourceView : MonoBehaviour
             if (body == null)
                 continue;
 
-            if(body.IsTracked){
+            if(body.IsTracked && TrackOnDistance(body)){
                     trackedIds.Add (body.TrackingId);
-                    if (IdCpt == 0){
-                        saveId = body.TrackingId;
-                        IdCpt++;
-                    }
-
                     break;
                 } 
             
@@ -108,10 +102,9 @@ public class BodySourceView : MonoBehaviour
             //Debug.Log("saveId : " + saveId);
             if(body.IsTracked)
             {
-                if (body.TrackingId == saveId){
-                    if(!mBodies.ContainsKey(body.TrackingId) && mBodies.Count <= 1)
+                if (TrackOnDistance(body)){
+                    if(!mBodies.ContainsKey(body.TrackingId))
                         mBodies[body.TrackingId] = CreateBodyObject(body.TrackingId);
-                    //Debug.Log("added Id : " + mBodies[body.TrackingId]);
                     //Update positions
                     UpdateBodyObject(body, mBodies[body.TrackingId]);
                     UpdateCurrentRates(mBodies[body.TrackingId]);
@@ -144,6 +137,20 @@ public class BodySourceView : MonoBehaviour
         return body;
     }
     
+
+    private bool TrackOnDistance(Body body)
+    {
+        foreach(JointType _joint in _joints)
+        {
+            Joint sourceJoint = body.Joints[_joint];
+            Vector3 targetPosition = GetVector3FromJoint(sourceJoint);
+            if (targetPosition.z > maxTrackDistance) return false;
+        }
+
+        return true;
+    }
+
+
     private void UpdateBodyObject(Body body, GameObject bodyObject)
     {
         //Update joints
