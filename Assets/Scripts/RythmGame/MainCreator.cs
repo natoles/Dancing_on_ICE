@@ -109,9 +109,6 @@ public class MainCreator : MonoBehaviour
             MovementFile chosenMove = SelectMove();
             float r = UnityEngine.Random.Range(0.5f,1.1f);
             tmpTime = maxSpawnTime + r;
-            //Debug.Log("maxT1 : " + maxSpawnTime);
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.3f,globalscale,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1f,globalscale,0,-1,0, new TimeStamp(0,1,0,1.5f,3f,Vector3.zero, new Vector3[0])));
 
             switch(globalNodeType)
             {
@@ -164,7 +161,7 @@ public class MainCreator : MonoBehaviour
 
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
-        //Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);   //Current amount the player has moved
+        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);   //Current amount the player has moved
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }

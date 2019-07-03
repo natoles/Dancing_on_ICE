@@ -158,6 +158,7 @@ MonoBehaviour:
     type: 3}
   leftFoot: {fileID: 1201917325664443122, guid: 5eeeb8bbfbb21c4458f344fb395c08a3,
     type: 3}
+  maxTrackDistance: 15
 --- !u!4 &510959608
 Transform:
   m_ObjectHideFlags: 0
@@ -700,8 +701,8 @@ MonoBehaviour:
   - 0
   - 0
   wantedRates:
-  - 50
-  - 50
+  - 10
+  - 90
   numberMoves: 0
   globalNodeType: 0
   d: 1

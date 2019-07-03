@@ -19,7 +19,7 @@ public class BodySourceView : MonoBehaviour
     float[] jointPos;
     MainCreator main;
     int nbFrames = 0;
-    float maxTrackDistance = 20;
+    public float maxTrackDistance;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
