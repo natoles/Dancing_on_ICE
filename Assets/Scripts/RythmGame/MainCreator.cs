@@ -25,6 +25,7 @@ public class MainCreator : MonoBehaviour
     float tmpTime;
     public int globalNodeType; //TODO : menu deroulant dans l'inspecteur
     public float d = 1;
+    public float gameLength; 
     
 
     void Start()
@@ -37,11 +38,11 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile("basic2"));      //0,100
         allMoves.Add(new MovementFile("basic3"));      //100,0
         allMoves.Add(new MovementFile("basic4"));      //0,100
-        allMoves.Add(new MovementFile("basic5"));
-        allMoves.Add(new MovementFile("basic6"));
-        allMoves.Add(new MovementFile("basic7"));
-        allMoves.Add(new MovementFile("basic8"));
-        allMoves.Add(new MovementFile("basic9"));
+        allMoves.Add(new MovementFile("basic5"));      //49.5 50.5
+        allMoves.Add(new MovementFile("basic6"));      //46 54
+        allMoves.Add(new MovementFile("basic7"));      //62 38
+        allMoves.Add(new MovementFile("basic8"));      //84 15
+        allMoves.Add(new MovementFile("basic9"));      //19 81
 
 
         allMovementFilesBasic.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
@@ -75,6 +76,7 @@ public class MainCreator : MonoBehaviour
         }
         trackCreation = TrackCreation();
         StartCoroutine(trackCreation);
+        StartCoroutine(ExitGame());
 
         
         
@@ -107,9 +109,6 @@ public class MainCreator : MonoBehaviour
             MovementFile chosenMove = SelectMove();
             float r = UnityEngine.Random.Range(0.5f,1.1f);
             tmpTime = maxSpawnTime + r;
-            //Debug.Log("maxT1 : " + maxSpawnTime);
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.3f,globalscale,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1f,globalscale,0,-1,0, new TimeStamp(0,1,0,1.5f,3f,Vector3.zero, new Vector3[0])));
 
             switch(globalNodeType)
             {
@@ -128,6 +127,14 @@ public class MainCreator : MonoBehaviour
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
+    }
+
+    IEnumerator ExitGame(){
+        yield return new WaitForSeconds(gameLength);
+        Debug.Log("End of the game !");
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.ExitPlaymode();
+        #endif
     }
 
     //Chooses the right constructor according to what is asked
@@ -154,7 +161,7 @@ public class MainCreator : MonoBehaviour
 
     void AddMove(MovementFile MF, List<TimeStamp> move){
         //Changes the value od the currentRates
-        //Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);   //Current amount the player has moved
+        Debug.Log("Rates : " + currentRates[0] + ", " + currentRates[1]);   //Current amount the player has moved
         for(int i = 0; i< move.Count; i++){
             track.Add(move[i]);
         }
