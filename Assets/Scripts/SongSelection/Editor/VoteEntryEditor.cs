@@ -11,8 +11,8 @@ public class VoteEntryEditor : ImageEditor
     protected override void OnEnable()
     {
         base.OnEnable();
-        ID = serializedObject.FindProperty("ID");
-        SongName = serializedObject.FindProperty("SongName");
+        ID = serializedObject.FindProperty("IDText");
+        SongName = serializedObject.FindProperty("SongNameText");
     }
 
     public override void OnInspectorGUI()

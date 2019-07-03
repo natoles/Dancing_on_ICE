@@ -19,17 +19,20 @@ public class SongEntry : Button, IPointerClickHandler
 
     [SerializeField]
     private Text Duration = null;
+    
+    [System.NonSerialized]
+    public BeatmapContainer BeatmapContainer = null;
 
-    private BeatmapContainer bmc = null;
     private int id = 0;
 
+    [System.NonSerialized]
     public SongScrollView ScrollView = null;
 
     public override void OnSelect(BaseEventData eventData)
     {
         base.OnSelect(eventData);
         ScrollView.ScrollToSong(id);
-        TwitchRythmController.beatmapToLoad = bmc;
+        TwitchRythmController.beatmapToLoad = BeatmapContainer;
     }
 
     public void SetSong(int id, string icebmFile)
@@ -38,12 +41,12 @@ public class SongEntry : Button, IPointerClickHandler
             return;
 
         this.id = id;
-        bmc = BeatmapLoader.LoadBeatmapFile(icebmFile);
+        BeatmapContainer = BeatmapLoader.LoadBeatmapFile(icebmFile);
         Thumbnail.sprite = null;
-        SongName.text = bmc.bm.Metadata.SongName;
-        Artist.text = bmc.bm.Metadata.Artist;
-        Difficulty.text = Math.Round(bmc.bm.Metadata.Difficulty, 1).ToString();
-        Difficulty.color = Color.Lerp(Color.green, Color.red, bmc.bm.Metadata.Difficulty / 5f);
-        Duration.text = TimeSpan.FromSeconds(bmc.bm.Metadata.Duration).ToString(@"mm\:ss");
+        SongName.text = BeatmapContainer.bm.Metadata.SongName;
+        Artist.text = BeatmapContainer.bm.Metadata.Artist;
+        Difficulty.text = Math.Round(BeatmapContainer.bm.Metadata.Difficulty, 1).ToString();
+        Difficulty.color = Color.Lerp(Color.green, Color.red, BeatmapContainer.bm.Metadata.Difficulty / 5f);
+        Duration.text = TimeSpan.FromSeconds(BeatmapContainer.bm.Metadata.Duration).ToString(@"mm\:ss");
     }
 }

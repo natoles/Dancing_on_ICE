@@ -8,7 +8,9 @@ public class SongScrollView : ScrollRect
     [SerializeField]
     protected SongEntry SongEntryGameObject = null;
     
-    private List<SongEntry> entries = new List<SongEntry>();
+    [System.NonSerialized]
+    public List<SongEntry> entries = new List<SongEntry>();
+
     private int currentSelection = 0;
 
     protected override void Start()

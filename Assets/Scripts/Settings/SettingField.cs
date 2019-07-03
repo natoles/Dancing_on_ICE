@@ -13,7 +13,6 @@ public class SettingField : InputField
 
     protected override void Start()
     {
-        base.Start();
         if (Application.isPlaying) // prevent this part from being executed in EditMode (because TwitchClient is not instancied at this time)
         {
             text = SettingsManager.Instance.twitch[m_SettingType].value;

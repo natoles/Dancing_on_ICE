@@ -156,8 +156,8 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  ID: {fileID: 7493972097626077825}
-  SongName: {fileID: 7493972098494947166}
+  IDText: {fileID: 7493972097626077825}
+  SongNameText: {fileID: 7493972098494947166}
 --- !u!1 &7493972098494947152
 GameObject:
   m_ObjectHideFlags: 0
