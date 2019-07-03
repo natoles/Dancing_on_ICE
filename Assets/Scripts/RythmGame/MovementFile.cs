@@ -66,13 +66,13 @@ public class MovementFile
             jointsPos.Add(listLHx);
             jointsPos.Add(listLHy);
             ComputeMoveDistance(move, jointsPos);
-        }Debug.Log(listLHx.Count);
+        }
              
          
+        //We don't take all the points
         int length = listRHx.Count;
         for (int i = 1; i <= length/jump + 1; i++){
             for (int j = 0; j < jump; j++){
-                Debug.Log("i, j : " + i + ", " + j);
                 if (i < listRHx.Count - 1){
                     listRHx.Remove(listRHx[i]);
                     listRHy.Remove(listRHy[i]);
@@ -81,7 +81,7 @@ public class MovementFile
                 }
             }
         }
-        Debug.Log(listLHx.Count);
+
         #endregion
         
         #region Add to list
@@ -158,7 +158,7 @@ public class MovementFile
 
         for(int i = 0; i < jointsRates.Length; i++){
             jointsRates[i] = jointsRates[i]/totalDist * 100;
-            Debug.Log(jointsRates[i]);   //Percentage of every joint for a movement
+            //Debug.Log(jointsRates[i]);   //Percentage of every joint for a movement
         }
     }
 
@@ -197,7 +197,8 @@ public class MovementFile
         }
         ts.pathPositions = pathPositions;
         ts.timeSpawn = timeSpawn;
-        listTS.Add(ts);
+        if (ts.spawnPosition.x < 30)
+            listTS.Add(ts);
     }
 
     void ComputeMoveDistance(MovementFile move, List<List<string>> jointsPos){

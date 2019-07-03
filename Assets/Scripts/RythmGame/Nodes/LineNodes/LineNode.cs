@@ -10,9 +10,7 @@ public abstract class LineNode : Node
     IEnumerator moveLine; 
     bool moving = false; //Is the node moving along the lineRenderer ?
     bool finishedMoving = false; //Has the node finished his journey ?
-    protected string joint; //Choice of the joint who will activate the node (Hand or Foot)
     float timeInside; //the time the player has to stay inside the node to get a certain score
-    bool inCircle = false; //Is the player in the circle ?
     public Vector3[] pathPositions;
     public float[] timePaths;
 
@@ -48,8 +46,8 @@ public abstract class LineNode : Node
 
         //If player completed the entire path
         if (finishedMoving){
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
-            ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, scorePerfect);  
+            //GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
+            //ChangeText(mtext.GetComponent<Text>(), "PERFECT", 30, Color.yellow, scorePerfect);  
 
             //reset variable to avoid entering in other loop after destruction
             moving = false; 
@@ -63,7 +61,14 @@ public abstract class LineNode : Node
             StartCoroutine(moveLine);
         }
 
+        if (moving && jointIn){
+            scoring.AddScore(11);
+        }
+
+
+
         //If the player fail to follow the entire path
+        /* 
         if(moving && !inCircle)
         {
             GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);       
@@ -76,7 +81,7 @@ public abstract class LineNode : Node
                 else ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, scoreMissed);
             }
             Destroy(gameObject);
-        }
+        }*/
         
     }
 
@@ -89,7 +94,7 @@ public abstract class LineNode : Node
 
         for(int i = 0; i < pathPositions.Length; i++){
             tmpTime = 0;
-            if (timePaths[i] > Time.deltaTime){
+            if (timePaths[i] > Time.deltaTime || i == 0){
                 progress = 0f;
                 while(progress <= timePaths[i]){
                     if (i != 0)
@@ -129,19 +134,15 @@ public abstract class LineNode : Node
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
-            inCircle = true;
+            jointIn = true;
         } 
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
-            inCircle = false;
+            jointIn = false;
         } 
-    }
-
-    public virtual void SetJoint(){
-        Debug.Log("abstract function");
     }
 
 }

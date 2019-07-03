@@ -696,11 +696,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nbJoints: 2
-  currentRates: []
+  currentRates:
+  - 0
+  - 0
   wantedRates:
   - 50
   - 50
   numberMoves: 0
+  globalNodeType: 1
+  d: 1
 --- !u!82 &1584557257
 AudioSource:
   m_ObjectHideFlags: 0

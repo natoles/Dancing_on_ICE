@@ -16,10 +16,16 @@ public class MainCreator : MonoBehaviour
     public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    int movePoolSize = 5; //See SelectMove()
+    List<Action> allMovementFilesLine = new List<Action>();
+    List<Action> allMovementFilesBasic = new List<Action>();
+    int movePoolSize = 2; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
-    float globalscale = 9;
+    float globalscale = 8;
+    float tmpTime;
+    public int globalNodeType; //TODO : menu deroulant dans l'inspecteur
+    public float d = 1;
+    
 
     void Start()
     {
@@ -31,7 +37,19 @@ public class MainCreator : MonoBehaviour
         allMoves.Add(new MovementFile("basic2"));      //0,100
         allMoves.Add(new MovementFile("basic3"));      //100,0
         allMoves.Add(new MovementFile("basic4"));      //0,100
-        allMoves.Add(new MovementFile("Test1"));       //64,36
+        //allMoves.Add(new MovementFile("Test1"));       //64,36
+
+        allMovementFilesBasic.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[1], decoyMove.GetUkiDatas(allMoves[1],tmpTime,16,1.3f*d,globalscale*d,0,-1,0, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[2], decoyMove.GetUkiDatas(allMoves[2],tmpTime,15,1.3f*d,globalscale*d + 3,0,5,0, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero))));
+        allMovementFilesBasic.Add(() => AddMove(allMoves[3], decoyMove.GetUkiDatas(allMoves[3],tmpTime,5,1.3f*d,globalscale*d + 2,0,-1,0, new TimeStamp(0,0,0,1f*(1/d),Vector3.zero))));
+
+        allMovementFilesLine.Add(() => AddMove(allMoves[0], decoyMove.GetUkiDatas(allMoves[0],tmpTime,8,1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[1], decoyMove.GetUkiDatas(allMoves[1],tmpTime,8,1f,globalscale*d,0,-1,0, new TimeStamp(0,1,0,1.5f,4.5f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[2], decoyMove.GetUkiDatas(allMoves[2],tmpTime,15,1f,globalscale*d + 3,0,5,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]))));
+        allMovementFilesLine.Add(() => AddMove(allMoves[3], decoyMove.GetUkiDatas(allMoves[3],tmpTime,12,1f,globalscale*d + 3,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]))));
+
+
 
 
         for (int i = 0; i< allMoves.Count; i++){
@@ -69,11 +87,26 @@ public class MainCreator : MonoBehaviour
         ComputeGlobalRate(allMoves);
         for (int i = 0; i < 100; i++){
             MovementFile chosenMove = SelectMove();
-            float r = UnityEngine.Random.Range(1.5f,3f);
-            float tmpTime = maxSpawnTime + r;
+            float r = UnityEngine.Random.Range(0.5f,1.3f);
+            tmpTime = maxSpawnTime + r;
             //Debug.Log("maxT1 : " + maxSpawnTime);
-            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,9,0,-1,0, new TimeStamp(0,0,1,4f,Vector3.zero)));
-            AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,0.8f,globalscale,0,-1,0, new TimeStamp(0,0,0,3.5f,Vector3.zero)));
+            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1.3f,globalscale,0,-1,0, new TimeStamp(0,0,0,1f,Vector3.zero)));
+            //AddMove(chosenMove, decoyMove.GetUkiDatas(chosenMove,tmpTime,8,1f,globalscale,0,-1,0, new TimeStamp(0,1,0,1.5f,3f,Vector3.zero, new Vector3[0])));
+
+            switch(globalNodeType)
+            {
+                case(0): 
+                    allMovementFilesBasic[allMoves.FindIndex(move => move == chosenMove)].Invoke();
+                    break;
+                case(1):
+                    allMovementFilesLine[allMoves.FindIndex(move => move == chosenMove)].Invoke();
+                    break;
+                default:
+                    Debug.Log("Pas normal");
+                    break;
+            }
+            
+
             //Debug.Log("SpawnT : " + maxSpawnTime);
             yield return new WaitForSeconds(maxSpawnTime - tmpTime + r);//Pause during the move to select with recent datas
         }
@@ -182,11 +215,16 @@ public class MainCreator : MonoBehaviour
 
     void SetMaxSpawnTime(){
         for (int i = 0; i < track.Count; i++){
-            if (track[i].timeSpawn > maxSpawnTime){
-                maxSpawnTime = track[i].timeSpawn;
+            if(track[i].nodeType != 1){
+                if (track[i].timeSpawn > maxSpawnTime){
+                    maxSpawnTime = track[i].timeSpawn + track[i].timeToFinish;
+                }
+            } else {
+                if (track[i].timeSpawn + track[i].timeLine > maxSpawnTime){
+                    maxSpawnTime = track[i].timeSpawn + track[i].timeToFinish + track[i].timeLine;
+                }
             }
         }
     }
     
 }
-

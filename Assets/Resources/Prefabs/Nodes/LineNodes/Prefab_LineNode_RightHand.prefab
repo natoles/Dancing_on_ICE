@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3071063089017853189}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6, y: 3.11, z: -0.9552219}
-  m_LocalScale: {x: 1.15, y: 1.15, z: 1}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1}
   m_Children:
   - {fileID: 3071063089438466742}
   - {fileID: 3071063089631073085}
@@ -163,6 +163,7 @@ MonoBehaviour:
   timeToFinish: 3
   textMissed: {fileID: 2141464306252597701, guid: aa9a501500923c7439b809f8ee206317,
     type: 3}
+  destroyOnTouch: 0
   timeLine: 5
   pathPositions: []
   timePaths: []
