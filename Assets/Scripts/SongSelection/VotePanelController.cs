@@ -24,6 +24,12 @@ public class VotePanelController : MonoBehaviour
     private int difficultyCumulatedVotes = 0;
     private int votesCount = 0;
 
+    private bool voteIsRunning = false;
+    private float timeVoteStarted = float.MaxValue;
+
+    [SerializeField]
+    private float defaultVoteTime = 30f;
+
     private void Start()
     {
         if (rerollButton != null)
@@ -57,49 +63,69 @@ public class VotePanelController : MonoBehaviour
 
     private void StartVote()
     {
-        //TwitchClient.Instance.OnMessageReceived += VoteHandler;
         DifficultyCursor.gameObject.SetActive(true);
+        TwitchClient.Instance.SendMessage("Vote for the next song NOW ! Type [Letter][Difficulty] in chat to submit your vote ! Example: type \"A4\" to vote for song A and difficulty 4");
+        foreach (VoteEntry choice in choices)
+        {
+            TwitchClient.Instance.SendMessage($"{choice.Id} - {choice.SongName}");
+        }
+        TwitchClient.Instance.OnMessageReceived += VoteHandler;
+        voteIsRunning = true;
     }
 
     private void VoteHandler(object sender, OnMessageReceivedArgs e)
     {
-        string msg = e.ChatMessage.Message.Trim().ToUpperInvariant();
-        if (msg.Length >= 2)
+        if (voteIsRunning)
         {
-            int votedID = 0;
-            int votedDifficulty = 0;
-            if (!char.IsLetter(msg[0]) || !char.IsNumber(msg[1]))
+            string msg = e.ChatMessage.Message.Trim().ToUpperInvariant();
+            if (msg.Length == 2)
             {
-                return;
-            }
-            votedID = msg[0] - 'A';
-            votedDifficulty = msg[1] - '0';
+                int votedID = 0;
+                int votedDifficulty = 0;
+                if (!(char.IsLetter(msg[0]) && msg[0] - 'A' < choices.Length) || !char.IsNumber(msg[1]))
+                {
+                    return;
+                }
+                votedID = msg[0] - 'A';
+                votedDifficulty = msg[1] - '0';
 
-            songVotes[votedID]++;
-            difficultyCumulatedVotes += votedDifficulty;
-            votesCount++;
+                songVotes[votedID]++;
+                difficultyCumulatedVotes += votedDifficulty;
+                votesCount++;
+            }
         }
     }
 
     private void Update()
     {
-        for (int i = 0; i < choices.Length; ++i)
+        if (voteIsRunning && Time.time > timeVoteStarted + defaultVoteTime)
         {
-            if (Input.GetKeyDown(KeyCode.A + i))
-            {
-                songVotes[i]++;
-                difficultyCumulatedVotes += Random.Range(1, 5);
-                votesCount++;
-            }
+            voteIsRunning = false;
+            TwitchClient.Instance.OnMessageReceived -= VoteHandler;
+            TwitchClient.Instance.SendMessage("Vote has ended, thanks for your participation !");
         }
 
-        if (votesCount != 0)
+        if (voteIsRunning)
         {
             for (int i = 0; i < choices.Length; ++i)
             {
-                choices[i].Percentage = (float)songVotes[i] / votesCount;
+                if (Input.GetKeyDown(KeyCode.A + i))
+                {
+                    songVotes[i]++;
+                    difficultyCumulatedVotes += Random.Range(1, 5);
+                    votesCount++;
+                    Debug.Log(difficultyCumulatedVotes / (float)votesCount);
+                }
             }
-            DifficultyCursor.Difficulty = (float)difficultyCumulatedVotes / votesCount;
+
+            if (votesCount != 0)
+            {
+                for (int i = 0; i < choices.Length; ++i)
+                {
+                    choices[i].Percentage = (float)songVotes[i] / votesCount;
+                }
+                DifficultyCursor.Difficulty = (float)difficultyCumulatedVotes / votesCount;
+            }
         }
     }
 }

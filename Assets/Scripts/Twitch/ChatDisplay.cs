@@ -25,4 +25,9 @@ public class ChatDisplay : MonoBehaviour
     {
         chat.text += "\n" + e.ChatMessage.Username + ": " + e.ChatMessage.Message;
     }
+
+    private void OnDestroy()
+    {
+        TwitchClient.Instance.OnMessageReceived -= Chat_OnMessageReceived;
+    }
 }
