@@ -17,37 +17,60 @@ public class SongScrollView : ScrollRect
     {
         if (Application.isPlaying)
         {
-            string[] songFolders = Directory.GetDirectories(Application.streamingAssetsPath + "/Songs");
-            foreach (string songFolder in songFolders)
+            UpdateSongsList();
+
+            // Center list on a random song
+            SelectRandomSong();
+        }
+    }
+
+    public void UpdateSongsList()
+    {
+        entries.Clear();
+
+        if (content.childCount > 0)
+        {
+            GameObject[] children = new GameObject[content.childCount];
+            int i = 0;
+            foreach (Transform childTransform in content)
             {
-                string[] bmFiles = Directory.GetFiles(songFolder, "*.icebm");
-                foreach (string bmFile in bmFiles)
-                {
-                    SongEntry entry = Instantiate(SongEntryGameObject, content);
-                    entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(bmFile);
-                    entry.ScrollView = this;
-                    entry.SetSong(entries.Count, bmFile);
-                    entries.Add(entry);
-                }
+                children[i] = childTransform.gameObject;
+                i++;
+            }
+            foreach (GameObject child in children)
+            {
+                Destroy(child);
+            }
+        }
+
+        string[] songFolders = Directory.GetDirectories(Application.streamingAssetsPath + "/Songs");
+        foreach (string songFolder in songFolders)
+        {
+            string[] bmFiles = Directory.GetFiles(songFolder, "*.icebm");
+            foreach (string bmFile in bmFiles)
+            {
+                SongEntry entry = Instantiate(SongEntryGameObject, content);
+                entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(bmFile);
+                entry.ScrollView = this;
+                entry.SetSong(entries.Count, bmFile);
+                entries.Add(entry);
+            }
+        }
+
+        if (entries.Count > 0)
+        {
+            // Add some padding on top and bottom of the list
+            VerticalLayoutGroup vlg = content.GetComponent<VerticalLayoutGroup>();
+            RectTransform viewportRect = viewport.GetComponent<RectTransform>();
+            RectTransform entryRect = SongEntryGameObject.GetComponent<RectTransform>();
+
+            int padding = (int)((viewportRect.rect.height / 2) - (entryRect.rect.height / 2));
+            if (padding > 0)
+            {
+                vlg.padding.top = padding;
+                vlg.padding.bottom = padding;
             }
 
-            if (entries.Count > 0)
-            {
-                // Add some padding on top and bottom of the list
-                VerticalLayoutGroup vlg = content.GetComponent<VerticalLayoutGroup>();
-                RectTransform viewportRect = viewport.GetComponent<RectTransform>();
-                RectTransform entryRect = SongEntryGameObject.GetComponent<RectTransform>();
-
-                int padding = (int)((viewportRect.rect.height / 2) - (entryRect.rect.height / 2));
-                if (padding > 0)
-                {
-                    vlg.padding.top = padding;
-                    vlg.padding.bottom = padding;
-                }
-
-                // Center list on a random song
-                SelectRandomSong();
-            }
         }
     }
 
