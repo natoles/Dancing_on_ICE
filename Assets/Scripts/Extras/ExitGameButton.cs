@@ -2,11 +2,11 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ExitGameButton : Button, IPointerClickHandler
+public class ExitGameButton : Button
 {
-    public override void OnPointerClick(PointerEventData eventData)
+    protected override void Awake()
     {
-        base.OnPointerClick(eventData);
-        Application.Quit();
+        base.Awake();
+        onClick.AddListener(Application.Quit);
     }
 }

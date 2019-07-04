@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class SettingsSaveButton : Button
 {
-
     protected override void Awake()
     {
         onClick.AddListener(SaveSettings);

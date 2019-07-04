@@ -3,14 +3,14 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class LoadSceneButton : Button, IPointerClickHandler
+public class LoadSceneButton : Button
 {
     [SerializeField]
     private string ScenePath = null;
 
-    public override void OnPointerClick(PointerEventData eventData)
+    protected override void Awake()
     {
-        base.OnPointerClick(eventData);
-        SceneManager.LoadScene(ScenePath);
+        base.Awake();
+        onClick.AddListener(() => SceneManager.LoadScene(ScenePath));
     }
 }

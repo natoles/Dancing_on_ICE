@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SongEntry : Button, IPointerClickHandler
+public class SongEntry : Button
 {
     [SerializeField]
     private Image Thumbnail = null;

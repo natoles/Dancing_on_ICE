@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class RandomSongButton : Button
+public class RefreshSongsButton : Button
 {
     [SerializeField]
     private SongScrollView Scroll = null;
@@ -10,6 +10,6 @@ public class RandomSongButton : Button
     protected override void Awake()
     {
         base.Awake();
-        onClick.AddListener(Scroll.SelectRandomSong);
+        onClick.AddListener(() => { Scroll.UpdateSongsList(); Scroll.SelectRandomSong(); });
     }
 }
