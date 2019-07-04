@@ -34,8 +34,8 @@ public class DifficultyCursorController : MonoBehaviour
 
     protected void Start()
     {
-        cursorBounds = transform.parent.GetComponent<RectTransform>();
-        difficulty = (maxDifficulty - minDifficulty) / 2f;
+        cursorBounds = cursor.parent.GetComponent<RectTransform>();
+        difficulty = (maxDifficulty + minDifficulty) / 2f;
         tmpDifficulty = Difficulty;
         UpdateCursorPosition(Difficulty);
     }
@@ -48,6 +48,6 @@ public class DifficultyCursorController : MonoBehaviour
 
     private void UpdateCursorPosition(float cursorDifficulty)
     {
-        cursor.anchoredPosition = Vector3.right * (cursorDifficulty / (maxDifficulty - minDifficulty)) * cursorBounds.rect.width;
+        cursor.anchoredPosition = Vector3.right * (cursorDifficulty - minDifficulty) / (maxDifficulty - minDifficulty) * cursorBounds.rect.width;
     }
 }
