@@ -26,12 +26,12 @@ public class MainCreator : MonoBehaviour
     public int globalNodeType; //TODO : menu deroulant dans l'inspecteur
     public float d = 1;
     public float gameLength; 
+    public BodySourceView bodySourceView;
     
 
     void Start()
     {
-        currentRates = new float[nbJoints];
-
+        currentRates = bodySourceView.currentRates;
         creator = new NodeCreation();
 
         allMoves.Add(new MovementFile("basic1"));      //100,0
@@ -69,8 +69,6 @@ public class MainCreator : MonoBehaviour
 
 
 
-
-
         for (int i = 0; i< allMoves.Count; i++){
             allMoves[i].InitDistances();
         }
@@ -90,6 +88,7 @@ public class MainCreator : MonoBehaviour
 
     void Update()
     {
+        
         //Goes through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
         while (cpt < track.Count){

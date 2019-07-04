@@ -17,9 +17,10 @@ public class BodySourceView : MonoBehaviour
     float[] realJointsMovements;
     float[] previousJointsPos;
     float[] jointPos;
-    MainCreator main;
+    public float[] currentRates;
     int nbFrames = 0;
     public float maxTrackDistance;
+    int nbJoints = 2;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -39,11 +40,10 @@ public class BodySourceView : MonoBehaviour
         _sprites[2] = leftFoot;
         _sprites[3] = rightFoot;
 
-        main = GameObject.Find("Main").GetComponent<MainCreator>();
-
-        realJointsMovements = new float[main.nbJoints];
-        previousJointsPos = new float[main.nbJoints*2];
-        jointPos = new float[main.nbJoints*2];
+        realJointsMovements = new float[nbJoints];
+        previousJointsPos = new float[nbJoints*2];
+        jointPos = new float[nbJoints*2];
+        currentRates = new float[nbJoints*2];
     }
     void Update () 
     {   
@@ -186,7 +186,7 @@ public class BodySourceView : MonoBehaviour
             }
     
             for (int i = 0; i<realJointsMovements.Length; i++){
-                main.currentRates[i] = realJointsMovements[i]/totalDist * 100;
+                currentRates[i] = realJointsMovements[i]/totalDist * 100;
             }
 
             previousJointsPos[0] = jointPos[0];
@@ -194,8 +194,6 @@ public class BodySourceView : MonoBehaviour
             previousJointsPos[2] = jointPos[2];
             previousJointsPos[3] = jointPos[3];
 
-        }
-        //Debug.Log(main.currentRates[0] + ", " + main.currentRates[1]);
-        
+        }        
     }
 }
