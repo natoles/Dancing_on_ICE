@@ -698,12 +698,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nbJoints: 2
-  currentRates:
-  - 0
-  - 0
+  currentRates: []
   wantedRates:
-  - 55
-  - 45
+  - 50
+  - 50
   numberMoves: 0
   globalNodeType: 0
   d: 1.1

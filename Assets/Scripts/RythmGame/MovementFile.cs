@@ -190,7 +190,7 @@ public class MovementFile
         for(int i = 0; i < PosX.Count; i++){
             if (i == 0){
                 ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX,PosY[i]*scale + offsetY,0);
-            } else pathPositions[i-1] = new Vector3(PosX[i]*scale + offsetX,PosX[i]*scale + offsetY,0);
+            } else pathPositions[i-1] = new Vector3(PosX[i]*scale + offsetX,PosY[i]*scale + offsetY,0);
         }
         ts.pathPositions = pathPositions;
         ts.timeSpawn = timeSpawn;
@@ -198,26 +198,5 @@ public class MovementFile
             listTS.Add(ts);
     }
 
-/* 
-    //Computes the total distance of a move
-    void ComputeMoveDistance(List<List<string>> jointsPos){
-        float x;
-        int len = jointsPos[0].Count;
-        float[][] jointsPosF = new float[jointsPos.Count][];
-        
-
-        for (int i = 0; i < jointsPos.Count; i++){
-            jointsPosF[i] = new float[len];
-            for(int j = 0; j < len; j++){
-                float.TryParse(jointsPos[i][j].Replace(".",","), out x);
-                jointsPosF[i][j] = x;
-            }
-        }
-           
-        for (int i = 0; i< jointsPos.Count/2; i += 2){
-            for(int j = 0; j < len - 1; j++){
-                jointsRates[i/2] += (float) Math.Sqrt(Math.Pow(jointsPosF[i][j+1] - jointsPosF[i][j],2) + Math.Pow(jointsPosF[i+1][j+1] - jointsPosF[i+1][j],2));
-            }
-        }
-    }  */  
+  
 }
