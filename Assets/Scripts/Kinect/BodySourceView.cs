@@ -43,7 +43,7 @@ public class BodySourceView : MonoBehaviour
         realJointsMovements = new float[nbJoints];
         previousJointsPos = new float[nbJoints*2];
         jointPos = new float[nbJoints*2];
-        currentRates = new float[nbJoints*2];
+        currentRates = new float[nbJoints];
     }
     void Update () 
     {   

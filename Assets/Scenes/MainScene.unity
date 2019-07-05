@@ -158,6 +158,7 @@ MonoBehaviour:
     type: 3}
   leftFoot: {fileID: 1201917325664443122, guid: 5eeeb8bbfbb21c4458f344fb395c08a3,
     type: 3}
+  currentRates: []
   maxTrackDistance: 25
 --- !u!4 &510959608
 Transform:
@@ -704,9 +705,10 @@ MonoBehaviour:
   - 55
   - 45
   numberMoves: 0
-  globalNodeType: 1
+  globalNodeType: 0
   d: 1.1
   gameLength: 60
+  bodySourceView: {fileID: 510959607}
 --- !u!82 &1584557257
 AudioSource:
   m_ObjectHideFlags: 0
@@ -714,7 +716,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1584557254}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: cb6486f5da05e794e99669be8f8e21ce, type: 3}
