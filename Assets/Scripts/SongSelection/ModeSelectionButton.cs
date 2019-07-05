@@ -13,6 +13,7 @@ public class ModeSelectionButton : Button
         public GameObject buttons = null;
     }
 
+    [SerializeField]
     private int current = 0;
 
     [SerializeField]
@@ -24,19 +25,43 @@ public class ModeSelectionButton : Button
     protected override void Awake()
     {
         base.Awake();
-        onClick.AddListener(SelectMode);
+        onClick.AddListener(NextMode);
     }
 
-    private void SelectMode()
+    protected override void Start()
+    {
+        base.Start();
+        UpdateText();
+    }
+
+    private void NextMode()
     {
         int previous = current;
         current = (current + 1) % Modes.Length;
-        if (TextComponent != null)
-        {
-            TextComponent.text = Modes[current]?.name;
-        }
+        UpdateModeDisplay();
+    }
 
-        Modes[previous]?.buttons?.SetActive(false);
-        Modes[current]?.buttons?.SetActive(true);
+    public void UpdateModeDisplay()
+    {
+        UpdateButtonsVisibility();
+        UpdateText();
+    }
+
+    private void UpdateText()
+    {
+        if (TextComponent != null)
+            TextComponent.text = Modes[current]?.name + " Mode";
+    }
+
+    private void UpdateButtonsVisibility()
+    {
+        for (int i = 0; i < Modes.Length; ++i)
+            SetButtonsVisibility(i, i == current);
+    }
+
+    private void SetButtonsVisibility(int id, bool visible)
+    {
+        if (Modes[id] != null && Modes[id].buttons != null)
+            Modes[id].buttons.SetActive(visible);
     }
 }

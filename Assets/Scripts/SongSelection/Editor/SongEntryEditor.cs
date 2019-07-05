@@ -23,6 +23,8 @@ public class SongEntryEditor : ButtonEditor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(Thumbnail);
@@ -34,6 +36,9 @@ public class SongEntryEditor : ButtonEditor
         serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
         base.OnInspectorGUI();
     }

@@ -15,14 +15,19 @@ public class SettingFieldEditor : InputFieldEditor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(m_SettingType);
 
+        serializedObject.ApplyModifiedProperties();
+
+        EditorGUILayout.Space();
         EditorGUILayout.Space();
 
-        base.OnInspectorGUI();
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
-        serializedObject.ApplyModifiedProperties();
+        base.OnInspectorGUI();
     }
 }

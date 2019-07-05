@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class SongScrollView : ScrollRect
 {
     [SerializeField]
-    protected SongEntry SongEntryGameObject = null;
+    protected SongEntry SongEntryModel = null;
     
     [System.NonSerialized]
     public List<SongEntry> entries = new List<SongEntry>();
@@ -49,7 +49,7 @@ public class SongScrollView : ScrollRect
             string[] bmFiles = Directory.GetFiles(songFolder, "*.icebm");
             foreach (string bmFile in bmFiles)
             {
-                SongEntry entry = Instantiate(SongEntryGameObject, content);
+                SongEntry entry = Instantiate(SongEntryModel, content);
                 entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(bmFile);
                 entry.ScrollView = this;
                 entry.SetSong(entries.Count, bmFile);
@@ -62,7 +62,7 @@ public class SongScrollView : ScrollRect
             // Add some padding on top and bottom of the list
             VerticalLayoutGroup vlg = content.GetComponent<VerticalLayoutGroup>();
             RectTransform viewportRect = viewport.GetComponent<RectTransform>();
-            RectTransform entryRect = SongEntryGameObject.GetComponent<RectTransform>();
+            RectTransform entryRect = SongEntryModel.GetComponent<RectTransform>();
 
             int padding = (int)((viewportRect.rect.height / 2) - (entryRect.rect.height / 2));
             if (padding > 0)

@@ -17,6 +17,8 @@ public class VoteEntryEditor : ImageEditor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(ID);
@@ -25,6 +27,9 @@ public class VoteEntryEditor : ImageEditor
         serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
         base.OnInspectorGUI();
     }

@@ -26,13 +26,19 @@ public class LoadSceneButtonEditor : ButtonEditor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
+
         selected = EditorGUILayout.Popup("Scene To Load", selected, options.ToArray());
         ScenePath.stringValue = options[selected];
 
         serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
         base.OnInspectorGUI();
     }

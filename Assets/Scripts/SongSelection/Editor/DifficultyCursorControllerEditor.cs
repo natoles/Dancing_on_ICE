@@ -27,7 +27,10 @@ public class DifficultyCursorControllerEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
+
         EditorGUILayout.PropertyField(Cursor);
 
         EditorGUILayout.LabelField("Min Val:", minVal.ToString());
