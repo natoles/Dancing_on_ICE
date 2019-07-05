@@ -646,17 +646,17 @@ PrefabInstance:
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185111, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
@@ -907,10 +907,10 @@ RectTransform:
   m_Father: {fileID: 1124482767}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 47.5, y: -22.5}
-  m_SizeDelta: {x: 95, y: 45}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &422003036
 MonoBehaviour:
@@ -1140,7 +1140,7 @@ RectTransform:
   m_GameObject: {fileID: 448100093}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9999406, y: 0.9999406, z: 0.9999406}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 215967535}
   m_Father: {fileID: 650563229}
@@ -1455,7 +1455,7 @@ RectTransform:
   m_GameObject: {fileID: 528553493}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.000127, y: 1.000127, z: 1.000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 650563229}
   m_RootOrder: 8
@@ -2114,7 +2114,7 @@ RectTransform:
   m_GameObject: {fileID: 1036306434}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.000127, y: 1.000127, z: 1.000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 650563229}
   m_RootOrder: 1
@@ -2253,7 +2253,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, Unity.ugui, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  SongEntryGameObject: {fileID: 284255872721884654, guid: 1b89113443efa204fa7efc20ce98badf,
+  SongEntryModel: {fileID: 284255872721884654, guid: 1b89113443efa204fa7efc20ce98badf,
     type: 3}
 --- !u!222 &1074486944
 CanvasRenderer:
@@ -2279,7 +2279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1124482767
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2296,10 +2296,10 @@ RectTransform:
   m_Father: {fileID: 650563229}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 260, y: -22.5}
-  m_SizeDelta: {x: 180, y: 45}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1124482768
 MonoBehaviour:
@@ -2656,7 +2656,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Mode
+  m_Text: Twitch Mode
 --- !u!222 &1209050931
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2997,7 +2997,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1277300563}
   m_OnClick:
     m_PersistentCalls:
@@ -3163,17 +3163,17 @@ PrefabInstance:
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185096, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.0001346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7493972097952185111, guid: cc0223c630708a54dbdaa84930709b33,
         type: 3}
@@ -3242,7 +3242,7 @@ RectTransform:
   m_GameObject: {fileID: 1330654222}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9998999, y: 0.9998999, z: 0.9998999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 476708445}
   m_Father: {fileID: 650563229}
@@ -3383,7 +3383,7 @@ RectTransform:
   m_GameObject: {fileID: 1345298225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9999406, y: 0.9999406, z: 0.9999406}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1460071829}
   m_Father: {fileID: 650563229}
@@ -3391,7 +3391,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 395, y: -22.5}
+  m_AnchoredPosition: {x: 210, y: -22.5}
   m_SizeDelta: {x: 80, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1345298227
@@ -3957,7 +3957,7 @@ RectTransform:
   m_GameObject: {fileID: 1563805707}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.000127, y: 1.000127, z: 1.000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1209050929}
   m_Father: {fileID: 650563229}
@@ -4033,8 +4033,13 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, Unity.ugui, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  TextComponent: {fileID: 0}
-  Modes: []
+  current: 0
+  TextComponent: {fileID: 1209050930}
+  Modes:
+  - name: Twitch
+    buttons: {fileID: 1124482766}
+  - name: Yoga
+    buttons: {fileID: 1345298225}
 --- !u!114 &1563805711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4785,16 +4790,16 @@ RectTransform:
   m_GameObject: {fileID: 2110500346}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.000127, y: 1.000127, z: 1.000127}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 148545074}
   m_Father: {fileID: 1124482767}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 140, y: -22.5}
-  m_SizeDelta: {x: 80, y: 45}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2110500348
 MonoBehaviour:

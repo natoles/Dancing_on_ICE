@@ -15,11 +15,18 @@ public class RefreshSongsButtonEditor : ButtonEditor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
+
         serializedObject.Update();
+
         EditorGUILayout.PropertyField(Scroll);
+
         serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
         base.OnInspectorGUI();
     }

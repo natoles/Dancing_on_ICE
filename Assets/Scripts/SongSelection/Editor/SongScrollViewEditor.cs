@@ -10,19 +10,24 @@ public class SongScrollViewEditor : ScrollRectEditor
     protected override void OnEnable()
     {
         base.OnEnable();
-        SongEntryGameObject = serializedObject.FindProperty("SongEntryGameObject");
+        SongEntryGameObject = serializedObject.FindProperty("SongEntryModel");
     }
-
+    
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
+        EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
         
-        base.OnInspectorGUI();
-
-        EditorGUILayout.Space();
+        serializedObject.Update();
 
         EditorGUILayout.PropertyField(SongEntryGameObject);
 
         serializedObject.ApplyModifiedProperties();
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
+
+        base.OnInspectorGUI();
     }
 }
