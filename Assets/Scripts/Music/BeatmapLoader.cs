@@ -5,32 +5,43 @@ using NAudio.Wave;
 
 static class BeatmapLoader
 {
-    public static string SelectAudioFile()
+    private static string GetValidPath(System.Environment.SpecialFolder wanted = System.Environment.SpecialFolder.MyDocuments)
     {
         string baseFolder = null;
-        baseFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyMusic);
+        baseFolder = System.Environment.GetFolderPath(wanted);
         if (baseFolder == "")
         {
             baseFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             if (baseFolder == "")
                 baseFolder = Application.persistentDataPath;
         }
+        return baseFolder;
+    }
 
-        return FileBrowser.OpenSingleFile("Open sound file", baseFolder, new ExtensionFilter("Supported Audio Files", "mp3", "wav", "ogg"));
+    public static string SelectAudioFile()
+    {
+        string defaultPath = GetValidPath(System.Environment.SpecialFolder.MyMusic);
+        return FileBrowser.OpenSingleFile("Open audio file", defaultPath, new ExtensionFilter("Supported Audio Files", "mp3", "wav", "ogg"));
+    }
+
+    // Not async, because the feature is disabled in original library
+    public static void SelectAudioFileAsync(System.Action<string[]> callback)
+    {
+        string defaultPath = GetValidPath(System.Environment.SpecialFolder.MyMusic);
+        FileBrowser.OpenFilesAsync(callback, "Open audio file", defaultPath, multiselect: false, new ExtensionFilter("Supported Audio Files", "mp3", "wav", "ogg"));
     }
 
     public static string SelectBeatmapFile()
     {
-        string baseFolder = null;
-        baseFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
-        if (baseFolder == "")
-        {
-            baseFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            if (baseFolder == "")
-                baseFolder = Application.persistentDataPath;
-        }
+        string defaultPath = GetValidPath();
+        return FileBrowser.OpenSingleFile("Open beatmap", defaultPath, new ExtensionFilter("ICE Beatmap", "icebm"));
+    }
 
-        return FileBrowser.OpenSingleFile("Open beatmap", baseFolder, "icebm");
+    // Not async, because the feature is disabled in original library
+    public static void SelectBeatmapFileAsync(System.Action<string[]> callback)
+    {
+        string defaultPath = GetValidPath();
+        FileBrowser.OpenFilesAsync(callback, "Open beatmap", defaultPath, multiselect: false, new ExtensionFilter("ICE Beatmap", "icebm"));
     }
 
     public static BeatmapContainer LoadBeatmapFile(string path)
@@ -55,6 +66,9 @@ static class BeatmapLoader
 
     public static AudioClipData LoadBeatmapAudio(BeatmapContainer bmc)
     {
+        if (bmc == null || bmc.directory == null || bmc.bm.AudioFile == null)
+            return null;
+
         return LoadAudioFile(Path.Combine(bmc.directory, bmc.bm.AudioFile));
     }
 
@@ -71,6 +85,9 @@ static class BeatmapLoader
         }
 
         AudioFileReader reader = new AudioFileReader(path);
+        if (reader == null)
+            return null;
+
         int size = (int) (reader.Length / sizeof(float));
         float[] audioData = new float[size];
         reader.Read(audioData, 0, size);

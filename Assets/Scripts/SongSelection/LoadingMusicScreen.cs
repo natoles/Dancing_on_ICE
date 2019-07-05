@@ -19,7 +19,7 @@ public class LoadingMusicScreen : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Display(string songName)
+    public void Display(string songName = null)
     {
         SongName.text = songName;
         gameObject.SetActive(true);

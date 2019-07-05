@@ -12,6 +12,7 @@ public class ChatDisplay : MonoBehaviour
     public InputField twitchChannelInputField = null;
     public ConnectButton connectButton = null;
 
+    private bool quitting = false;
 
     private void Start()
     {
@@ -26,8 +27,14 @@ public class ChatDisplay : MonoBehaviour
         chat.text += "\n" + e.ChatMessage.Username + ": " + e.ChatMessage.Message;
     }
 
+    private void OnApplicationQuit()
+    {
+        quitting = true;
+    }
+
     private void OnDestroy()
     {
-        TwitchClient.Instance.OnMessageReceived -= Chat_OnMessageReceived;
+        if (Application.isPlaying && !quitting)
+            TwitchClient.Instance.OnMessageReceived -= Chat_OnMessageReceived;
     }
 }

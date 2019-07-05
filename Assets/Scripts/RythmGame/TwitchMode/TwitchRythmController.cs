@@ -9,6 +9,7 @@ public class TwitchRythmController : MonoBehaviour
     private Thread loader = null;
     private bool loaded = false;
     private bool loading = false;
+    private bool selecting = false;
     private AudioClipData clipData = null;
     
     private AudioSource player = null;
@@ -48,18 +49,26 @@ public class TwitchRythmController : MonoBehaviour
 
     private void LoadBeatmapForPlay()
     {
-        if (beatmapToLoad == null)
-        {
-            string path = BeatmapLoader.SelectBeatmapFile();
-            if (path == null || path == "")
-                return;
-            beatmapToLoad = BeatmapLoader.LoadBeatmapFile(path);
-        }
-
         clipData = BeatmapLoader.LoadBeatmapAudio(beatmapToLoad);
 
-        loaded = true;
+        if (clipData != null)
+            loaded = true;
+        else
+            NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
+
         loading = false;
+    }
+
+    private void SelectedBeatmapAsyncHandler(string[] files)
+    {
+        if (files.Length == 0 || files[0] == null || files[0] == "")
+        {
+            selecting = false;
+            return;
+        }
+
+        beatmapToLoad = BeatmapLoader.LoadBeatmapFile(files[0]);
+        selecting = false;
     }
 
     private void Start()
@@ -74,12 +83,21 @@ public class TwitchRythmController : MonoBehaviour
     {
         if (!loaded)
         {
-            if (!loading)
+            if (beatmapToLoad == null)
+            {
+                if (!selecting && Time.time > 0.1f)
+                {
+                    selecting = true;
+                    BeatmapLoader.SelectBeatmapFileAsync(SelectedBeatmapAsyncHandler);
+                    loadingScreen.Display();
+                }
+            }
+            else if (!loading)
             {
                 loading = true;
                 loader = new Thread(new ThreadStart(LoadBeatmapForPlay));
                 loader.Start();
-                loadingScreen.Display(System.IO.Path.GetFileNameWithoutExtension(beatmapToLoad.sourceFile));
+                loadingScreen.Display(System.IO.Path.GetFileNameWithoutExtension(beatmapToLoad?.sourceFile));
             }
         }
         else
