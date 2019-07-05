@@ -1,4 +1,5 @@
 ﻿using System;
+using IO = System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -43,10 +44,11 @@ public class SongEntry : Button
         this.id = id;
         BeatmapContainer = BeatmapLoader.LoadBeatmapFile(icebmFile);
         Thumbnail.sprite = null;
-        SongName.text = BeatmapContainer.bm.Metadata.SongName;
-        Artist.text = BeatmapContainer.bm.Metadata.Artist;
+        TagLib.File tfile = TagLib.File.Create(IO.Path.Combine(BeatmapContainer.directory, BeatmapContainer.bm.AudioFile));
+        SongName.text = tfile.Tag.Title != null ? tfile.Tag.Title : IO.Path.GetFileNameWithoutExtension(BeatmapContainer.sourceFile);
+        Artist.text = tfile.Tag.FirstPerformer;
         Difficulty.text = Math.Round(BeatmapContainer.bm.Metadata.Difficulty, 1).ToString();
         Difficulty.color = Color.Lerp(Color.green, Color.red, BeatmapContainer.bm.Metadata.Difficulty / 5f);
-        Duration.text = TimeSpan.FromSeconds(BeatmapContainer.bm.Metadata.Duration).ToString(@"mm\:ss");
+        Duration.text = tfile.Properties.Duration.ToString(@"mm\:ss");
     }
 }

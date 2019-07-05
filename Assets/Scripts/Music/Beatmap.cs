@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public enum BeatType
 {
@@ -19,9 +18,6 @@ public class BeatTimestamp
 [Serializable]
 public class BeatmapInfo
 {
-    public string SongName = null;
-    public string Artist = null;
-    public float Duration = 0;
     public float Difficulty = 0;
 }
 
