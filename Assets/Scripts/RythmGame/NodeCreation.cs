@@ -27,7 +27,7 @@ public class NodeCreation
 
     #region BasicNode
     //Creates a BasicNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
-    public void CreateBasicNode(Joint joint, float timeToFinish, Vector3 spawnPositon){    
+    public GameObject CreateBasicNode(Joint joint, float timeToFinish, Vector3 spawnPositon){    
         switch (joint)
         {
             case Joint.RightHand : 
@@ -43,13 +43,14 @@ public class NodeCreation
         BasicNode obj = nodeInstance.GetComponent<BasicNode>();
         obj.timeToFinish = timeToFinish;
         obj.transform.parent = main.transform;
+        return nodeInstance;
     }
     #endregion
 
     #region LineNode
     //Creates a LineNode for the body part joint, the node lasts timeToFinish seconds,
     //travels for timeLine seconds, from spawnPosition to pos1 to pos2
-    public void CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3[] pathPositions){
+    public GameObject CreateLineNode(Joint joint, float timeToFinish, float timeLine, Vector3 spawnPosition, Vector3[] pathPositions){
         switch (joint)
         {
             case Joint.RightHand :
@@ -67,13 +68,14 @@ public class NodeCreation
         obj.timeLine = timeLine;
         obj.pathPositions = pathPositions;
         obj.transform.parent = main.transform;
+        return nodeInstance;
     }
     #endregion
 
     #region CreateAngleNode
     //Creates a LineNode for the body part joint, the node lasts timeToFinish seconds, 
     //with an angle of startAngle, at position spawnPosition 
-    public void CreateAngleNode(Joint joint, float timeToFinish, float startAngle, Vector3 spawnPositon){    
+    public GameObject CreateAngleNode(Joint joint, float timeToFinish, float startAngle, Vector3 spawnPositon){    
         switch (joint)
         {
             case Joint.RightHand : 
@@ -90,12 +92,13 @@ public class NodeCreation
         obj.timeToFinish = timeToFinish;
         obj.startAngle = startAngle;
         obj.transform.parent = main.transform;
+        return nodeInstance;
     }
     #endregion 
 
     #region HoldNode
     //Creates a HoldNode for the body part joint, the node lasts timeToFinish seconds, at position spawnPosition  
-    public void CreateHoldNode(Joint joint, float timeToFinish, float timeHold, Vector3 spawnPositon){    
+    public GameObject CreateHoldNode(Joint joint, float timeToFinish, float timeHold, Vector3 spawnPositon){    
         switch (joint)
         {
             case Joint.RightHand : 
@@ -112,6 +115,7 @@ public class NodeCreation
         obj.timeToFinish = timeToFinish;
         obj.timeHold = timeHold;
         obj.transform.parent = main.transform;
+        return nodeInstance;
     }
     #endregion
 }

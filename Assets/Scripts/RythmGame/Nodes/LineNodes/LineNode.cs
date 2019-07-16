@@ -13,12 +13,21 @@ public abstract class LineNode : Node
     float timeInside; //the time the player has to stay inside the node to get a certain score
     public Vector3[] pathPositions;
     public float[] timePaths;
+    Color baseColor;
+    Color inColor;
+    SpriteRenderer movingPartSprite;
+    int scoreLine = 11;
 
     public override void Start()
     {
         base.Start(); 
         line = GetComponent<LineRenderer>();  
         timePaths = new float[pathPositions.Length]; 
+
+        //Saves the base color
+        movingPartSprite = movingPart.GetComponent<SpriteRenderer>();
+        baseColor = movingPartSprite.color; 
+        inColor = Color.black;
 
         //creation of the path
         line.positionCount = pathPositions.Length + 1;
@@ -44,6 +53,13 @@ public abstract class LineNode : Node
         line.loop = false;
         movingPart.transform.Rotate(0f,0f,1f);
 
+        //Changes the color if the joint touches the node 
+        if (jointIn){
+            movingPartSprite.color = new Color(1f, 0.95f, 0.3f, 1f) ;
+        } else{
+            movingPartSprite.color = baseColor;
+        } 
+
         //If player completed the entire path
         if (finishedMoving){
             //GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
@@ -62,26 +78,8 @@ public abstract class LineNode : Node
         }
 
         if (moving && jointIn){
-            scoring.AddScore(11);
+            scoring.AddScore(scoreLine);
         }
-
-
-
-        //If the player fail to follow the entire path
-        /* 
-        if(moving && !inCircle)
-        {
-            GameObject mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);       
-            if (Time.time - timeInside >= timeLine * 2/3.0f){
-                ChangeText(mtext.GetComponent<Text>(), "GREAT", 0, Color.magenta, scoreGreat);  
-            }
-            else {
-                if (Time.time - timeInside >= timeLine * 1/3.0f)
-                    ChangeText(mtext.GetComponent<Text>(), "BAD", -20, Color.blue, scoreBad);
-                else ChangeText(mtext.GetComponent<Text>(), "MISSED", -50, Color.red, scoreMissed);
-            }
-            Destroy(gameObject);
-        }*/
         
     }
 

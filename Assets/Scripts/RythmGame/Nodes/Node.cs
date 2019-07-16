@@ -7,7 +7,7 @@ public class Node : MonoBehaviour
 {
     
     protected GameObject movingPart; //Outer circle
-    GameObject goal; //Inner circle
+    protected GameObject goal; //Inner circle
     protected Vector3 size; //Size of the inner circle 
     protected float timeFrame; //Time frame to make a PERFECT
     public float timeToFinish; ///Time the node will take to destroy itself
