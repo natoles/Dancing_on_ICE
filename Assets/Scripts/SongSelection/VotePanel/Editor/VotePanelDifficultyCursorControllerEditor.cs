@@ -2,8 +2,8 @@
 using UnityEngine;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(DifficultyCursorController), true)]
-public class DifficultyCursorControllerEditor : Editor
+[CustomEditor(typeof(VotePanelDifficultyCursorController), true)]
+public class VotePanelDifficultyCursorControllerEditor : Editor
 {
     SerializedProperty Cursor;
     SerializedProperty MinDifficulty;

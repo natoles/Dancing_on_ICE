@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DifficultyCursorController : MonoBehaviour
+public class VotePanelDifficultyCursorController : MonoBehaviour
 {
     [SerializeField]
     private RectTransform cursor = null;

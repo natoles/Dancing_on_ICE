@@ -19,7 +19,7 @@ public class VotePanelController : MonoBehaviour
     private Button startVoteButton = null;
 
     [SerializeField]
-    private DifficultyCursorController DifficultyCursor = null;
+    private VotePanelDifficultyCursorController DifficultyCursor = null;
 
     private int[] songVotes = null;
     private int difficultyCumulatedVotes = 0;

@@ -159,7 +159,7 @@ MonoBehaviour:
   leftFoot: {fileID: 1201917325664443122, guid: 5eeeb8bbfbb21c4458f344fb395c08a3,
     type: 3}
   currentRates: []
-  maxTrackDistance: 0
+  maxTrackDistance: 25
 --- !u!4 &144578710
 Transform:
   m_ObjectHideFlags: 0
@@ -595,8 +595,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 733231977}
-  - component: {fileID: 733231976}
   - component: {fileID: 477588149}
+  - component: {fileID: 733231976}
   - component: {fileID: 477588150}
   m_Layer: 0
   m_Name: Main
@@ -925,6 +925,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c65825937156e4e95d4ea0ea17601d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 477588149}
+  mainCamera: {fileID: 1568215662}
   loadingScreen: {fileID: 274177515}
 --- !u!4 &733231977
 Transform:
