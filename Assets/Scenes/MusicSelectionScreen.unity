@@ -2727,7 +2727,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, Unity.ugui, Version=1.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  text: {fileID: 0}
+  text: {fileID: 1972025602}
 --- !u!1 &1161596048
 GameObject:
   m_ObjectHideFlags: 0
@@ -5118,7 +5118,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Difficulty: 3.0'
+  m_Text: 'Difficulty: 3,0'
 --- !u!222 &1972025603
 CanvasRenderer:
   m_ObjectHideFlags: 0

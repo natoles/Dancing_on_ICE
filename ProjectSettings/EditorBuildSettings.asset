@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScreen.unity
     guid: e24c227cd98d89a43866786fe00b7e35
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
+    path: Assets/Scenes/YogaScene.unity
     guid: afe007db5675f3b4e9ceca7e2418be30
   - enabled: 1
     path: Assets/Scenes/MusicSelectionScreen.unity
