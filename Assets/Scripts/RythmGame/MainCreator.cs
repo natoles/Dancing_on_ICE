@@ -18,7 +18,7 @@ public class MainCreator : MonoBehaviour
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     List<Action> allMovementFilesLine = new List<Action>();
     List<Action> allMovementFilesBasic = new List<Action>();
-    int movePoolSize = 1; //See SelectMove()
+    int movePoolSize = 3; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
@@ -231,13 +231,6 @@ public class MainCreator : MonoBehaviour
         for (int i = 0; i < totalMoves; i++){
             tmp = 0;
             for (int k = 0; k < wantedRates.Length; k++){
-                if (i == 2){
-                    Debug.Log("mvmt rate : " + decoyMove.allMovementRates[i][k]);
-                    Debug.Log("nb moves : " + numberMoves);
-                    Debug.Log("wanted : " + wantedRates[k]);
-                    Debug.Log("current : " + currentRates[k]);
-
-                }
                 tmp += Math.Abs(wantedRates[k] - (currentRates[k] * numberMoves/(numberMoves+1) + decoyMove.allMovementRates[i][k]/(numberMoves + 1)));
             }
             decoyMove.allMovementGlobalRates.Add(tmp);
