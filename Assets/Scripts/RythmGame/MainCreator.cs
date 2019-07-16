@@ -28,6 +28,7 @@ public class MainCreator : MonoBehaviour
     public float gameLength; 
     public BodySourceView bodySourceView;
     int totalMoves = 0;
+    float startTime;
     
 
     void Start()
@@ -75,6 +76,7 @@ public class MainCreator : MonoBehaviour
         trackCreation = TrackCreation();
         StartCoroutine(trackCreation);
         StartCoroutine(ExitGame());
+        startTime = Time.time;
 
         
         
@@ -92,7 +94,7 @@ public class MainCreator : MonoBehaviour
         //Goes through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
         while (cpt < track.Count){
-            if (track[cpt].timeSpawn <= Time.time){
+            if (track[cpt].timeSpawn <= Time.time - startTime){
                 spawnNode(track[cpt]);
                 track.Remove(track[cpt]);
                 cpt--;
