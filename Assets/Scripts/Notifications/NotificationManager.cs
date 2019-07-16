@@ -11,22 +11,17 @@ public class NotificationManager : Singleton<NotificationManager>
 
     private NotificationPanel notificationPanelPrefab = null;
     private LinkedList<NotificationPanel> notifications = new LinkedList<NotificationPanel>();
-
-    private float notifHeight;
-    private Vector2 baseMove;
+    
     private Vector2 spawnPosition;
 
     private void Awake()
     {
         notificationPanelPrefab = Resources.Load<NotificationPanel>("Prefabs/NotificationPanel");
-        notifHeight = notificationPanelPrefab.rectTransform.sizeDelta.y;
-        baseMove = new Vector2(0, notifHeight);
         spawnPosition = notificationPanelPrefab.rectTransform.anchoredPosition;
     }
 
     public void PushNotification(string text, Color textColor, Color bgColor)
-    {
-        Debug.Log(text);
+    {   
         NotificationPanel notif = Instantiate(notificationPanelPrefab, transform);
         notif.name = "NotificationPanel";
         notif.textComponent.text = text;
@@ -39,26 +34,24 @@ public class NotificationManager : Singleton<NotificationManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PushNotification("Debug " + (int)Random.Range(0, 100), Color.black, Color.white);
-        }
-
         Vector2 previous = Vector2.zero;
         LinkedListNode<NotificationPanel> lastAlive = null;
         bool needRemove = false;
         int i = 0;
+        float cumulatedHeight = 0f;
+        float previousHeight = 0f;
         for (LinkedListNode<NotificationPanel> it = notifications.First; it != null; it = it.Next)
         {
             NotificationPanel notif = it.Value;
+            cumulatedHeight += notif.rectTransform.rect.height;
             if (Time.time <= notif.startTime + fadeDuration)
             {
-                notif.rectTransform.anchoredPosition = Vector2.Lerp(spawnPosition, i * baseMove - spawnPosition, (Time.time - notif.startTime) / fadeDuration);
+                notif.rectTransform.anchoredPosition = Vector2.Lerp(spawnPosition, cumulatedHeight * Vector2.up - spawnPosition, (Time.time - notif.startTime) / fadeDuration);
                 notif.SetAlpha((Time.time - notif.startTime) / fadeDuration);
             }
             else
             {
-                notif.rectTransform.position = previous;
+                notif.rectTransform.anchoredPosition = (previousHeight + notif.rectTransform.rect.height) * Vector2.up - spawnPosition;
                 if (Time.time < notif.startTime + fadeDuration + displayDuration) { }
                 else if (Time.time <= notif.stopTime)
                 {
@@ -74,7 +67,7 @@ public class NotificationManager : Singleton<NotificationManager>
                     }
                 }
             }
-            previous = notif.rectTransform.anchoredPosition + baseMove;
+            previousHeight = notif.rectTransform.anchoredPosition.y ;
             ++i;
         }
 

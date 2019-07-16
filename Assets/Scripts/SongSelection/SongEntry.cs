@@ -33,7 +33,7 @@ public class SongEntry : Button
     {
         base.OnSelect(eventData);
         ScrollView.ScrollToSong(id);
-        TwitchRythmController.beatmapToLoad = BeatmapContainer;
+        TwitchRythmController.BeatmapToLoad = BeatmapContainer;
     }
 
     public void SetSong(int id, string icebmFile)

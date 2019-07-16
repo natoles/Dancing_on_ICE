@@ -2,6 +2,7 @@
 using TwitchLib.Client.Events;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class VotePanelController : MonoBehaviour
 {
@@ -64,13 +65,15 @@ public class VotePanelController : MonoBehaviour
     private void StartVote()
     {
         DifficultyCursor.gameObject.SetActive(true);
-        TwitchClient.Instance.SendMessage("Vote for the next song NOW ! Type [Letter][Difficulty] in chat to submit your vote ! Example: type \"A4\" to vote for song A and difficulty 4");
+        TwitchClient.Instance.SendMessage("Vote for the next song NOW ! Type a letter followed by a number in chat to submit your vote ! Example: type \"A4\" to vote for song A and difficulty 4");
         foreach (VoteEntry choice in choices)
         {
             TwitchClient.Instance.SendMessage($"{choice.Id} - {choice.SongName}");
         }
         TwitchClient.Instance.OnMessageReceived += VoteHandler;
+        timeVoteStarted = Time.time;
         voteIsRunning = true;
+        NotificationManager.Instance.PushNotification("Vote has started", Color.white, Color.blue);
     }
 
     private void VoteHandler(object sender, OnMessageReceivedArgs e)
@@ -101,8 +104,19 @@ public class VotePanelController : MonoBehaviour
         if (voteIsRunning && Time.time > timeVoteStarted + defaultVoteTime)
         {
             voteIsRunning = false;
+
+            int winnerID = 0;
+            for (int i = 1; i < songVotes.Length; ++i)
+            {
+                if (songVotes[i] > songVotes[winnerID])
+                    winnerID = i;
+            }
+            float winnerDifficulty = (float)difficultyCumulatedVotes / votesCount;
+
             TwitchClient.Instance.OnMessageReceived -= VoteHandler;
             TwitchClient.Instance.SendMessage("Vote has ended, thanks for your participation !");
+            TwitchClient.Instance.SendMessage($"Song {choices[winnerID].Id} with difficulty {winnerDifficulty} have been choosen !");
+            NotificationManager.Instance.PushNotification("Vote has ended", Color.white, Color.blue);
         }
 
         if (voteIsRunning)
