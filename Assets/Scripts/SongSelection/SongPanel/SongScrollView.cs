@@ -43,19 +43,31 @@ public class SongScrollView : ScrollRect
             }
         }
 
-        string[] songFolders = Directory.GetDirectories(Application.streamingAssetsPath + "/Songs");
-        foreach (string songFolder in songFolders)
+        foreach (string supportedAudioFormat in BeatmapLoader.SupportedAudioFormats)
         {
-            string[] bmFiles = Directory.GetFiles(songFolder, "*.icebm");
-            foreach (string bmFile in bmFiles)
+            foreach (string audioFile in Directory.EnumerateFiles(Application.streamingAssetsPath + "/Songs", $"*{supportedAudioFormat}"))
             {
                 SongEntry entry = Instantiate(SongEntryModel, content);
-                entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(bmFile);
+                entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(audioFile);
                 entry.ScrollView = this;
-                entry.SetSong(entries.Count, bmFile);
+                entry.SetSong(entries.Count, audioFile);
                 entries.Add(entry);
             }
         }
+
+        //string[] songFolders = Directory.GetDirectories(Application.streamingAssetsPath + "/Songs");
+        //foreach (string songFolder in songFolders)
+        //{
+        //    string[] bmFiles = Directory.GetFiles(songFolder, "*.icebm");
+        //    foreach (string bmFile in bmFiles)
+        //    {
+        //        SongEntry entry = Instantiate(SongEntryModel, content);
+        //        entry.gameObject.name = entries.Count + " - " + Path.GetFileNameWithoutExtension(bmFile);
+        //        entry.ScrollView = this;
+        //        entry.SetSong(entries.Count, bmFile);
+        //        entries.Add(entry);
+        //    }
+        //}
 
         if (entries.Count > 0)
         {

@@ -38,7 +38,7 @@ public class TwitchRythmController : MonoBehaviour
 
     #endregion
 
-    #region Music loader 
+    #region Music Loading
 
     private Thread loader = null;
     private AudioClipData clipData = null;
@@ -56,7 +56,7 @@ public class TwitchRythmController : MonoBehaviour
 
     #endregion
 
-    #region Node spawning
+    #region Node Spawning
 
     private BeatThreadedAnalyser analyser = null;
     private NodeCreation creator = null;

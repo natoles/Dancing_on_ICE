@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using IO = System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,19 +37,35 @@ public class SongEntry : Button
         TwitchRythmController.BeatmapToLoad = BeatmapContainer;
     }
 
-    public void SetSong(int id, string icebmFile)
+    public void SetSong(int id, string path)
     {
-        if (System.IO.Path.GetExtension(icebmFile) != ".icebm")
-            return;
+        string extension = IO.Path.GetExtension(path);
+        bool isAudio = BeatmapLoader.SupportedAudioFormats.Contains<string>(extension);
+        bool isBeatmap = (extension == BeatmapLoader.BeatmapFileFormat);
+        if (isAudio || isBeatmap)
+        {
+            string audioFile;
+            string sourceFile;
+            if (isAudio)
+            {
+                BeatmapContainer = BeatmapLoader.CreateBeatmapFromAudio(path);
+                audioFile = sourceFile = path;
+            }
+            else
+            {
+                BeatmapContainer = BeatmapLoader.LoadBeatmapFile(path);
+                audioFile = IO.Path.Combine(BeatmapContainer.directory, BeatmapContainer.bm.AudioFile);
+                sourceFile = BeatmapContainer.sourceFile;
+            }
 
-        this.id = id;
-        BeatmapContainer = BeatmapLoader.LoadBeatmapFile(icebmFile);
-        Thumbnail.sprite = null;
-        TagLib.File tfile = TagLib.File.Create(IO.Path.Combine(BeatmapContainer.directory, BeatmapContainer.bm.AudioFile));
-        SongName.text = tfile.Tag.Title != null ? tfile.Tag.Title : IO.Path.GetFileNameWithoutExtension(BeatmapContainer.sourceFile);
-        Artist.text = tfile.Tag.FirstPerformer;
-        Difficulty.text = Math.Round(BeatmapContainer.bm.Metadata.Difficulty, 1).ToString();
-        Difficulty.color = Color.Lerp(Color.green, Color.red, BeatmapContainer.bm.Metadata.Difficulty / 5f);
-        Duration.text = tfile.Properties.Duration.ToString(@"mm\:ss");
+            this.id = id;
+            Thumbnail.sprite = null;
+            TagLib.File tfile = TagLib.File.Create(audioFile);
+            SongName.text = tfile.Tag.Title != null ? tfile.Tag.Title : IO.Path.GetFileNameWithoutExtension(sourceFile);
+            Artist.text = tfile.Tag.FirstPerformer;
+            //Difficulty.text = Math.Round(BeatmapContainer.bm.Metadata.Difficulty, 1).ToString();
+            //Difficulty.color = Color.Lerp(Color.green, Color.red, BeatmapContainer.bm.Metadata.Difficulty / 5f);
+            Duration.text = tfile.Properties.Duration.ToString(@"mm\:ss");
+        }
     }
 }
