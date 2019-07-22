@@ -1,10 +1,23 @@
 ﻿using System.IO;
+using System.Linq;
 using UnityEngine;
 using Crosstales.FB;
 using NAudio.Wave;
 
 static class BeatmapLoader
 {
+    #region File Formats
+
+    public static string BeatmapFileFormat { get { return ".icebm"; } }
+    public static string[] SupportedAudioFormats { get { return new string[] { ".mp3", ".wav" }; } }
+
+    #endregion
+
+    #region Utilities
+
+    private static ExtensionFilter AudioExtensionFilter { get { return new ExtensionFilter("Supported Audio Files", SupportedAudioFormats); } }
+    private static ExtensionFilter BeatmapExtensionFilter { get { return new ExtensionFilter("ICE Beatmap", BeatmapFileFormat); } }
+
     private static string GetValidPath(System.Environment.SpecialFolder wanted = System.Environment.SpecialFolder.MyDocuments)
     {
         string baseFolder = null;
@@ -18,34 +31,45 @@ static class BeatmapLoader
         return baseFolder;
     }
 
+    #endregion
+
+    #region File Selection
+
     public static string SelectAudioFile()
     {
         string defaultPath = GetValidPath(System.Environment.SpecialFolder.MyMusic);
-        return FileBrowser.OpenSingleFile("Open audio file", defaultPath, new ExtensionFilter("Supported Audio Files", "mp3", "wav", "ogg"));
+        return FileBrowser.OpenSingleFile("Open audio file", defaultPath, AudioExtensionFilter);
     }
 
     // Not async, because the feature is disabled in original library
     public static void SelectAudioFileAsync(System.Action<string[]> callback)
     {
         string defaultPath = GetValidPath(System.Environment.SpecialFolder.MyMusic);
-        FileBrowser.OpenFilesAsync(callback, "Open audio file", defaultPath, multiselect: false, new ExtensionFilter("Supported Audio Files", "mp3", "wav", "ogg"));
+        FileBrowser.OpenFilesAsync(callback, "Open audio file", defaultPath, multiselect: false, AudioExtensionFilter);
     }
 
     public static string SelectBeatmapFile()
     {
         string defaultPath = GetValidPath();
-        return FileBrowser.OpenSingleFile("Open beatmap", defaultPath, new ExtensionFilter("ICE Beatmap", "icebm"));
+        return FileBrowser.OpenSingleFile("Open beatmap", defaultPath, BeatmapExtensionFilter);
     }
 
     // Not async, because the feature is disabled in original library
     public static void SelectBeatmapFileAsync(System.Action<string[]> callback)
     {
         string defaultPath = GetValidPath();
-        FileBrowser.OpenFilesAsync(callback, "Open beatmap", defaultPath, multiselect: false, new ExtensionFilter("ICE Beatmap", "icebm"));
+        FileBrowser.OpenFilesAsync(callback, "Open beatmap", defaultPath, multiselect: false, BeatmapExtensionFilter);
     }
+
+    #endregion
+
+    #region Beatmap Loading
 
     public static BeatmapContainer LoadBeatmapFile(string path)
     {
+        if (Path.GetExtension(path) != BeatmapFileFormat)
+            return null;
+
         StreamReader reader = new StreamReader(path);
         string json = reader.ReadToEnd();
         reader.Close();
@@ -56,6 +80,26 @@ static class BeatmapLoader
 
         return new BeatmapContainer { sourceFile = Path.GetFileName(path), directory = Path.GetDirectoryName(path), bm = bm };
     }
+
+    public static BeatmapContainer CreateBeatmapFromAudio(string path)
+    {
+        if (!SupportedAudioFormats.Contains<string>(Path.GetExtension(path)))
+            return null;
+        
+        return new BeatmapContainer
+        {
+            sourceFile = Path.GetFileName(path),
+            directory = Path.GetDirectoryName(path),
+            bm = new Beatmap
+            {
+                AudioFile = Path.GetFileName(path)
+            }
+        };
+    }
+
+    #endregion
+
+    #region Audio Loading
 
     public static AudioClip CreateAudioClipFromData(AudioClipData cd)
     {
@@ -94,4 +138,6 @@ static class BeatmapLoader
 
         return new AudioClipData (basename, size / reader.WaveFormat.Channels, reader.WaveFormat.Channels, reader.WaveFormat.SampleRate, false, audioData, 0);
     }
+
+    #endregion
 }

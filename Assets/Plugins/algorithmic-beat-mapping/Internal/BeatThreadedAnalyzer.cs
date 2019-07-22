@@ -17,7 +17,7 @@ public class BeatThreadedAnalyser
 	readonly int sampleRate;
 	readonly float clipLength;
 	readonly float[] multiChannelSamples;
-	SpectralFluxAnalyzer preProcessedSpectralFluxAnalyzer;
+	SpectralFluxAnalyzer fluxAnalyzer;
 
     Thread bgThread;
 
@@ -25,15 +25,17 @@ public class BeatThreadedAnalyser
     {
         get
         {
-            return preProcessedSpectralFluxAnalyzer?.spectralFluxSamples;
+            return fluxAnalyzer?.spectralFluxSamples;
         }
     }
 
-    public BeatThreadedAnalyser(AudioSource audioSource)
+    public BeatThreadedAnalyser(AudioSource audioSource, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
     {
         this.audioSource = audioSource;
 
-		preProcessedSpectralFluxAnalyzer = new SpectralFluxAnalyzer ();
+		fluxAnalyzer = new SpectralFluxAnalyzer ();
+        fluxAnalyzer.ThresholdMultiplier = thresholdMultipler;
+        fluxAnalyzer.ThresholdWindowSize = thresholdWindowSize;
 
 		// Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
 		// [L,R,L,R,L,R]
@@ -46,7 +48,7 @@ public class BeatThreadedAnalyser
 		this.sampleRate = audioSource.clip.frequency;
 
 		audioSource.clip.GetData(multiChannelSamples, 0);
-		Debug.Log ("GetData done");
+		//Debug.Log ("GetData done");
 
 		bgThread = new Thread (this.getFullSpectrumThreaded);
 
@@ -54,7 +56,7 @@ public class BeatThreadedAnalyser
 
     public void Start()
     {
-        Debug.Log("Starting Background Thread");
+        //Debug.Log("Starting Background Thread");
         bgThread.Start();
     }
 
@@ -94,8 +96,8 @@ public class BeatThreadedAnalyser
 				}
 			}
 
-			Debug.Log ("Combine Channels done");
-			Debug.Log (preProcessedSamples.Length);
+			//Debug.Log ("Combine Channels done");
+			//Debug.Log (preProcessedSamples.Length);
 
 			// Once we have our audio sample data prepared, we can execute an FFT to return the spectrum data over the time domain
 			int spectrumSampleSize = 1024;
@@ -104,7 +106,7 @@ public class BeatThreadedAnalyser
 			FFT fft = new FFT ();
 			fft.Initialize ((UInt32)spectrumSampleSize);
 
-			Debug.Log (string.Format("Processing {0} time domain samples for FFT", iterations));
+			//Debug.Log (string.Format("Processing {0} time domain samples for FFT", iterations));
 			double[] sampleChunk = new double[spectrumSampleSize];
 			for (int i = 0; i < iterations; i++) {
 				// Grab the current 1024 chunk of audio sample data
@@ -124,11 +126,11 @@ public class BeatThreadedAnalyser
 				float curSongTime = getTimeFromIndex(i) * spectrumSampleSize;
 
 				// Send our magnitude data off to our Spectral Flux Analyzer to be analyzed for peaks
-				preProcessedSpectralFluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
+				fluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
 
-			Debug.Log ("Spectrum Analysis done");
-			Debug.Log ("Background Thread Completed");
+			//Debug.Log ("Spectrum Analysis done");
+			//Debug.Log ("Background Thread Completed");
 				
 		} catch (Exception e) {
 			// Catch exceptions here since the background thread won't always surface the exception to the main thread

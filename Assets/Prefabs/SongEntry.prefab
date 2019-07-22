@@ -320,7 +320,6 @@ MonoBehaviour:
   Artist: {fileID: 7115153401083976152}
   Difficulty: {fileID: 7115153402540304374}
   Duration: {fileID: 7115153401347458397}
-  ScrollView: {fileID: 0}
 --- !u!1 &7115153402540304360
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,7 +462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

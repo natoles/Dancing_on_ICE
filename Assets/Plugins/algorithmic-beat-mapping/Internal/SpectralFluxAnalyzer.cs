@@ -18,8 +18,12 @@ public class SpectralFluxAnalyzer {
 	// In this case, if a rectified spectral flux sample is > 1.5 times the average, it is a peak
 	float thresholdMultiplier = 1.5f;
 
+    public float ThresholdMultiplier { get { return thresholdMultiplier; } set { thresholdMultiplier = Mathf.Max(0f, value); } }
+
 	// Number of samples to average in our window
 	int thresholdWindowSize = 50;
+
+    public int ThresholdWindowSize { get { return thresholdWindowSize; } set { thresholdWindowSize = Mathf.Max(0, value); } }
 
 	public List<SpectralFluxInfo> spectralFluxSamples;
 
@@ -72,7 +76,7 @@ public class SpectralFluxAnalyzer {
 			indexToProcess++;
 		}
 		else {
-			Debug.Log(string.Format("Not ready yet.  At spectral flux sample size of {0} growing to {1}", spectralFluxSamples.Count, thresholdWindowSize));
+			//Debug.Log(string.Format("Not ready yet.  At spectral flux sample size of {0} growing to {1}", spectralFluxSamples.Count, thresholdWindowSize));
 		}
 	}
 
