@@ -10,8 +10,6 @@ public class BodySourceView : MonoBehaviour
     public BodySourceManager mBodySourceManager;
     public GameObject rightHand;
     public GameObject leftHand;
-    public GameObject rightFoot;
-    public GameObject leftFoot;
     int cpt = 0;
     bool initBody;
     float[] realJointsMovements;
@@ -27,8 +25,6 @@ public class BodySourceView : MonoBehaviour
     private List<JointType> _joints = new List<JointType>{
         JointType.HandLeft,
         JointType.HandRight,
-        JointType.FootLeft,
-        JointType.FootRight,
     };
 
     private GameObject[] _sprites = new GameObject[4];
@@ -37,8 +33,6 @@ public class BodySourceView : MonoBehaviour
     {
         _sprites[0] = leftHand;
         _sprites[1] = rightHand;
-        _sprites[2] = leftFoot;
-        _sprites[3] = rightFoot;
 
         realJointsMovements = new float[nbJoints];
         previousJointsPos = new float[nbJoints*2];
