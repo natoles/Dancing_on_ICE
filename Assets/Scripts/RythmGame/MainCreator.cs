@@ -13,7 +13,7 @@ public class MainCreator : MonoBehaviour
     MovementFile decoyMove = new MovementFile();
     public int nbJoints = 2;
     public float[] currentRates; //See AddMove()
-    public float[] wantedRates; //Wanted joints rates needs to be initialise in inspector
+    static public float[] wantedRates = new float[2] { 50, 50 }; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     List<Action> allMovementFilesLine = new List<Action>();
@@ -23,7 +23,7 @@ public class MainCreator : MonoBehaviour
     float maxSpawnTime = 0f;
     float globalscale = 8;
     float tmpTime;
-    public int globalNodeType; //TODO : menu deroulant dans l'inspecteur
+    static public int globalNodeType = 0; //TODO : menu deroulant dans l'inspecteur
     public float d = 1;
     public float gameLength; 
     public BodySourceView bodySourceView;
@@ -133,9 +133,10 @@ public class MainCreator : MonoBehaviour
     IEnumerator ExitGame(){
         yield return new WaitForSeconds(gameLength);
         Debug.Log("End of the game !");
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.ExitPlaymode();
-        #endif
+        SceneHistory.LoadPreviousScene();
+        //#if UNITY_EDITOR
+        //UnityEditor.EditorApplication.ExitPlaymode();
+        //#endif
     }
 
     //Chooses the right constructor according to what is asked
