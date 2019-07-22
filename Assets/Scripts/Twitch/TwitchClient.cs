@@ -138,6 +138,8 @@ public class TwitchClient : Singleton<TwitchClient>
     private IEnumerator JoinChannelOnConnected(string channelToJoin)
     {
         yield return new WaitUntil(() => client.IsConnected);
+
+        yield return new WaitForSecondsRealtime(0.1f); // Fixes a bug where trying to join a channel right after being connected fails
         
         client.JoinChannel(channelToJoin);
     }
