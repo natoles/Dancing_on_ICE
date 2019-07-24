@@ -15,8 +15,8 @@ static class BeatmapLoader
 
     #region Utilities
 
-    private static ExtensionFilter AudioExtensionFilter { get { return new ExtensionFilter("Supported Audio Files", SupportedAudioFormats); } }
-    private static ExtensionFilter BeatmapExtensionFilter { get { return new ExtensionFilter("ICE Beatmap", BeatmapFileFormat); } }
+    private static ExtensionFilter AudioExtensionFilter { get { return new ExtensionFilter("Supported Audio Files", SupportedAudioFormats.Select(str => str.TrimStart('.')).ToArray<string>()); } }
+    private static ExtensionFilter BeatmapExtensionFilter { get { return new ExtensionFilter("ICE Beatmap", BeatmapFileFormat.TrimStart('.')); } }
 
     private static string GetValidPath(System.Environment.SpecialFolder wanted = System.Environment.SpecialFolder.MyDocuments)
     {
@@ -120,7 +120,7 @@ static class BeatmapLoader
     {
         string basename = Path.GetFileNameWithoutExtension(path);
         string extension = Path.GetExtension(path);
-        AudioType type = extension == ".mp3" ? AudioType.MPEG : extension == ".wav" ? AudioType.WAV : extension == ".ogg" ? AudioType.OGGVORBIS : AudioType.UNKNOWN;
+        AudioType type = extension == ".mp3" ? AudioType.MPEG : extension == ".wav" ? AudioType.WAV : AudioType.UNKNOWN;
 
         if (type == AudioType.UNKNOWN)
         {

@@ -15,6 +15,8 @@ public enum SettingTyp
 
 public class SettingsManager : Singleton<SettingsManager>
 {
+    public Configuration config = null;
+
     // Twitch-related settings
     private readonly string twitchSection = "Twitch";
     public readonly Dictionary<SettingTyp, StringSetting> twitch = new Dictionary<SettingTyp, StringSetting>
@@ -47,7 +49,7 @@ public class SettingsManager : Singleton<SettingsManager>
         path = $"{Application.persistentDataPath}/config.cfg";
         if (System.IO.File.Exists(path))
         {
-            Configuration config = Configuration.LoadFromFile(path);
+            config = Configuration.LoadFromFile(path);
             
             foreach (KeyValuePair<SettingTyp, StringSetting> c in twitch)
             {
@@ -59,12 +61,15 @@ public class SettingsManager : Singleton<SettingsManager>
 
     public void SaveConfig()
     {
-        Configuration config = new Configuration();
+        if (config == null)
+            config = new Configuration();
+
         foreach (KeyValuePair<SettingTyp, StringSetting> c in twitch)
         {
             SettingTyp typ = c.Key;
             config[twitchSection][c.Value.setting].StringValue = c.Value.value;
         }
+
         config.SaveToFile(path);
     }
 

@@ -6,22 +6,29 @@ using UnityEngine.UI;
 public class LoadingMusicScreen : MonoBehaviour
 {
     [SerializeField]
-    private Text SongName = null;
+    private Text TextComponent = null;
 
     [SerializeField]
     private Image LoadingRing = null;
 
     [SerializeField]
     private float ringAngularSpeed = 1f;
-
-    private void Start()
+    
+    public string Text
     {
-        gameObject.SetActive(false);
+        get
+        {
+            return TextComponent?.text;
+        }
+        set
+        {
+            if (TextComponent != null)
+                TextComponent.text = value;
+        }
     }
 
-    public void Display(string songName = null)
+    public void Show()
     {
-        SongName.text = songName;
         gameObject.SetActive(true);
     }
 
