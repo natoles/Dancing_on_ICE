@@ -15,6 +15,7 @@ public class SongScrollView : ScrollRect
 
     protected override void Start()
     {
+        base.Start();
         if (Application.isPlaying)
         {
             UpdateSongsList();

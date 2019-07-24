@@ -6,17 +6,13 @@ using System.Linq;
 
 public class VotePanelController : MonoBehaviour
 {
-    [SerializeField]
     private VoteEntry[] choices = null;
 
     [SerializeField]
     private SongScrollView songScrollView = null;
 
     [SerializeField]
-    private Button rerollButton = null;
-
-    [SerializeField]
-    private Button startVoteButton = null;
+    private GameObject voteEntriesParent = null;
 
     [SerializeField]
     private VotePanelDifficultyCursorController DifficultyCursor = null;
@@ -33,11 +29,7 @@ public class VotePanelController : MonoBehaviour
 
     private void Start()
     {
-        if (rerollButton != null)
-            rerollButton.onClick.AddListener(ChooseRandomSongs);
-
-        startVoteButton.onClick.AddListener(StartVote);
-
+        choices = voteEntriesParent.GetComponentsInChildren<VoteEntry>();
         for (int i = 0; i < choices.Length; ++i)
         {
             choices[i].Id = ((char)('A' + i)).ToString();
@@ -47,7 +39,7 @@ public class VotePanelController : MonoBehaviour
         ChooseRandomSongs();
     }
 
-    private void ChooseRandomSongs()
+    public void ChooseRandomSongs()
     {
         List<int> picks = new List<int>();
         for (int i = 0; i < choices.Length; ++i)
@@ -58,17 +50,17 @@ public class VotePanelController : MonoBehaviour
                 pick = Random.Range(0, songScrollView.entries.Count);
             } while (picks.Contains(pick));
             picks.Add(pick);
-            choices[i].SongName = System.IO.Path.GetFileNameWithoutExtension(songScrollView.entries[pick].BeatmapContainer.sourceFile);
+            choices[i].Song = songScrollView.entries[pick];
         }
     }
 
-    private void StartVote()
+    public void StartVote()
     {
         DifficultyCursor.gameObject.SetActive(true);
         TwitchClient.Instance.SendMessage("Vote for the next song NOW ! Type a letter followed by a number in chat to submit your vote ! Example: type \"A4\" to vote for song A and difficulty 4");
         foreach (VoteEntry choice in choices)
         {
-            TwitchClient.Instance.SendMessage($"{choice.Id} - {choice.SongName}");
+            TwitchClient.Instance.SendMessage($"{choice.Id} - {choice.Song.SongName}");
         }
         TwitchClient.Instance.OnMessageReceived += VoteHandler;
         timeVoteStarted = Time.time;
@@ -104,6 +96,7 @@ public class VotePanelController : MonoBehaviour
         if (voteIsRunning && Time.time > timeVoteStarted + defaultVoteTime)
         {
             voteIsRunning = false;
+            TwitchClient.Instance.OnMessageReceived -= VoteHandler;
 
             int winnerID = 0;
             for (int i = 1; i < songVotes.Length; ++i)
@@ -113,10 +106,13 @@ public class VotePanelController : MonoBehaviour
             }
             float winnerDifficulty = (float)difficultyCumulatedVotes / votesCount;
 
-            TwitchClient.Instance.OnMessageReceived -= VoteHandler;
             TwitchClient.Instance.SendMessage("Vote has ended, thanks for your participation !");
-            TwitchClient.Instance.SendMessage($"Song {choices[winnerID].Id} with difficulty {winnerDifficulty} have been choosen !");
+            TwitchClient.Instance.SendMessage($"Song {choices[winnerID].Id} with difficulty {System.Math.Round(winnerDifficulty, 1)} have been choosen !");
             NotificationManager.Instance.PushNotification("Vote has ended", Color.white, Color.blue);
+
+            TwitchRythmController.BeatmapToLoad = choices[winnerID].Song.BeatmapContainer;
+            TwitchRythmController.Difficulty = winnerDifficulty;
+            SceneHistory.LoadScene("TwitchMode");
         }
 
         if (voteIsRunning)

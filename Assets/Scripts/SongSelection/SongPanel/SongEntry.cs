@@ -11,16 +11,16 @@ public class SongEntry : Button
     private Image Thumbnail = null;
 
     [SerializeField]
-    private Text SongName = null;
+    private Text SongNameText = null;
 
     [SerializeField]
-    private Text Artist = null;
+    private Text ArtistText = null;
 
     [SerializeField]
-    private Text Difficulty = null;
+    private Text DifficultyText = null;
 
     [SerializeField]
-    private Text Duration = null;
+    private Text DurationText = null;
     
     [System.NonSerialized]
     public BeatmapContainer BeatmapContainer = null;
@@ -29,6 +29,30 @@ public class SongEntry : Button
 
     [System.NonSerialized]
     public SongScrollView ScrollView = null;
+    
+    public string SongName
+    {
+        get
+        {
+            return SongNameText.text;
+        }
+        set
+        {
+            SongNameText.text = value;
+        }
+    }
+
+    public string ArtistName
+    {
+        get
+        {
+            return ArtistText.text;
+        }
+        set
+        {
+            ArtistText.text = value;
+        }
+    }
 
     public override void OnSelect(BaseEventData eventData)
     {
@@ -61,11 +85,12 @@ public class SongEntry : Button
             this.id = id;
             Thumbnail.sprite = null;
             TagLib.File tfile = TagLib.File.Create(audioFile);
-            SongName.text = tfile.Tag.Title != null ? tfile.Tag.Title : IO.Path.GetFileNameWithoutExtension(sourceFile);
-            Artist.text = tfile.Tag.FirstPerformer;
+            SongName = tfile.Tag.Title != null ? tfile.Tag.Title : IO.Path.GetFileNameWithoutExtension(sourceFile);
+            ArtistName = tfile.Tag.FirstPerformer;
+            DifficultyText.text = "N/A";
             //Difficulty.text = Math.Round(BeatmapContainer.bm.Metadata.Difficulty, 1).ToString();
             //Difficulty.color = Color.Lerp(Color.green, Color.red, BeatmapContainer.bm.Metadata.Difficulty / 5f);
-            Duration.text = tfile.Properties.Duration.ToString(@"mm\:ss");
+            DurationText.text = tfile.Properties.Duration.ToString(@"mm\:ss");
         }
     }
 }

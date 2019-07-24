@@ -11,6 +11,7 @@ public class VoteEntry : Image
     [SerializeField]
     private Text SongNameText = null;
 
+    private SongEntry song;
     private float baseFill = 0f;
     private float tmpFill = 0f;
 
@@ -27,16 +28,17 @@ public class VoteEntry : Image
         }
     }
 
-    public string SongName
+    public SongEntry Song
     {
         get
         {
-            return SongNameText?.text;
+            return song;
         }
         set
         {
+            song = value;
             if (SongNameText != null)
-                SongNameText.text = value;
+                SongNameText.text = value.SongName;
         }
     }
     
@@ -66,8 +68,6 @@ public class VoteEntry : Image
 
     private void Update()
     {
-        //if (Application.isPlaying)
-        //    percentage = Mathf.Clamp01(percentage + Random.Range(-0.25f, 0.25f));
         tmpFill = Mathf.Lerp(tmpFill, Mathf.Clamp01(baseFill + percentage), updateDelay);
         fillAmount = tmpFill;
     }

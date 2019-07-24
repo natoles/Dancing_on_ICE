@@ -15,10 +15,10 @@ public class SongEntryEditor : ButtonEditor
     {
         base.OnEnable();
         Thumbnail = serializedObject.FindProperty("Thumbnail");
-        SongName = serializedObject.FindProperty("SongName");
-        Artist = serializedObject.FindProperty("Artist");
-        Difficulty = serializedObject.FindProperty("Difficulty");
-        Duration = serializedObject.FindProperty("Duration");
+        SongName = serializedObject.FindProperty("SongNameText");
+        Artist = serializedObject.FindProperty("ArtistText");
+        Difficulty = serializedObject.FindProperty("DifficultyText");
+        Duration = serializedObject.FindProperty("DurationText");
     }
 
     public override void OnInspectorGUI()
