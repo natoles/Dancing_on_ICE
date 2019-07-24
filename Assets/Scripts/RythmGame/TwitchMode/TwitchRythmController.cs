@@ -4,6 +4,7 @@ using Kinect = Windows.Kinect;
 
 public class TwitchRythmController : MonoBehaviour
 {
+    bool playbackStarted = false;
 
     #region Properties
 
@@ -61,7 +62,7 @@ public class TwitchRythmController : MonoBehaviour
     private NodeCreation creator = null;
     private Bounds bounds;
 
-    private readonly float sliderPlotTime = 0.01f;
+    //private readonly float sliderPlotTime = 0.01f;
     private readonly float bx = 0.225f;
     private readonly float dx = 0.150f;
     private readonly float by = 0.275f;
@@ -108,7 +109,8 @@ public class TwitchRythmController : MonoBehaviour
         
         loader = new Thread(new ThreadStart(LoadBeatmapForPlay));
         loader.Start();
-        loadingScreen.Display(System.IO.Path.GetFileNameWithoutExtension(BeatmapToLoad?.sourceFile));
+        loadingScreen.Text = System.IO.Path.GetFileNameWithoutExtension(BeatmapToLoad?.sourceFile);
+        loadingScreen.Show();
     }
     
     private void Update()
@@ -130,11 +132,13 @@ public class TwitchRythmController : MonoBehaviour
 
                 loadingScreen.Hide();
             }
-
-            if (player.isPlaying && BeatmapToLoad != null)
+            
+            if (player.isPlaying)
             {
+                playbackStarted = true;
+
                 bounds = mainCamera.OrthographicBounds();
-                
+
                 int currSample = analyser.SampleIndex(player.time + ApproachTime);
                 for (int i = previousSample + 1; i <= currSample && i < analyser.SpectralFluxSamples.Count; ++i)
                 {
@@ -170,6 +174,10 @@ public class TwitchRythmController : MonoBehaviour
                 //        i1++;
                 //    }
                 //}
+            }
+            else if (playbackStarted)
+            {
+                SceneHistory.LoadPreviousScene();
             }
         }
         else if (loadingFailed)

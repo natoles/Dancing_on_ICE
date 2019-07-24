@@ -3,10 +3,10 @@
 public class PauseMenuController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject pauseMenu;
+    private GameObject pauseMenu = null;
 
     [SerializeField]
-    private AudioSource audioPlayer;
+    private AudioSource audioPlayer = null;
 
     bool paused = false;
     float previousTimeScale = 1f;

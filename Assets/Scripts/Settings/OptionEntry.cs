@@ -55,12 +55,7 @@ public class OptionEntry : MonoBehaviour
 
     [SerializeField]
     private Slider NumberValueInput = null;
-
-    [SerializeField]
-    private Text NumberValueDisplay = null;
     
-    private float numberMinVal = 0;
-    private float numberMaxVal = 100;
     private float numberStep = 1;
     private bool numberRoundValues = false;
 
