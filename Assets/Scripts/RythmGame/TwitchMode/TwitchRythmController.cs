@@ -43,15 +43,14 @@ public class TwitchRythmController : MonoBehaviour
     private Thread loader = null;
     private AudioClipData clipData = null;
     private bool loaded = false;
+    private bool loadingFailed = false;
 
     private void LoadBeatmapForPlay()
     {
         clipData = BeatmapLoader.LoadBeatmapAudio(BeatmapToLoad);
 
-        if (clipData != null)
-            loaded = true;
-        else
-            NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
+        loaded = clipData != null;
+        loadingFailed = clipData == null;
     }
 
     #endregion
@@ -104,7 +103,7 @@ public class TwitchRythmController : MonoBehaviour
 
 #if UNITY_EDITOR
         if (BeatmapToLoad == null)
-            BeatmapToLoad = BeatmapLoader.LoadBeatmapFile(BeatmapLoader.SelectBeatmapFile());
+            BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
 #endif
         
         loader = new Thread(new ThreadStart(LoadBeatmapForPlay));
@@ -172,6 +171,11 @@ public class TwitchRythmController : MonoBehaviour
                 //    }
                 //}
             }
+        }
+        else if (loadingFailed)
+        {
+            NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
+            SceneHistory.LoadPreviousScene();
         }
     }
 }

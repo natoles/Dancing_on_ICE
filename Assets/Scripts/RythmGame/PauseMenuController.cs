@@ -1,17 +1,25 @@
 ﻿using UnityEngine;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenuController : MonoBehaviour
 {
     [SerializeField]
     private GameObject pauseMenu;
 
-    bool paused;
-    float previousTimeScale;
+    [SerializeField]
+    private AudioSource audioPlayer;
+
+    bool paused = false;
+    float previousTimeScale = 1f;
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Escape))
-            Pause();
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (paused)
+                Resume();
+            else
+                Pause();
+        }
     }
 
     public void Pause()
@@ -20,6 +28,7 @@ public class PauseMenu : MonoBehaviour
         {
             paused = true;
             previousTimeScale = Time.timeScale;
+            audioPlayer.Pause();
             Time.timeScale = 0f;
             pauseMenu.SetActive(true);
         }
@@ -31,6 +40,7 @@ public class PauseMenu : MonoBehaviour
         {
             pauseMenu.SetActive(false);
             Time.timeScale = previousTimeScale;
+            audioPlayer.UnPause();
             paused = false;
         }
     }
