@@ -122,7 +122,8 @@ public class MovementFile
                 ,int jointExclusion, TimeStamp defaultNode)
     {
         #region Get Datas
-        int moveIndex = allMovementPath.IndexOf(path);
+        
+        int moveIndex = allMovementPath.IndexOf(GetPath(path));
         List<float> listRHx = new List<float>();
         List<float> listRHy = new List<float>();
         List<float> listLHx = new List<float>();
@@ -134,7 +135,7 @@ public class MovementFile
         float distL = 0;
         int cptR = 0;
         int cptL = 0;
-
+        
         //We take a point after the distance nodeDistance is travelled(We always have the last node)
         listRHx.Add(allMovementPos[moveIndex][0][len - 1]);
         listRHy.Add(allMovementPos[moveIndex][1][len - 1]);
@@ -164,7 +165,6 @@ public class MovementFile
         listLHy.Reverse();
         #endregion
 
-        
         #region Add to list
         List<TimeStamp> listTS = new List<TimeStamp>();
 
