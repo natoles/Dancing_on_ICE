@@ -13,7 +13,8 @@ public class MovementFile
     float hipCenterX = 0;
     float hipCenterY = 0;
     public List<List<float[]>> allMovementPos;
-    public List<List<TimeStamp>> allMovementTimeStamp;
+    public List<List<TimeStamp>> allMovementTimeStampBasic;
+    public List<List<TimeStamp>> allMovementTimeStampLine;
     public List<float[]> allMovementRates;
     public List<float> allMovementGlobalRates;
     public List<string> allMovementPath;
@@ -25,7 +26,8 @@ public class MovementFile
         allMovementRates = new List<float[]>();
         allMovementGlobalRates = new List<float>();
         allMovementPath = new List<string>();
-        allMovementTimeStamp = new List<List<TimeStamp>>();
+        allMovementTimeStampBasic = new List<List<TimeStamp>>();
+        allMovementTimeStampLine = new List<List<TimeStamp>>();
     }
 
     //Adds a move 
@@ -180,7 +182,17 @@ public class MovementFile
                     InitAddNode(listTS, 1, timeSpawn, speed, scale, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
         }
-        allMovementTimeStamp.Add(listTS);
+        switch(defaultNode.nodeType){
+            case(0):
+                allMovementTimeStampBasic.Add(listTS);
+                break;
+            case(1):
+                allMovementTimeStampLine.Add(listTS);
+                break;
+            default:
+                Debug.Log("Unsupported Node Type");
+                break;
+        }
         #endregion
     }
 
@@ -221,7 +233,6 @@ public class MovementFile
     void InitAddLineNode(List<TimeStamp> listTS, int joint, float timeSpawn, float scale, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         TimeStamp ts = defaultNode.DeepCopyTS(defaultNode);
         ts.joint = joint;
-        Debug.Log(PosX.Count + ", " + joint);
         if (PosX.Count > 0){
             Vector3[] pathPositions = new Vector3[PosX.Count-1];
             for(int i = 0; i < PosX.Count; i++){
