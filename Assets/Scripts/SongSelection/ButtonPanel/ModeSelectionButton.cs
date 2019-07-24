@@ -10,6 +10,7 @@ public class ModeSelectionButton : Button
     class ModeContainer
     {
         public string name = null;
+        public bool useSlider = false;
         public GameObject buttons = null;
     }
 
@@ -18,6 +19,9 @@ public class ModeSelectionButton : Button
 
     [SerializeField]
     private Text TextComponent = null;
+
+    [SerializeField]
+    private GameObject DifficultySlider = null;
 
     [SerializeField]
     private ModeContainer[] Modes = null;
@@ -57,11 +61,22 @@ public class ModeSelectionButton : Button
     {
         for (int i = 0; i < Modes.Length; ++i)
             SetButtonsVisibility(i, i == current);
+        SetSliderVisibility(current);
     }
 
     private void SetButtonsVisibility(int id, bool visible)
     {
         if (Modes[id] != null && Modes[id].buttons != null)
-            Modes[id].buttons.SetActive(visible);
+        {
+                Modes[id].buttons.SetActive(visible);
+        }
+    }
+
+    private void SetSliderVisibility(int id)
+    {
+        if (Modes[id] != null)
+        {
+            DifficultySlider.SetActive(Modes[id].useSlider);
+        }
     }
 }

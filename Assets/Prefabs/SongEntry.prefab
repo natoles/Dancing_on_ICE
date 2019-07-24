@@ -316,10 +316,10 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, Unity.ugui, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   Thumbnail: {fileID: 7115153400890111289}
-  SongName: {fileID: 7115153402848438996}
-  Artist: {fileID: 7115153401083976152}
-  Difficulty: {fileID: 7115153402540304374}
-  Duration: {fileID: 7115153401347458397}
+  SongNameText: {fileID: 7115153402848438996}
+  ArtistText: {fileID: 7115153401083976152}
+  DifficultyText: {fileID: 7115153402540304374}
+  DurationText: {fileID: 7115153401347458397}
 --- !u!1 &7115153402540304360
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,7 +337,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7115153402540304375
 RectTransform:
   m_ObjectHideFlags: 0

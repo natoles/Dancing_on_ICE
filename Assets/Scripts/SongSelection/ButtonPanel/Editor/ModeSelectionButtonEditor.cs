@@ -6,14 +6,16 @@ using UnityEditor.UI;
 [CustomEditor(typeof(ModeSelectionButton), true)]
 public class ModeSelectionButtonEditor : ButtonEditor
 {
-    SerializedProperty TextComponent;
+    SerializedProperty TargetText;
+    SerializedProperty Slider;
     SerializedProperty Modes;
     SerializedProperty Current;
-
+    
     protected override void OnEnable()
     {
         base.OnEnable();
-        TextComponent = serializedObject.FindProperty("TextComponent");
+        TargetText = serializedObject.FindProperty("TextComponent");
+        Slider = serializedObject.FindProperty("DifficultySlider");
         Modes = serializedObject.FindProperty("Modes");
         Current = serializedObject.FindProperty("current");
     }
@@ -23,8 +25,10 @@ public class ModeSelectionButtonEditor : ButtonEditor
         EditorGUILayout.LabelField(GetType().ToString(), EditorStyles.centeredGreyMiniLabel);
 
         serializedObject.Update();
+        
+        EditorGUILayout.PropertyField(TargetText);
+        EditorGUILayout.PropertyField(Slider);
 
-        EditorGUILayout.PropertyField(TextComponent);
         ShowList(Modes);
 
         serializedObject.ApplyModifiedProperties();
@@ -50,10 +54,15 @@ public class ModeSelectionButtonEditor : ButtonEditor
 
     private void ShowElements(SerializedProperty list)
     {
+        GUIStyle centeredLabel = new GUIStyle("wordWrappedLabel") { alignment = TextAnchor.MiddleCenter, stretchWidth = false };
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("", GUILayout.Width(20f));
-        EditorGUILayout.LabelField("Name", EditorStyles.wordWrappedLabel);
-        EditorGUILayout.LabelField("Buttons", EditorStyles.wordWrappedLabel);
+        EditorGUILayout.LabelField(new GUIContent("Name", "Name displayed by targeted Text component"), centeredLabel, GUILayout.Width((Screen.width - 106f) * 30 / 100));
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.LabelField(new GUIContent("Slider", "Should this mode use the default difficulty slider ?"), centeredLabel, GUILayout.Width(46f));
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.LabelField(new GUIContent("Buttons", "Buttons displayed when this mode is selected"), centeredLabel, GUILayout.Width((Screen.width - 106f) * 45 / 100));
         EditorGUILayout.LabelField("", GUILayout.Width(40f));
         EditorGUILayout.EndHorizontal();
 
@@ -69,10 +78,14 @@ public class ModeSelectionButtonEditor : ButtonEditor
             }
 
             SerializedProperty Name = element.FindPropertyRelative("name");
+            SerializedProperty Slider = element.FindPropertyRelative("useSlider");
             SerializedProperty Buttons = element.FindPropertyRelative("buttons");
 
-            Name.stringValue = EditorGUILayout.TextField(Name.stringValue);
-            Buttons.objectReferenceValue = EditorGUILayout.ObjectField(Buttons.objectReferenceValue, typeof(GameObject), true);
+            Name.stringValue = EditorGUILayout.TextField(Name.stringValue, GUILayout.Width((Screen.width - 76f) * 30 / 100));
+            GUILayout.FlexibleSpace();
+            Slider.boolValue = EditorGUILayout.Toggle(Slider.boolValue, GUILayout.Width(16f));
+            GUILayout.FlexibleSpace();
+            Buttons.objectReferenceValue = EditorGUILayout.ObjectField(Buttons.objectReferenceValue, typeof(GameObject), true, GUILayout.Width((Screen.width - 76f) * 45 / 100));
 
             if (GUILayout.Button(new GUIContent("-", "Delete entry"), EditorStyles.miniButton, GUILayout.Width(40f)))
             {
@@ -90,8 +103,8 @@ public class ModeSelectionButtonEditor : ButtonEditor
             list.InsertArrayElementAtIndex(list.arraySize);
             SerializedProperty element = list.GetArrayElementAtIndex(list.arraySize - 1);
             element.FindPropertyRelative("name").stringValue = null;
+            element.FindPropertyRelative("useSlider").boolValue = false;
             element.FindPropertyRelative("buttons").objectReferenceValue = null;
-
         }
     }
 }

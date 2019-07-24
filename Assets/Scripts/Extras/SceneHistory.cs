@@ -51,19 +51,45 @@ public static class SceneHistory
     {
         if (history.Count > 0)
             SceneManager.LoadScene(history.Pop());
+        else
+            SceneManager.LoadScene(0);
     }
 
     public static void LoadPreviousScene(LoadSceneMode mode)
     {
         if (history.Count > 0)
             SceneManager.LoadScene(history.Pop(), mode);
+        else
+            SceneManager.LoadScene(0, mode);
     }
     
     public static void LoadPreviousScene(LoadSceneParameters parameters)
     {
         if (history.Count > 0)
             SceneManager.LoadScene(history.Pop(), parameters);
+        else
+            SceneManager.LoadScene(0, parameters);
     }
 
     #endregion
+
+    #region ReloadActiveScene
+
+    public static void ReloadActiveScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().path);
+    }
+
+    public static void ReloadActiveScene(LoadSceneMode mode)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().path, mode);
+    }
+
+    public static void ReloadActiveScene(LoadSceneParameters parameters)
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().path, parameters);
+    }
+
+    #endregion
+
 }
