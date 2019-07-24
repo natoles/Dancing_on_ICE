@@ -13,6 +13,7 @@ public class MovementFile
     float hipCenterX = 0;
     float hipCenterY = 0;
     public List<List<float[]>> allMovementPos;
+    public List<List<TimeStamp>> allMovementTimeStamp;
     public List<float[]> allMovementRates;
     public List<float> allMovementGlobalRates;
     public List<string> allMovementPath;
@@ -24,12 +25,18 @@ public class MovementFile
         allMovementRates = new List<float[]>();
         allMovementGlobalRates = new List<float>();
         allMovementPath = new List<string>();
+        allMovementTimeStamp = new List<List<TimeStamp>>();
     }
 
     //Adds a move 
     public void AddMovePath(string path){
         path = Path.Combine(Application.streamingAssetsPath, "Moves", path + ".csv");
         allMovementPath.Add(path);
+    }
+
+    public string GetPath(string path){
+        path = Path.Combine(Application.streamingAssetsPath, "Moves", path + ".csv");
+        return path;
     }
 
     //Stores every datas from the csv file into arrays (to call at the start of the game)
@@ -109,7 +116,7 @@ public class MovementFile
     }
 
     //Canges the datas from the arrays to correspond to the parameters
-    public List<TimeStamp> GetUkiDatas(string path, float timeSpawn, float speed, float scale, float offsetX, float offsetY
+    public void SetMoveTimeStamp(string path, float timeSpawn, float speed, float scale, float offsetX, float offsetY
                 ,int jointExclusion, TimeStamp defaultNode)
     {
         #region Get Datas
@@ -173,7 +180,7 @@ public class MovementFile
                     InitAddNode(listTS, 1, timeSpawn, speed, scale, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
         }
-        return listTS;
+        allMovementTimeStamp.Add(listTS);
         #endregion
     }
 
@@ -193,7 +200,7 @@ public class MovementFile
             for(int i = 0; i < allMovementRates[k].Length; i++){
                 allMovementRates[k][i] = allMovementRates[k][i]/totalDist * 100;
             }
-            //Debug.Log("DistanceR : " + allMovementRates[k][0]);  //Percentage of a move
+            //Debug.Log("DistanceR : " + allMovementRates[k][0]);  //Percentages of a move
             //Debug.Log("DistanceL : " + allMovementRates[k][1]);
         }
         

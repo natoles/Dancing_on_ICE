@@ -60,7 +60,7 @@ public class TimeStamp
     public TimeStamp DeepCopyTS(TimeStamp ts1){
         TimeStamp ts2 = new TimeStamp(ts1.timeSpawn, ts1.nodeType, ts1.joint);
         ts2.timeToFinish = ts1.timeToFinish;
-        ts1.spawnPosition = ts2.spawnPosition;
+        ts2.spawnPosition = ts1.spawnPosition;
         switch(ts2.nodeType){
             case(1):
                 ts2.pathPositions = ts1.pathPositions;
