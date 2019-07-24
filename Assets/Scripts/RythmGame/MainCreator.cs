@@ -18,7 +18,7 @@ public class MainCreator : MonoBehaviour
     List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
     List<Action> allMovementFilesLine = new List<Action>();
     List<Action> allMovementFilesBasic = new List<Action>();
-    int movePoolSize = 3; //See SelectMove()
+    int movePoolSize = 9; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
@@ -50,28 +50,28 @@ public class MainCreator : MonoBehaviour
         totalMoves = decoyMove.allMovementPath.Count;
         if (totalMoves < movePoolSize) Debug.LogError("Error: totalMoves must be greater ot equal than movePoolsize");
         decoyMove.SaveUkiDatas();
-        TimeStamp defaultNodeBasic = new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero);
 
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[0],1.3f*d,globalscale*d,0,-1,0,defaultNodeBasic); 
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[1],1.3f*d,globalscale*d,0,-1,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[2],1.3f*d,globalscale*d + 3,0,5,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[3],1.3f*d,globalscale*d + 2,0,-1,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[4],1.3f*d,globalscale*d + 2,0,-1,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[5],1.3f*d,globalscale*d + 2,0,-1,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[6],1f*d,globalscale*d + 2,0,-1,0,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[7],1f*d,globalscale*d + 2,0,-1,1,defaultNodeBasic);
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[8],1.1f*d,globalscale*d,0,2,2,defaultNodeBasic);
+        SetMoveTimeStampBasic("basic1",1.3f,0,0);
+        SetMoveTimeStampBasic("basic2",1.3f,0,0);
+        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        SetMoveTimeStampBasic("basic4",1.3f,2,0);
+        SetMoveTimeStampBasic("basic5",1.3f,2,0);
+        SetMoveTimeStampBasic("basic6",1.3f,2,0);
+        SetMoveTimeStampBasic("basic7",1f,2,0);
+        SetMoveTimeStampBasic("basic8",1f,2,1);
+        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
         
         
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[0],1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[1],1f,globalscale*d,0,-1,0, new TimeStamp(0,1,0,1.5f,4.5f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[2],1f,globalscale*d + 3,0,5,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[3],1f,globalscale*d + 3,0,-1,0, new TimeStamp(0,1,0,1.5f,3f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[4],1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,2.5f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[5],1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3.5f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[6],1f,globalscale*d + 1.5f,0,-1,0, new TimeStamp(0,1,0,1.5f,3.5f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[7],1f,globalscale*d + 1.5f,0,-1,1, new TimeStamp(0,1,0,1.5f,5.5f*(1/d),Vector3.zero, new Vector3[0]));
-        decoyMove.SetMoveTimeStamp(decoyMove.allMovementPath[8],1f,globalscale*d,0,0,2, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+        SetMoveTimeStampLine("basic1",1.5f,3f,0);
+        SetMoveTimeStampLine("basic2",3,4.5f,0);
+        decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+        SetMoveTimeStampLine("basic4",1.5f,3f,0);
+        SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
+        SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
+        SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
+        SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
+        SetMoveTimeStampLine("basic9",0,4f,2);
+        
         
 
         trackCreation = TrackCreation();
@@ -94,6 +94,15 @@ public class MainCreator : MonoBehaviour
             cpt++;
         }
         //Debug.Log(currentRates[0]);
+    }
+
+    //Shorten verson of SetMoveTimeStamp for LineNode
+    void SetMoveTimeStampLine(string path, float scaleChange, float timeLine, int jointExclusion){
+        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
+    }
+
+    void SetMoveTimeStampBasic(string path, float speed, float scaleChange, int jointExclusion){
+        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
     }
 
     IEnumerator TrackCreation(){
