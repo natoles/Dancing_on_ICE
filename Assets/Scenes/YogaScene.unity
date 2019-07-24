@@ -794,7 +794,7 @@ MonoBehaviour:
   - 0
   numberMoves: 0
   d: 1.1
-  gameLength: 60
+  gameLength: 80
   bodySourceView: {fileID: 510959607}
 --- !u!82 &1584557257
 AudioSource:

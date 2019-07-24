@@ -6,30 +6,24 @@ using System.IO;
 
 public class MainCreator : MonoBehaviour
 {
-    public enum NodeType {BN = 0, LN = 1, AN = 2, HN = 3}
-    public enum joint {RH = 0, LH = 1}
     NodeCreation creator;
     List<TimeStamp> track = new List<TimeStamp>();
     MovementFile decoyMove = new MovementFile();
-    public int nbJoints = 2;
     public float[] currentRates; //See AddMove()
     static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
-    List<MovementFile> allMoves = new List<MovementFile>(); //List of all moves, needs to be filled in Start
-    List<Action> allMovementFilesLine = new List<Action>();
-    List<Action> allMovementFilesBasic = new List<Action>();
-    int movePoolSize = 9; //See SelectMove()
+    int movePoolSize = 3; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
-    float SpawnInterval = 0.5f;
     float tmpTime;
-    static public int globalNodeType = 0; 
+    static public int globalNodeType = 1; 
     public float d = 1;
     public float gameLength; 
     public BodySourceView bodySourceView;
     int totalMoves = 0;
     float startTime;
+    public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
     
 
     void Start()
@@ -40,7 +34,7 @@ public class MainCreator : MonoBehaviour
         decoyMove.AddMovePath("basic1");      //100,0 
         decoyMove.AddMovePath("basic2");      //100,0
         decoyMove.AddMovePath("basic3");      //0,100
-        decoyMove.AddMovePath("basic4");      //0,100
+        /*decoyMove.AddMovePath("basic4");      //0,100
         decoyMove.AddMovePath("basic5");      //49.5 50.5
         decoyMove.AddMovePath("basic6");      //46 54
         decoyMove.AddMovePath("basic7");      //62 38
@@ -51,28 +45,33 @@ public class MainCreator : MonoBehaviour
         if (totalMoves < movePoolSize) Debug.LogError("Error: totalMoves must be greater ot equal than movePoolsize");
         decoyMove.SaveUkiDatas();
 
-        SetMoveTimeStampBasic("basic1",1.3f,0,0);
-        SetMoveTimeStampBasic("basic2",1.3f,0,0);
-        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-        SetMoveTimeStampBasic("basic4",1.3f,2,0);
-        SetMoveTimeStampBasic("basic5",1.3f,2,0);
-        SetMoveTimeStampBasic("basic6",1.3f,2,0);
-        SetMoveTimeStampBasic("basic7",1f,2,0);
-        SetMoveTimeStampBasic("basic8",1f,2,1);
-        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-        
-        
-        SetMoveTimeStampLine("basic1",1.5f,3f,0);
-        SetMoveTimeStampLine("basic2",3,4.5f,0);
-        decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
-        SetMoveTimeStampLine("basic4",1.5f,3f,0);
-        SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
-        SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
-        SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
-        SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
-        SetMoveTimeStampLine("basic9",0,4f,2);
-        
-        
+        switch(globalNodeType){
+            case(0):
+                SetMoveTimeStampBasic("basic1",1.3f,0,0);
+                SetMoveTimeStampBasic("basic2",1.3f,0,0);
+                decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+                /* SetMoveTimeStampBasic("basic4",1.3f,2,0);
+                SetMoveTimeStampBasic("basic5",1.3f,2,0);
+                SetMoveTimeStampBasic("basic6",1.3f,2,0);
+                SetMoveTimeStampBasic("basic7",1f,2,0);
+                SetMoveTimeStampBasic("basic8",1f,2,1);
+                decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,3,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));*/
+                break;
+            case(1):
+                SetMoveTimeStampLine("basic1",1.5f,3f,0);
+                SetMoveTimeStampLine("basic2",3,4.5f,0);
+                decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+                /*SetMoveTimeStampLine("basic4",1.5f,3f,0);
+                SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
+                SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
+                SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
+                SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
+                SetMoveTimeStampLine("basic9",0,4f,2);*/
+                break;
+            default:
+                Debug.Log("Mode not supported");
+                break;
+        }
 
         trackCreation = TrackCreation();
         StartCoroutine(trackCreation);
@@ -82,12 +81,12 @@ public class MainCreator : MonoBehaviour
 
     void Update()
     {
-        
         //Goes through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
         while (cpt < track.Count){
             if (track[cpt].timeSpawn <= Time.time - startTime){
                 spawnNode(track[cpt]);
+                if (track[cpt].nodeType == 3) holdPause = track[cpt].timeHold + track[cpt].timeToFinish;
                 track.Remove(track[cpt]);
                 cpt--;
             }
@@ -98,19 +97,28 @@ public class MainCreator : MonoBehaviour
 
     //Shorten verson of SetMoveTimeStamp for LineNode
     void SetMoveTimeStampLine(string path, float scaleChange, float timeLine, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
+        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
     }
 
     void SetMoveTimeStampBasic(string path, float speed, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
+        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
     }
 
     IEnumerator TrackCreation(){
         ComputeGlobalRate();
-        for (int i = 0; i < 100; i++){   //Max number of moves
+        while(true){    
             int indexChosenMove = SelectMove();
             float r = UnityEngine.Random.Range(0.5f,1.1f);
             tmpTime = maxSpawnTime + r;
+
+            if(holdPause != 0){
+                Debug.Log("Debut de l'attente : " + holdPause);
+                yield return new WaitForSeconds(holdPause);
+                Debug.Log("Fin de l'attente");
+                tmpTime += holdPause;
+                holdPause = 0;
+                
+            }
 
             switch(globalNodeType)
             {
@@ -127,6 +135,8 @@ public class MainCreator : MonoBehaviour
             while (track.Count > 0){  //Pause during the move to select a new move with recent movement datas
                 yield return null ;
             } 
+            
+            
         }
     }
 
@@ -134,9 +144,9 @@ public class MainCreator : MonoBehaviour
         yield return new WaitForSeconds(gameLength);
         Debug.Log("End of the game !");
         SceneHistory.LoadPreviousScene();
-        //#if UNITY_EDITOR
-        //UnityEditor.EditorApplication.ExitPlaymode();
-        //#endif
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.ExitPlaymode();
+        #endif
     }
 
     //Chooses the right constructor according to what is asked
@@ -161,6 +171,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
+    //Add a Move in the track
     void AddMove(List<TimeStamp> move){
         TimeStamp tsCopy = new TimeStamp(0,0,0);
         for(int i = 0; i< move.Count; i++){
@@ -244,6 +255,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
+    //Get the timeSpawn of the Node of the track who which will spanw last
     void SetMaxSpawnTime(){
         for (int i = 0; i < track.Count; i++){
             if(track[i].nodeType != 1){

@@ -20,6 +20,7 @@ public class MovementFile
     public List<string> allMovementPath;
     float nodeDistance = 2.5f; //Distance needed between two nodes (high = less nodes)
     int maxJump = 60;//Max number of frames between two nodes
+    
 
     public MovementFile(){
         allMovementPos = new List<List<float[]>>();
@@ -36,6 +37,7 @@ public class MovementFile
         allMovementPath.Add(path);
     }
 
+    //Get real path from file name
     public string GetPath(string path){
         path = Path.Combine(Application.streamingAssetsPath, "Moves", path + ".csv");
         return path;
@@ -117,9 +119,9 @@ public class MovementFile
     InitDistances();
     }
 
-    //Canges the datas from the arrays to correspond to the parameters
+    //Saves the timeStamp in an array
     public void SetMoveTimeStamp(string path, float speed, float scale, float offsetX, float offsetY
-                ,int jointExclusion, TimeStamp defaultNode)
+                ,float holdEnd, int jointExclusion, TimeStamp defaultNode)
     {
         #region Get Datas
         
@@ -171,15 +173,15 @@ public class MovementFile
         switch(defaultNode.nodeType){
             case 1 :
                 if (jointExclusion == 1 || jointExclusion == 0)
-                    InitAddLineNode(listTS, 0, scale, listRHx, listRHy, offsetX, offsetY, defaultNode);
+                    InitAddLineNode(listTS, 0, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
-                    InitAddLineNode(listTS, 1, scale, listLHx, listLHy, offsetX, offsetY, defaultNode);
+                    InitAddLineNode(listTS, 1, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
             default :
                 if (jointExclusion == 1 || jointExclusion == 0) 
-                    InitAddNode(listTS, 0, speed, scale, listRHx, listRHy, offsetX, offsetY, defaultNode);
+                    InitAddNode(listTS, 0, speed, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
-                    InitAddNode(listTS, 1, speed, scale, listLHx, listLHy, offsetX, offsetY, defaultNode);
+                    InitAddNode(listTS, 1, speed, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
         }
         switch(defaultNode.nodeType){
@@ -204,8 +206,8 @@ public class MovementFile
             for (int i = 0; i< allMovementPos[k].Count; i += nbJoints){
                 allMovementRates.Add(new float[nbJoints]);
                 for(int j = 0; j < allMovementPos[k][0].Length - 1; j++){
-                    allMovementRates[k][i/2] += (float) Math.Sqrt(Math.Pow(allMovementPos[k][i][j+1] - allMovementPos[k][i][j],2) + Math.Pow(allMovementPos[k][i+1][j+1] - allMovementPos[k][i+1][j],2));                }
-                
+                    allMovementRates[k][i/2] += (float) Math.Sqrt(Math.Pow(allMovementPos[k][i][j+1] - allMovementPos[k][i][j],2) + Math.Pow(allMovementPos[k][i+1][j+1] - allMovementPos[k][i+1][j],2));
+                }
                 totalDist += allMovementRates[k][i/2]; 
             }
 
@@ -219,18 +221,24 @@ public class MovementFile
     }
 
     //Init any type of node except LineNodes
-    void InitAddNode(List<TimeStamp> listTS, int joint, float speed, float scale, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
+    void InitAddNode(List<TimeStamp> listTS, int joint, float speed, float scale, float holdEnd, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         for(int i =0; i < PosX.Count; i++){
-            TimeStamp ts = defaultNode.DeepCopyTS(defaultNode);
-            ts.joint = joint;
-            ts.timeSpawn = i/speed; 
-            ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0);
-            listTS.Add(ts);
+            if (i==PosX.Count-1 && holdEnd != 0){
+                TimeStamp tsHold = new TimeStamp(i/speed, 3, joint, defaultNode.timeToFinish, holdEnd, new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0));
+                listTS.Add(tsHold);
+            } else {
+                TimeStamp ts = defaultNode.DeepCopyTS(defaultNode);
+                ts.joint = joint;
+                ts.timeSpawn = i/speed; 
+                ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0);
+                listTS.Add(ts);
+            }
+            
         }
     }
 
     //Add a LineNode
-    void InitAddLineNode(List<TimeStamp> listTS, int joint, float scale, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
+    void InitAddLineNode(List<TimeStamp> listTS, int joint, float scale, float holdEnd, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         TimeStamp ts = defaultNode.DeepCopyTS(defaultNode);
         ts.joint = joint;
         if (PosX.Count > 0){
@@ -243,6 +251,11 @@ public class MovementFile
             ts.pathPositions = pathPositions;
             if (ts.spawnPosition.x < 30)
                 listTS.Add(ts);
+        }
+        if (holdEnd != 0){
+            Debug.Log("HEYYYYYYYYYYYYYY");
+            TimeStamp tsHold = new TimeStamp(defaultNode.timeLine, 3, joint, defaultNode.timeToFinish, holdEnd, new Vector3(PosX[PosX.Count-1]*scale + offsetX, PosY[PosY.Count-1]*scale + offsetY,0));
+            listTS.Add(tsHold);
         }
     }
 
