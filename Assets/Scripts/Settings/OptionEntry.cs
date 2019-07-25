@@ -146,15 +146,14 @@ public class OptionEntry : MonoBehaviour
         NumberValueInput.gameObject.SetActive(false);
     }
 
-    public void SetLayout<T>()
+    public void SetLayout(Type type)
     {
-        Type ValueType = typeof(T);
         HideAllFields();
-        if (ValueType == typeof(string))
+        if (type == typeof(string))
             StringValueInput.gameObject.SetActive(true);
-        else if (ValueType == typeof(bool))
+        else if (type == typeof(bool))
             BoolValueInput.gameObject.SetActive(true);
-        else if (ValueType == typeof(int) || ValueType == typeof(float))
+        else if (type == typeof(int) || type == typeof(float))
             NumberValueInput.gameObject.SetActive(true);
     }
     #endregion
