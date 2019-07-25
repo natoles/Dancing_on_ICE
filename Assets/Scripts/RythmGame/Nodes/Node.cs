@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Node : MonoBehaviour
 {
-    
     protected GameObject movingPart; //Outer circle
     protected GameObject goal; //Inner circle
     protected Vector3 size; //Size of the inner circle 
@@ -26,6 +25,7 @@ public class Node : MonoBehaviour
     protected Scoring scoring;
     protected string joint;
     public bool destroyOnTouch;
+    static int layerOrder = 0;
 
     public virtual void Start()
     {
@@ -38,13 +38,17 @@ public class Node : MonoBehaviour
         size[0] += size[0]/8;
         size[1] += size[1]/8;
 
+        //The most ancient node appers on top
+        layerOrder--;
+        //movingPart.GetComponent<SpriteRenderer>().sortingOrder = layerOrder; //Not sure about that
+        goal.GetComponent<SpriteRenderer>().sortingOrder = layerOrder-1;
+
         _growth = Growth(timeToFinish);
         StartCoroutine(_growth);
         main = GameObject.Find("Main");
         UI = GameObject.Find(UIname);
         scoring = main.GetComponent<Scoring>();
         SetJoint();
-
     }
 
 
