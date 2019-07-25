@@ -27,8 +27,8 @@ public class BasicYogaSettings : MonoBehaviour
         leftValue.text = slider.value.ToString();
         rightValue.text = (100 - slider.value).ToString();
 
-        basic.isOn = MainCreator.globalNodeType == 0;
-        line.isOn = MainCreator.globalNodeType == 1;
+        basic.isOn = MainCreator.globalNodeType == MainCreator.Mode.Basic;
+        line.isOn = MainCreator.globalNodeType == MainCreator.Mode.Line;
     }
 
     // Update is called once per frame
@@ -41,8 +41,8 @@ public class BasicYogaSettings : MonoBehaviour
         rightValue.text = (100 - slider.value).ToString();
 
         if (basic.isOn)
-            MainCreator.globalNodeType = 0;
+            MainCreator.globalNodeType = MainCreator.Mode.Basic;
         else if (line.isOn)
-            MainCreator.globalNodeType = 1;
+            MainCreator.globalNodeType = MainCreator.Mode.Basic;
     }
 }

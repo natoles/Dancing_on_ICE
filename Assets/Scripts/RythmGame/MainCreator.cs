@@ -10,14 +10,15 @@ public class MainCreator : MonoBehaviour
     List<TimeStamp> track = new List<TimeStamp>();
     MovementFile decoyMove = new MovementFile();
     public float[] currentRates; //See AddMove()
-    static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
+    [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     int movePoolSize = 1; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
     float tmpTime;
-    static public int globalNodeType = 0; 
+    public enum Mode {Random = 0, Basic, Line}
+    static public Mode globalNodeType = Mode.Random; 
     public float d = 1;
     public float gameLength; 
     public BodySourceView bodySourceView;
@@ -45,32 +46,28 @@ public class MainCreator : MonoBehaviour
         if (totalMoves < movePoolSize) Debug.LogError("Error: totalMoves must be greater ot equal than movePoolsize");
         decoyMove.SaveUkiDatas();
 
-        switch(globalNodeType){
-            case(0):
-                SetMoveTimeStampBasic("basic1",1.3f,0,0);
-                SetMoveTimeStampBasic("basic2",1.3f,0,0);
-                decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-                SetMoveTimeStampBasic("basic4",1.3f,2,0);
-                SetMoveTimeStampBasic("basic5",1.3f,2,0);
-                SetMoveTimeStampBasic("basic6",1.3f,2,0);
-                SetMoveTimeStampBasic("basic7",1f,2,0);
-                SetMoveTimeStampBasic("basic8",1f,2,1);
-                decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-                break;
-            case(1):
-                SetMoveTimeStampLine("basic1",1.5f,3f,0);
-                SetMoveTimeStampLine("basic2",3,4.5f,0);
-                decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
-                SetMoveTimeStampLine("basic4",1.5f,3f,0);
-                SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
-                SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
-                SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
-                SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
-                SetMoveTimeStampLine("basic9",0,4f,2);
-                break;
-            default:
-                Debug.Log("Mode not supported");
-                break;
+        if(globalNodeType == Mode.Basic || globalNodeType == Mode.Random){
+            SetMoveTimeStampBasic("basic1",1.3f,0,0);
+            SetMoveTimeStampBasic("basic2",1.3f,0,0);
+            decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+            SetMoveTimeStampBasic("basic4",1.3f,2,0);
+            SetMoveTimeStampBasic("basic5",1.3f,2,0);
+            SetMoveTimeStampBasic("basic6",1.3f,2,0);
+            SetMoveTimeStampBasic("basic7",1f,2,0);
+            SetMoveTimeStampBasic("basic8",1f,2,1);
+            decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        }
+
+        if(globalNodeType == Mode.Line || globalNodeType == Mode.Random){ 
+            SetMoveTimeStampLine("basic1",1.5f,3f,0);
+            SetMoveTimeStampLine("basic2",3,4.5f,0);
+            decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+            SetMoveTimeStampLine("basic4",1.5f,3f,0);
+            SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
+            SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
+            SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
+            SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
+            SetMoveTimeStampLine("basic9",0,4f,2);
         }
 
         trackCreation = TrackCreation();
@@ -117,15 +114,19 @@ public class MainCreator : MonoBehaviour
                 yield return new WaitForSeconds(holdPause);
                 tmpTime += holdPause;
                 holdPause = 0;
-                
             }
 
             switch(globalNodeType)
             {
-                case(0): 
+                case(Mode.Random):
+                    float rMode = UnityEngine.Random.Range(0f,1f);
+                    if (rMode > 0.5f) AddMove(decoyMove.allMovementTimeStampBasic[indexChosenMove]);
+                    else AddMove(decoyMove.allMovementTimeStampLine[indexChosenMove]); 
+                    break;
+                case(Mode.Basic): 
                     AddMove(decoyMove.allMovementTimeStampBasic[indexChosenMove]);
                     break;
-                case(1):
+                case(Mode.Line):
                     AddMove(decoyMove.allMovementTimeStampLine[indexChosenMove]);
                     break;
                 default:

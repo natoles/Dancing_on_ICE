@@ -253,7 +253,6 @@ public class MovementFile
                 listTS.Add(ts);
         }
         if (holdEnd != 0){
-            Debug.Log("HEYYYYYYYYYYYYYY");
             TimeStamp tsHold = new TimeStamp(defaultNode.timeLine, 3, joint, defaultNode.timeToFinish, holdEnd, new Vector3(PosX[PosX.Count-1]*scale + offsetX, PosY[PosY.Count-1]*scale + offsetY,0));
             listTS.Add(tsHold);
         }
