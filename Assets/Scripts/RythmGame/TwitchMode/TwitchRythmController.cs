@@ -155,7 +155,7 @@ public class TwitchRythmController : MonoBehaviour
                 int currSample = analyzer.SampleIndex(player.time + ApproachTime);
                 for (int i = previousSample + 1; i <= currSample && i < analyzer.SpectralFluxSamples.Count; ++i)
                 {
-                    if (Time.time > previousNodeSpawning + SpawnDelay && analyzer.SpectralFluxSamples[currSample].IsPeak(1.5f))
+                    if (Time.time > previousNodeSpawning + SpawnDelay && analyzer.SpectralFluxSamples[currSample].IsPeak(analyzer.ThresholdMultiplier))
                     {
                         previousNodeSpawning = Time.time;
                         creator.CreateBasicNode(NodeCreation.Joint.LeftHand, ApproachTime, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));

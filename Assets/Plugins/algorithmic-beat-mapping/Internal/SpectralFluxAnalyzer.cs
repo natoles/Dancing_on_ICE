@@ -8,14 +8,22 @@ public class SpectralFluxInfoLight
     public float spectralFlux;
     public float unscaledThreshold;
 
-    public float PrunedSpectralFlux (float thresholdMultiplier)
+    internal float PrunedSpectralFlux (float thresholdMultiplier)
     {
         return spectralFlux - unscaledThreshold * thresholdMultiplier;
     }
 
-    public SpectralFluxInfoLight Copy()
+    public float PrunedSpectralFlux()
     {
-        return new SpectralFluxInfoLight { spectralFlux = spectralFlux, unscaledThreshold = unscaledThreshold };
+        return spectralFlux - unscaledThreshold;
+    }
+
+    public float MultiplierToZero
+    {
+        get
+        {
+            return spectralFlux / unscaledThreshold;
+        }
     }
 }
 
@@ -26,9 +34,26 @@ public class SpectralFluxInfo : SpectralFluxInfoLight {
 
     public bool IsPeak(float thresholdMultiplier)
     {
+        if (previous == null || next == null)
+            return false;
+
         float currentPrunedSpectralFlux = PrunedSpectralFlux(thresholdMultiplier);
         float previousPrunedSpectralFlux = previous.PrunedSpectralFlux(thresholdMultiplier);
         float nextPrunedSpectralFlux = next.PrunedSpectralFlux(thresholdMultiplier);
+        return
+             currentPrunedSpectralFlux > 0f &&
+             currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
+             currentPrunedSpectralFlux > previousPrunedSpectralFlux;
+    }
+
+    public bool IsPeak()
+    {
+        if (previous == null || next == null)
+            return false;
+
+        float currentPrunedSpectralFlux = PrunedSpectralFlux();
+        float previousPrunedSpectralFlux = previous.PrunedSpectralFlux();
+        float nextPrunedSpectralFlux = next.PrunedSpectralFlux();
         return
              currentPrunedSpectralFlux > 0f &&
              currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
@@ -89,8 +114,8 @@ public class SpectralFluxAnalyzer {
 			// Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
 			int indexToDetectPeak = indexToProcess - 1;
 
-            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1].Copy();
-            spectralFluxSamples[indexToDetectPeak].next     = spectralFluxSamples[indexToDetectPeak + 1].Copy();
+            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1];
+            spectralFluxSamples[indexToDetectPeak].next     = spectralFluxSamples[indexToDetectPeak + 1];
 
 			indexToProcess++;
 		}

@@ -23,6 +23,10 @@ public class BeatAnalyzer
     bool completed = false;
     bool crashed = false;
 
+    public float PeaksFactor { get; set; } = 5f;
+
+    public float ThresholdMultiplier { get; private set; } = 1;
+
     public List<SpectralFluxInfo> SpectralFluxSamples
     {
         get
@@ -149,6 +153,15 @@ public class BeatAnalyzer
 				// Send our magnitude data off to our Spectral Flux Analyzer to be analyzed for peaks
 				fluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
+
+            Debug.Log("Selecting peaks");
+            List<SpectralFluxInfo> peaks = fluxAnalyzer.spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
+            Debug.Log($"Sorting peaks ({peaks.Count} found)");
+            peaks.Sort((sfi1, sfi2) => - Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux())); // the minus is for sorting by decreasing order
+            int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(PeaksFactor * clipLength), peaks.Count - 1);
+            ThresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero;
+            Debug.Log($"Multiplier used: {ThresholdMultiplier} for {effectivePeakCount} peaks");
+            peaks = null;
 
             Debug.Log ("Background Thread Completed");
             completed = true;
