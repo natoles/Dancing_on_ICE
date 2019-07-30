@@ -7,8 +7,6 @@ using Newtonsoft.Json;
 
 public class TwitchRythmController : MonoBehaviour
 {
-    bool playbackStarted = false;
-
     #region Properties
 
     public static BeatmapContainer BeatmapToLoad { set; get; } = null;
@@ -171,8 +169,6 @@ public class TwitchRythmController : MonoBehaviour
 
             if (player.isPlaying && player.time > 0)
             {
-                playbackStarted = true;
-
                 bounds = mainCamera.OrthographicBounds();
                 
                 while (currPeak < peaks.Count && peaks[currPeak].time <= player.time + ApproachTime)
@@ -185,7 +181,7 @@ public class TwitchRythmController : MonoBehaviour
                     currPeak++;
                 }
             }
-            else if (player.time > 0 && playbackStarted)
+            else if (player.timeSamples > player.clip.samples) // end of playback
             {
                 SceneHistory.LoadPreviousScene();
             }
