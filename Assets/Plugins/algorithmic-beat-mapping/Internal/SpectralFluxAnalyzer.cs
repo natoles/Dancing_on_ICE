@@ -8,7 +8,7 @@ public class SpectralFluxInfoLight
     public float spectralFlux;
     public float unscaledThreshold;
 
-    internal float PrunedSpectralFlux (float thresholdMultiplier)
+    internal float PrunedSpectralFlux(float thresholdMultiplier)
     {
         return spectralFlux - unscaledThreshold * thresholdMultiplier;
     }
@@ -27,8 +27,9 @@ public class SpectralFluxInfoLight
     }
 }
 
-public class SpectralFluxInfo : SpectralFluxInfoLight {
-	public float time;
+public class SpectralFluxInfo : SpectralFluxInfoLight
+{
+    public float time;
     public SpectralFluxInfoLight previous;
     public SpectralFluxInfoLight next;
 
@@ -60,20 +61,21 @@ public class SpectralFluxInfo : SpectralFluxInfoLight {
 public class SpectralFluxAnalyzer
 {
     // Size of sample arrays passed to the analyzer
-	private readonly int numSamples = 1024;
+    private readonly int numSamples = 1024;
 
-	// Number of samples to average in our window
-	private readonly int thresholdWindowSize = 50;
+    // Number of samples to average in our window
+    private readonly int thresholdWindowSize = 50;
 
-	public List<SpectralFluxInfo> spectralFluxSamples;
+    public List<SpectralFluxInfo> spectralFluxSamples;
 
-	private float[] curSpectrum;
-	private float[] prevSpectrum;
+    private float[] curSpectrum;
+    private float[] prevSpectrum;
 
-	private int indexToProcess;
+    private int indexToProcess;
 
-	public SpectralFluxAnalyzer (int numSamples, int thresholdWindowSize) {
-		spectralFluxSamples = new List<SpectralFluxInfo> ();
+    public SpectralFluxAnalyzer(int numSamples, int thresholdWindowSize)
+    {
+        spectralFluxSamples = new List<SpectralFluxInfo>();
 
         this.numSamples = numSamples;
         this.thresholdWindowSize = thresholdWindowSize;
@@ -81,52 +83,54 @@ public class SpectralFluxAnalyzer
         // Start processing from middle of first window and increment by 1 from there
         indexToProcess = this.thresholdWindowSize / 2;
 
-		curSpectrum = new float[numSamples];
-		prevSpectrum = new float[numSamples];
-	}
+        curSpectrum = new float[numSamples];
+        prevSpectrum = new float[numSamples];
+    }
 
-    public void SetCurSpectrum(float[] spectrum) {
-		curSpectrum.CopyTo (prevSpectrum, 0);
-		spectrum.CopyTo (curSpectrum, 0);
-	}
-		
-	public void AnalyzeSpectrum(float[] spectrum, float time) {
-		// Set spectrum
-		SetCurSpectrum(spectrum);
+    public void SetCurSpectrum(float[] spectrum)
+    {
+        curSpectrum.CopyTo(prevSpectrum, 0);
+        spectrum.CopyTo(curSpectrum, 0);
+    }
 
-		// Get current spectral flux from spectrum
-		SpectralFluxInfo curInfo = new SpectralFluxInfo();
-		curInfo.time = time;
-		curInfo.spectralFlux = CalculateRectifiedSpectralFlux ();
-		spectralFluxSamples.Add (curInfo);
+    public void AnalyzeSpectrum(float[] spectrum, float time)
+    {
+        // Set spectrum
+        SetCurSpectrum(spectrum);
 
-		// We have enough samples to detect a peak
-		if (spectralFluxSamples.Count >= thresholdWindowSize) {
-			// Get Flux threshold of time window surrounding index to process
-			spectralFluxSamples[indexToProcess].unscaledThreshold = GetUnscaledFluxThreshold (indexToProcess);
+        // Get current spectral flux from spectrum
+        SpectralFluxInfo curInfo = new SpectralFluxInfo();
+        curInfo.time = time;
+        curInfo.spectralFlux = CalculateRectifiedSpectralFlux();
+        spectralFluxSamples.Add(curInfo);
 
-			// Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
-			int indexToDetectPeak = indexToProcess - 1;
+        // We have enough samples to detect a peak
+        if (spectralFluxSamples.Count >= thresholdWindowSize)
+        {
+            // Get Flux threshold of time window surrounding index to process
+            spectralFluxSamples[indexToProcess].unscaledThreshold = GetUnscaledFluxThreshold(indexToProcess);
+
+            // Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
+            int indexToDetectPeak = indexToProcess - 1;
 
             spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1];
-            spectralFluxSamples[indexToDetectPeak].next     = spectralFluxSamples[indexToDetectPeak + 1];
+            spectralFluxSamples[indexToDetectPeak].next = spectralFluxSamples[indexToDetectPeak + 1];
 
-			indexToProcess++;
-		}
-		else {
-			//Debug.Log(string.Format("Not ready yet.  At spectral flux sample size of {0} growing to {1}", spectralFluxSamples.Count, thresholdWindowSize));
-		}
-	}
+            indexToProcess++;
+        }
+    }
 
-	float CalculateRectifiedSpectralFlux() {
-		float sum = 0f;
+    float CalculateRectifiedSpectralFlux()
+    {
+        float sum = 0f;
 
-		// Aggregate positive changes in spectrum data
-		for (int i = 0; i < numSamples; i++) {
-			sum += Mathf.Max (0f, curSpectrum [i] - prevSpectrum [i]);
-		}
-		return sum;
-	}
+        // Aggregate positive changes in spectrum data
+        for (int i = 0; i < numSamples; i++)
+        {
+            sum += Mathf.Max(0f, curSpectrum[i] - prevSpectrum[i]);
+        }
+        return sum;
+    }
 
     float GetUnscaledFluxThreshold(int spectralFluxIndex)
     {
