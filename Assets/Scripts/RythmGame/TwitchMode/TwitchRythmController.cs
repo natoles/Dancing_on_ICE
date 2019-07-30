@@ -58,7 +58,9 @@ public class TwitchRythmController : MonoBehaviour
 
     #region Node Spawning
 
-    private BeatThreadedAnalyser analyser = null;
+    private BeatAnalyzer analyzer = null;
+    private bool analyzed = false;
+
     private NodeCreation creator = null;
     private Bounds bounds;
 
@@ -97,7 +99,7 @@ public class TwitchRythmController : MonoBehaviour
 
     #endregion
 
-    private void Start()
+  private void Start()
     {
         creator = new NodeCreation();
         bounds = mainCamera.OrthographicBounds();
@@ -125,24 +127,35 @@ public class TwitchRythmController : MonoBehaviour
                 player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                 clipData = null;
                 
-                analyser = new BeatThreadedAnalyser(player, ThresholdMultiplier);
-                analyser.Start();
-
-                player.PlayDelayed(3);
-
-                loadingScreen.Hide();
+                analyzer = new BeatAnalyzer(player, ThresholdMultiplier);
+                analyzer.Start();
             }
-            
+
+            if (!analyzed)
+            {
+                if (analyzer.Completed)
+                {
+                    analyzed = true;
+                    player.PlayDelayed(3);
+                    loadingScreen.Hide();
+                }
+                else if (analyzer.Crashed)
+                {
+                    NotificationManager.Instance.PushNotification("Failed to analyze audio", Color.white, Color.red);
+                    SceneHistory.LoadPreviousScene();
+                }
+            }
+
             if (player.isPlaying)
             {
                 playbackStarted = true;
 
                 bounds = mainCamera.OrthographicBounds();
 
-                int currSample = analyser.SampleIndex(player.time + ApproachTime);
-                for (int i = previousSample + 1; i <= currSample && i < analyser.SpectralFluxSamples.Count; ++i)
+                int currSample = analyzer.SampleIndex(player.time + ApproachTime);
+                for (int i = previousSample + 1; i <= currSample && i < analyzer.SpectralFluxSamples.Count; ++i)
                 {
-                    if (Time.time > previousNodeSpawning + SpawnDelay && analyser.SpectralFluxSamples[currSample].isPeak)
+                    if (Time.time > previousNodeSpawning + SpawnDelay && analyzer.SpectralFluxSamples[currSample].IsPeak(analyzer.ThresholdMultiplier))
                     {
                         previousNodeSpawning = Time.time;
                         creator.CreateBasicNode(NodeCreation.Joint.LeftHand, ApproachTime, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));

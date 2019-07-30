@@ -27,7 +27,7 @@ public class SettingsScrollRect : ScrollRect
         {
             OptionEntry opt = Instantiate<OptionEntry>(prefab, content.transform);
             opt.OptionName = s.Name;
-            opt.SetLayout<string>();
+            opt.SetLayout(typeof(string));
             opt.StringValue = s.StringValue;
         }
     }

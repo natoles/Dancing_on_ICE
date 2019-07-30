@@ -1,4 +1,4 @@
-﻿// Adapted from algorithmic-beat-mapping-unity from jesse-scam (https://github.com/jesse-scam/algorithmic-beat-mapping-unity)
+﻿// Adapted from algorithmic-beat-mapping-unity by jesse-scam (https://github.com/jesse-scam/algorithmic-beat-mapping-unity)
 
 using System;
 using System.Collections;
@@ -9,7 +9,7 @@ using UnityEngine;
 using System.Numerics;
 using DSPLib;
 
-public class BeatThreadedAnalyser
+public class BeatAnalyzer
 {
     readonly AudioSource audioSource;
     readonly int numChannels;
@@ -20,6 +20,12 @@ public class BeatThreadedAnalyser
 	SpectralFluxAnalyzer fluxAnalyzer;
 
     Thread bgThread;
+    bool completed = false;
+    bool crashed = false;
+
+    public float PeaksFactor { get; set; } = 5f;
+
+    public float ThresholdMultiplier { get; private set; } = 1;
 
     public List<SpectralFluxInfo> SpectralFluxSamples
     {
@@ -29,17 +35,39 @@ public class BeatThreadedAnalyser
         }
     }
 
-    public BeatThreadedAnalyser(AudioSource audioSource, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
+    public bool Completed
+    {
+        get
+        {
+            if (completed)
+                bgThread.Join();
+            return completed;
+        }
+    }
+
+    public bool Crashed
+    {
+        get
+        {
+            if (crashed)
+                bgThread.Join();
+            return crashed;
+        }
+    }
+
+    public BeatAnalyzer(AudioSource audioSource, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
     {
         this.audioSource = audioSource;
 
-		fluxAnalyzer = new SpectralFluxAnalyzer ();
-        fluxAnalyzer.ThresholdMultiplier = thresholdMultipler;
-        fluxAnalyzer.ThresholdWindowSize = thresholdWindowSize;
+        fluxAnalyzer = new SpectralFluxAnalyzer
+        {
+            ThresholdMultiplier = thresholdMultipler,
+            ThresholdWindowSize = thresholdWindowSize
+        };
 
-		// Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
-		// [L,R,L,R,L,R]
-		multiChannelSamples = new float[audioSource.clip.samples * audioSource.clip.channels];
+        // Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
+        // [L,R,L,R,L,R]
+        multiChannelSamples = new float[audioSource.clip.samples * audioSource.clip.channels];
 		numChannels = audioSource.clip.channels;
 		numTotalSamples = audioSource.clip.samples;
 		clipLength = audioSource.clip.length;
@@ -56,7 +84,7 @@ public class BeatThreadedAnalyser
 
     public void Start()
     {
-        //Debug.Log("Starting Background Thread");
+        Debug.Log("Starting Background Thread");
         bgThread.Start();
     }
 
@@ -96,9 +124,6 @@ public class BeatThreadedAnalyser
 				}
 			}
 
-			//Debug.Log ("Combine Channels done");
-			//Debug.Log (preProcessedSamples.Length);
-
 			// Once we have our audio sample data prepared, we can execute an FFT to return the spectrum data over the time domain
 			int spectrumSampleSize = 1024;
 			int iterations = preProcessedSamples.Length / spectrumSampleSize;
@@ -129,12 +154,22 @@ public class BeatThreadedAnalyser
 				fluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
 
-			//Debug.Log ("Spectrum Analysis done");
-			//Debug.Log ("Background Thread Completed");
+            Debug.Log("Selecting peaks");
+            List<SpectralFluxInfo> peaks = fluxAnalyzer.spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
+            Debug.Log($"Sorting peaks ({peaks.Count} found)");
+            peaks.Sort((sfi1, sfi2) => - Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux())); // the minus is for sorting by decreasing order
+            int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(PeaksFactor * clipLength), peaks.Count - 1);
+            ThresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero;
+            Debug.Log($"Multiplier used: {ThresholdMultiplier} for {effectivePeakCount} peaks");
+            peaks = null;
+
+            Debug.Log ("Background Thread Completed");
+            completed = true;
 				
 		} catch (Exception e) {
 			// Catch exceptions here since the background thread won't always surface the exception to the main thread
 			Debug.Log (e.ToString ());
+            crashed = true;
 		}
 	}
 }

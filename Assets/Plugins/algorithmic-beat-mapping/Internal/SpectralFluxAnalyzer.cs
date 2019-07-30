@@ -1,28 +1,77 @@
-﻿using System;
-using System.Collections;
+﻿// Adapted from algorithmic-beat-mapping-unity by jesse-scam (https://github.com/jesse-scam/algorithmic-beat-mapping-unity)
+
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpectralFluxInfo {
+public class SpectralFluxInfoLight
+{
+    public float spectralFlux;
+    public float unscaledThreshold;
+
+    internal float PrunedSpectralFlux (float thresholdMultiplier)
+    {
+        return spectralFlux - unscaledThreshold * thresholdMultiplier;
+    }
+
+    public float PrunedSpectralFlux()
+    {
+        return spectralFlux - unscaledThreshold;
+    }
+
+    public float MultiplierToZero
+    {
+        get
+        {
+            return spectralFlux / unscaledThreshold;
+        }
+    }
+}
+
+public class SpectralFluxInfo : SpectralFluxInfoLight {
 	public float time;
-	public float spectralFlux;
-	public float threshold;
-	public float prunedSpectralFlux;
-	public bool isPeak;
+    public SpectralFluxInfoLight previous;
+    public SpectralFluxInfoLight next;
+
+    public bool IsPeak(float thresholdMultiplier)
+    {
+        if (previous == null || next == null)
+            return false;
+
+        float currentPrunedSpectralFlux = PrunedSpectralFlux(thresholdMultiplier);
+        float previousPrunedSpectralFlux = previous.PrunedSpectralFlux(thresholdMultiplier);
+        float nextPrunedSpectralFlux = next.PrunedSpectralFlux(thresholdMultiplier);
+        return
+             currentPrunedSpectralFlux > 0f &&
+             currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
+             currentPrunedSpectralFlux > previousPrunedSpectralFlux;
+    }
+
+    public bool IsPeak()
+    {
+        if (previous == null || next == null)
+            return false;
+
+        float currentPrunedSpectralFlux = PrunedSpectralFlux();
+        float previousPrunedSpectralFlux = previous.PrunedSpectralFlux();
+        float nextPrunedSpectralFlux = next.PrunedSpectralFlux();
+        return
+             currentPrunedSpectralFlux > 0f &&
+             currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
+             currentPrunedSpectralFlux > previousPrunedSpectralFlux;
+    }
 }
 
 public class SpectralFluxAnalyzer {
 	int numSamples = 1024;
+    public int NumSamples { get { return numSamples; } set { numSamples = Mathf.Max(0, value); } }
 
 	// Sensitivity multiplier to scale the average threshold.
 	// In this case, if a rectified spectral flux sample is > 1.5 times the average, it is a peak
 	float thresholdMultiplier = 1.5f;
-
     public float ThresholdMultiplier { get { return thresholdMultiplier; } set { thresholdMultiplier = Mathf.Max(0f, value); } }
 
 	// Number of samples to average in our window
 	int thresholdWindowSize = 50;
-
     public int ThresholdWindowSize { get { return thresholdWindowSize; } set { thresholdWindowSize = Mathf.Max(0, value); } }
 
 	public List<SpectralFluxInfo> spectralFluxSamples;
@@ -35,14 +84,14 @@ public class SpectralFluxAnalyzer {
 	public SpectralFluxAnalyzer () {
 		spectralFluxSamples = new List<SpectralFluxInfo> ();
 
-		// Start processing from middle of first window and increment by 1 from there
-		indexToProcess = thresholdWindowSize / 2;
+        // Start processing from middle of first window and increment by 1 from there
+        indexToProcess = this.thresholdWindowSize / 2;
 
 		curSpectrum = new float[numSamples];
 		prevSpectrum = new float[numSamples];
 	}
 
-	public void setCurSpectrum(float[] spectrum) {
+    public void setCurSpectrum(float[] spectrum) {
 		curSpectrum.CopyTo (prevSpectrum, 0);
 		spectrum.CopyTo (curSpectrum, 0);
 	}
@@ -60,19 +109,14 @@ public class SpectralFluxAnalyzer {
 		// We have enough samples to detect a peak
 		if (spectralFluxSamples.Count >= thresholdWindowSize) {
 			// Get Flux threshold of time window surrounding index to process
-			spectralFluxSamples[indexToProcess].threshold = getFluxThreshold (indexToProcess);
-
-			// Only keep amp amount above threshold to allow peak filtering
-			spectralFluxSamples[indexToProcess].prunedSpectralFlux = getPrunedSpectralFlux(indexToProcess);
+			spectralFluxSamples[indexToProcess].unscaledThreshold = getUnscaledFluxThreshold (indexToProcess);
 
 			// Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
 			int indexToDetectPeak = indexToProcess - 1;
 
-			bool curPeak = isPeak (indexToDetectPeak);
+            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1];
+            spectralFluxSamples[indexToDetectPeak].next     = spectralFluxSamples[indexToDetectPeak + 1];
 
-			if (curPeak) {
-				spectralFluxSamples [indexToDetectPeak].isPeak = true;
-			}
 			indexToProcess++;
 		}
 		else {
@@ -90,49 +134,20 @@ public class SpectralFluxAnalyzer {
 		return sum;
 	}
 
-	float getFluxThreshold(int spectralFluxIndex) {
-		// How many samples in the past and future we include in our average
-		int windowStartIndex = Mathf.Max (0, spectralFluxIndex - thresholdWindowSize / 2);
-		int windowEndIndex = Mathf.Min (spectralFluxSamples.Count - 1, spectralFluxIndex + thresholdWindowSize / 2);
-		
-	    // Add up our spectral flux over the window
-		float sum = 0f;
-		for (int i = windowStartIndex; i < windowEndIndex; i++) {
-			sum += spectralFluxSamples [i].spectralFlux;
-		}
+    float getUnscaledFluxThreshold(int spectralFluxIndex)
+    {
+        // How many samples in the past and future we include in our average
+        int windowStartIndex = Mathf.Max(0, spectralFluxIndex - thresholdWindowSize / 2);
+        int windowEndIndex = Mathf.Min(spectralFluxSamples.Count - 1, spectralFluxIndex + thresholdWindowSize / 2);
 
-		// Return the average multiplied by our sensitivity multiplier
-		float avg = sum / (windowEndIndex - windowStartIndex);
-		return avg * thresholdMultiplier;
-	}
+        // Add up our spectral flux over the window
+        float sum = 0f;
+        for (int i = windowStartIndex; i < windowEndIndex; i++)
+        {
+            sum += spectralFluxSamples[i].spectralFlux;
+        }
 
-	float getPrunedSpectralFlux(int spectralFluxIndex) {
-		return Mathf.Max (0f, spectralFluxSamples [spectralFluxIndex].spectralFlux - spectralFluxSamples [spectralFluxIndex].threshold);
-	}
-
-	bool isPeak(int spectralFluxIndex) {
-		if (spectralFluxSamples [spectralFluxIndex].prunedSpectralFlux > spectralFluxSamples [spectralFluxIndex + 1].prunedSpectralFlux &&
-			spectralFluxSamples [spectralFluxIndex].prunedSpectralFlux > spectralFluxSamples [spectralFluxIndex - 1].prunedSpectralFlux) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	void logSample(int indexToLog) {
-		int windowStart = Mathf.Max (0, indexToLog - thresholdWindowSize / 2);
-		int windowEnd = Mathf.Min (spectralFluxSamples.Count - 1, indexToLog + thresholdWindowSize / 2);
-		Debug.Log (string.Format (
-			"Peak detected at song time {0} with pruned flux of {1} ({2} over thresh of {3}).\n" +
-			"Thresh calculated on time window of {4}-{5} ({6} seconds) containing {7} samples.",
-			spectralFluxSamples [indexToLog].time,
-			spectralFluxSamples [indexToLog].prunedSpectralFlux,
-			spectralFluxSamples [indexToLog].spectralFlux,
-			spectralFluxSamples [indexToLog].threshold,
-			spectralFluxSamples [windowStart].time,
-			spectralFluxSamples [windowEnd].time,
-			spectralFluxSamples [windowEnd].time - spectralFluxSamples [windowStart].time,
-			windowEnd - windowStart
-		));
-	}
+        // Return the average multiplied by our sensitivity multiplier
+        return sum / (windowEndIndex - windowStartIndex);
+    }
 }
