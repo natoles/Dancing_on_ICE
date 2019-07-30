@@ -61,10 +61,10 @@ public class SpectralFluxInfo : SpectralFluxInfoLight
 public class SpectralFluxAnalyzer
 {
     // Size of sample arrays passed to the analyzer
-    private readonly int numSamples = 1024;
+    private readonly int spectrumSampleSize;
 
     // Number of samples to average in our window
-    private readonly int thresholdWindowSize = 50;
+    private readonly int thresholdWindowSize;
 
     public List<SpectralFluxInfo> spectralFluxSamples;
 
@@ -73,18 +73,18 @@ public class SpectralFluxAnalyzer
 
     private int indexToProcess;
 
-    public SpectralFluxAnalyzer(int numSamples, int thresholdWindowSize)
+    public SpectralFluxAnalyzer(int spectrumSampleSize, int thresholdWindowSize)
     {
         spectralFluxSamples = new List<SpectralFluxInfo>();
 
-        this.numSamples = numSamples;
+        this.spectrumSampleSize = spectrumSampleSize;
         this.thresholdWindowSize = thresholdWindowSize;
 
         // Start processing from middle of first window and increment by 1 from there
         indexToProcess = this.thresholdWindowSize / 2;
 
-        curSpectrum = new float[numSamples];
-        prevSpectrum = new float[numSamples];
+        curSpectrum = new float[this.spectrumSampleSize];
+        prevSpectrum = new float[this.spectrumSampleSize];
     }
 
     public void SetCurSpectrum(float[] spectrum)
@@ -125,7 +125,7 @@ public class SpectralFluxAnalyzer
         float sum = 0f;
 
         // Aggregate positive changes in spectrum data
-        for (int i = 0; i < numSamples; i++)
+        for (int i = 0; i < spectrumSampleSize; i++)
         {
             sum += Mathf.Max(0f, curSpectrum[i] - prevSpectrum[i]);
         }

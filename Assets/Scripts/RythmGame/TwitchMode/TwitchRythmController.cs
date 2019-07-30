@@ -51,8 +51,12 @@ public class TwitchRythmController : MonoBehaviour
     {
         clipData = BeatmapLoader.LoadBeatmapAudio(BeatmapToLoad);
 
-        BeatAnalyzer analyzer = new BeatAnalyzer(clipData);
-        spectralFluxData = analyzer.GetFullSpectrum();
+        if (clipData != null)
+        {
+            BeatAnalyzer analyzer = new BeatAnalyzer(clipData);
+            spectralFluxData = analyzer.GetFullSpectrum();
+            thresholdMultiplier = spectralFluxData.ComputeThresholdMultiplier(5f);
+        }
 
         loaded = clipData != null;
         loadingFailed = clipData == null;
@@ -85,6 +89,7 @@ public class TwitchRythmController : MonoBehaviour
 
     private readonly float minThresholdMultiplier = 1.8f;
     private readonly float maxThresholdMultiplier = 1.5f;
+    private float thresholdMultiplier = 1f;
     private float ThresholdMultiplier { get { return Mathf.Lerp(minThresholdMultiplier, maxThresholdMultiplier, (difficulty - 1) / 5); } }
 
     private int previousSample = -1;
@@ -141,7 +146,7 @@ public class TwitchRythmController : MonoBehaviour
                 int currSample = spectralFluxData.SampleIndex(player.time + ApproachTime);
                 for (int i = previousSample + 1; i <= currSample && i < spectralFluxData.spectralFluxSamples.Count; ++i)
                 {
-                    if (Time.time > previousNodeSpawning + SpawnDelay && spectralFluxData.spectralFluxSamples[currSample].IsPeak(spectralFluxData.ThresholdMultiplier))
+                    if (Time.time > previousNodeSpawning + SpawnDelay && spectralFluxData.spectralFluxSamples[currSample].IsPeak(thresholdMultiplier))
                     {
                         previousNodeSpawning = Time.time;
                         creator.CreateBasicNode(NodeCreation.Joint.LeftHand, ApproachTime, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
