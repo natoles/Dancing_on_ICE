@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Windows.Kinect;
 
 public enum BeatType
 {
@@ -11,6 +12,7 @@ public enum BeatType
 public class BeatTimestamp
 {
     public BeatType type = BeatType.Simple;
+    public JointType joint = JointType.HandLeft;
     public float time = -1;
     public float duration = 0;
 }
@@ -26,8 +28,7 @@ public class Beatmap
 {
     public BeatmapInfo Metadata = new BeatmapInfo();
     public string AudioFile = null;
-    public List<BeatTimestamp> Pool1 = new List<BeatTimestamp>();
-    public List<BeatTimestamp> Pool2 = new List<BeatTimestamp>();
+    public List<BeatTimestamp> Pool = new List<BeatTimestamp>();
 }
 
 public class BeatmapContainer
