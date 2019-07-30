@@ -17,13 +17,15 @@ public class SpectralFluxInfoLight
     {
         return spectralFlux - unscaledThreshold;
     }
-
-    public float MultiplierToZero
+    
+    public float MultiplierToZero()
     {
-        get
-        {
-            return spectralFlux / unscaledThreshold;
-        }
+        return spectralFlux / unscaledThreshold;
+    }
+
+    public SpectralFluxInfoLight Copy()
+    {
+        return new SpectralFluxInfoLight { spectralFlux = spectralFlux, unscaledThreshold = unscaledThreshold };
     }
 }
 
@@ -113,8 +115,8 @@ public class SpectralFluxAnalyzer
             // Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
             int indexToDetectPeak = indexToProcess - 1;
 
-            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1];
-            spectralFluxSamples[indexToDetectPeak].next = spectralFluxSamples[indexToDetectPeak + 1];
+            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1].Copy();
+            spectralFluxSamples[indexToDetectPeak].next = spectralFluxSamples[indexToDetectPeak + 1].Copy();
 
             indexToProcess++;
         }

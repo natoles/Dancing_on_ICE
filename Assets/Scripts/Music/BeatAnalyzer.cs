@@ -9,12 +9,12 @@ using DSPLib;
 
 public class SpectralFluxData
 {
-    public readonly List<SpectralFluxInfo> spectralFluxSamples;
-    private readonly int spectrumSampleSize;
-    private readonly float lengthPerSample;
-    private readonly float clipLength;
+    public List<SpectralFluxInfo> spectralFluxSamples;
+    public int spectrumSampleSize;
+    public float lengthPerSample;
+    public float clipLength;
 
-    internal SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int spectrumSampleSize, float lengthPerSample, float clipLength)
+    public SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int spectrumSampleSize, float lengthPerSample, float clipLength)
     {
         this.spectralFluxSamples = spectralFluxSamples;
         this.spectrumSampleSize = spectrumSampleSize;
@@ -22,37 +22,17 @@ public class SpectralFluxData
         this.clipLength = clipLength;
     }
 
-    public float ComputeThresholdMultiplier(float wantedPeaksRate)
+    public List<SpectralFluxInfo> SelectPeaks(float wantedPeaksRate)
     {
-        Debug.Log("Selecting peaks");
         float thresholdMultiplier = 1f;
         List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
         if (peaks.Count > 0)
         {
-            Debug.Log($"Sorting peaks ({peaks.Count} found)");
             peaks.Sort((sfi1, sfi2) => -Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux())); // the minus is for sorting by decreasing order
             int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(wantedPeaksRate * clipLength), peaks.Count - 1);
-            thresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero;
-            Debug.Log($"Multiplier used: {thresholdMultiplier} for {effectivePeakCount} peaks");
+            thresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero();
         }
-        else
-        {
-            Debug.Log("No peaks found");
-        }
-        return thresholdMultiplier;
-    }
-
-    public int SampleIndex(float time)
-    {
-        return Mathf.FloorToInt(time / lengthPerSample) / spectrumSampleSize;
-    }
-
-    public SpectralFluxInfo this[float time]
-    {
-        get
-        {
-            return spectralFluxSamples[SampleIndex(time)];
-        }
+        return spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak(thresholdMultiplier));
     }
 }
 
@@ -91,7 +71,6 @@ public class BeatAnalyzer
 
 	public SpectralFluxData GetFullSpectrum()
     {
-        Debug.Log("Analyzing spectrum");
 		try {
 			// We only need to retain the samples for combined channels over the time domain
 			float[] preProcessedSamples = new float[this.lengthSamples];
