@@ -11,17 +11,12 @@ using DSPLib;
 
 public class BeatAnalyzer
 {
-    readonly AudioSource audioSource;
-    readonly int numChannels;
-	readonly int numTotalSamples;
-	readonly int sampleRate;
-	readonly float clipLength;
-	readonly float[] multiChannelSamples;
-	SpectralFluxAnalyzer fluxAnalyzer;
-
-    Thread bgThread;
-    bool completed = false;
-    bool crashed = false;
+    private readonly int numChannels;
+	private readonly int numTotalSamples;
+	private readonly int sampleRate;
+	private readonly float clipLength;
+	private readonly float[] multiChannelSamples;
+	private SpectralFluxAnalyzer fluxAnalyzer;
 
     public float PeaksFactor { get; set; } = 5f;
 
@@ -35,30 +30,8 @@ public class BeatAnalyzer
         }
     }
 
-    public bool Completed
+    public BeatAnalyzer(AudioClip clip, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
     {
-        get
-        {
-            if (completed)
-                bgThread.Join();
-            return completed;
-        }
-    }
-
-    public bool Crashed
-    {
-        get
-        {
-            if (crashed)
-                bgThread.Join();
-            return crashed;
-        }
-    }
-
-    public BeatAnalyzer(AudioSource audioSource, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
-    {
-        this.audioSource = audioSource;
-
         fluxAnalyzer = new SpectralFluxAnalyzer
         {
             ThresholdMultiplier = thresholdMultipler,
@@ -67,45 +40,36 @@ public class BeatAnalyzer
 
         // Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
         // [L,R,L,R,L,R]
-        multiChannelSamples = new float[audioSource.clip.samples * audioSource.clip.channels];
-		numChannels = audioSource.clip.channels;
-		numTotalSamples = audioSource.clip.samples;
-		clipLength = audioSource.clip.length;
+        multiChannelSamples = new float[clip.samples * clip.channels];
+		numChannels = clip.channels;
+		numTotalSamples = clip.samples;
+		clipLength = clip.length;
 
 		// We are not evaluating the audio as it is being played by Unity, so we need the clip's sampling rate
-		this.sampleRate = audioSource.clip.frequency;
+		this.sampleRate = clip.frequency;
 
-		audioSource.clip.GetData(multiChannelSamples, 0);
+		clip.GetData(multiChannelSamples, 0);
 		//Debug.Log ("GetData done");
-
-		bgThread = new Thread (this.getFullSpectrumThreaded);
-
 	}
-
-    public void Start()
-    {
-        Debug.Log("Starting Background Thread");
-        bgThread.Start();
-    }
 
 	public int SampleIndex(float time)
     {
 		return getIndexFromTime (time) / 1024;
 	}
 
-	int getIndexFromTime(float curTime)
+	private int getIndexFromTime(float curTime)
     {
 		float lengthPerSample = this.clipLength / (float)this.numTotalSamples;
 
 		return Mathf.FloorToInt (curTime / lengthPerSample);
 	}
 
-	float getTimeFromIndex(int index)
+	private float getTimeFromIndex(int index)
     {
 		return ((1f / (float)this.sampleRate) * index);
 	}
 
-	void getFullSpectrumThreaded()
+	void getFullSpectrum()
     {
 		try {
 			// We only need to retain the samples for combined channels over the time domain
@@ -156,20 +120,25 @@ public class BeatAnalyzer
 
             Debug.Log("Selecting peaks");
             List<SpectralFluxInfo> peaks = fluxAnalyzer.spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
-            Debug.Log($"Sorting peaks ({peaks.Count} found)");
-            peaks.Sort((sfi1, sfi2) => - Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux())); // the minus is for sorting by decreasing order
-            int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(PeaksFactor * clipLength), peaks.Count - 1);
-            ThresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero;
-            Debug.Log($"Multiplier used: {ThresholdMultiplier} for {effectivePeakCount} peaks");
+            if (peaks.Count > 0)
+            {
+                Debug.Log($"Sorting peaks ({peaks.Count} found)");
+                peaks.Sort((sfi1, sfi2) => -Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux())); // the minus is for sorting by decreasing order
+                int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(PeaksFactor * clipLength), peaks.Count - 1);
+                ThresholdMultiplier = peaks[effectivePeakCount].MultiplierToZero;
+                Debug.Log($"Multiplier used: {ThresholdMultiplier} for {effectivePeakCount} peaks");
+            }
+            else
+            {
+                Debug.Log("No peaks found");
+            }
             peaks = null;
 
             Debug.Log ("Background Thread Completed");
-            completed = true;
 				
 		} catch (Exception e) {
 			// Catch exceptions here since the background thread won't always surface the exception to the main thread
 			Debug.Log (e.ToString ());
-            crashed = true;
 		}
 	}
 }

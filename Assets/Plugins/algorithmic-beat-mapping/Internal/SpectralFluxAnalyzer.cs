@@ -38,12 +38,10 @@ public class SpectralFluxInfo : SpectralFluxInfoLight {
             return false;
 
         float currentPrunedSpectralFlux = PrunedSpectralFlux(thresholdMultiplier);
-        float previousPrunedSpectralFlux = previous.PrunedSpectralFlux(thresholdMultiplier);
-        float nextPrunedSpectralFlux = next.PrunedSpectralFlux(thresholdMultiplier);
         return
              currentPrunedSpectralFlux > 0f &&
-             currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
-             currentPrunedSpectralFlux > previousPrunedSpectralFlux;
+             currentPrunedSpectralFlux > next.PrunedSpectralFlux(thresholdMultiplier) &&
+             currentPrunedSpectralFlux > previous.PrunedSpectralFlux(thresholdMultiplier);
     }
 
     public bool IsPeak()
@@ -52,12 +50,10 @@ public class SpectralFluxInfo : SpectralFluxInfoLight {
             return false;
 
         float currentPrunedSpectralFlux = PrunedSpectralFlux();
-        float previousPrunedSpectralFlux = previous.PrunedSpectralFlux();
-        float nextPrunedSpectralFlux = next.PrunedSpectralFlux();
         return
              currentPrunedSpectralFlux > 0f &&
-             currentPrunedSpectralFlux > nextPrunedSpectralFlux &&
-             currentPrunedSpectralFlux > previousPrunedSpectralFlux;
+             currentPrunedSpectralFlux > next.PrunedSpectralFlux() &&
+             currentPrunedSpectralFlux > previous.PrunedSpectralFlux();
     }
 }
 

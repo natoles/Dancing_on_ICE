@@ -127,23 +127,23 @@ public class TwitchRythmController : MonoBehaviour
                 player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                 clipData = null;
                 
-                analyzer = new BeatAnalyzer(player, ThresholdMultiplier);
-                analyzer.Start();
+                analyzer = new BeatAnalyzer(player.clip, ThresholdMultiplier);
+                //analyzer.Start();
             }
 
             if (!analyzed)
             {
-                if (analyzer.Completed)
-                {
-                    analyzed = true;
-                    player.PlayDelayed(3);
-                    loadingScreen.Hide();
-                }
-                else if (analyzer.Crashed)
-                {
-                    NotificationManager.Instance.PushNotification("Failed to analyze audio", Color.white, Color.red);
-                    SceneHistory.LoadPreviousScene();
-                }
+                //if (analyzer.Completed)
+                //{
+                //    analyzed = true;
+                //    player.PlayDelayed(3);
+                //    loadingScreen.Hide();
+                //}
+                //else if (analyzer.Crashed)
+                //{
+                //    NotificationManager.Instance.PushNotification("Failed to analyze audio", Color.white, Color.red);
+                //    SceneHistory.LoadPreviousScene();
+                //}
             }
 
             if (player.isPlaying)
@@ -162,31 +162,6 @@ public class TwitchRythmController : MonoBehaviour
                     }
                 }
                 previousSample = currSample;
-
-                //if (i1 < beatmapToLoad.bm.Pool1.Count)
-                //{
-                //    BeatTimestamp bts1 = beatmapToLoad.bm.Pool1[i1];
-                //    if (player.time >= bts1.time - approachTime)
-                //    {
-                //        if (bts1.type == BeatType.Simple)
-                //        {
-                //            creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, ComputePosLeft(Time.time));
-                //        }
-                //        else
-                //        {
-                //            LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                //            for (float t = sliderPlotTime; t < bts1.duration; t += sliderPlotTime)
-                //            {
-                //                lnk.AddLast(ComputePosLeft(Time.time + t));
-                //            }
-                //            lnk.AddLast(ComputePosLeft(Time.time + bts1.duration));
-                //            Vector3[] points = new Vector3[lnk.Count];
-                //            lnk.CopyTo(points, 0);
-                //            creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, ComputePosLeft(Time.time), points);
-                //        }
-                //        i1++;
-                //    }
-                //}
             }
             else if (playbackStarted)
             {
