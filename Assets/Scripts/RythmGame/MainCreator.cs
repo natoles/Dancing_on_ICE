@@ -43,6 +43,7 @@ public class MainCreator : MonoBehaviour
         decoyMove.SaveUkiDatas();
 
         //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
+
         decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
         decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
         
@@ -51,10 +52,10 @@ public class MainCreator : MonoBehaviour
 
         for(int i=0; i<moveInfo.Length; i++){
             if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].speed != 0){
-                SetMoveTimeStampBasic(moveInfo[i].path,moveInfo[i].speed,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+                SetMoveTimeStampBasic(moveInfo[i].path,moveInfo[i].speed,moveInfo[i].holdTime,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
             if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].timeLine != 0){ 
-                SetMoveTimeStampLine(moveInfo[i].path,moveInfo[i].timeLine,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+                SetMoveTimeStampLine(moveInfo[i].path,moveInfo[i].timeLine,moveInfo[i].holdTime,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
         }
 
@@ -81,12 +82,12 @@ public class MainCreator : MonoBehaviour
     }
 
     //Shorten verson of SetMoveTimeStamp for BasicNode
-    void SetMoveTimeStampBasic(string path, float speed, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
+    void SetMoveTimeStampBasic(string path, float speed, float holdTime, float scaleChange, int jointExclusion){
+        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
     }
     //Shorten verson of SetMoveTimeStamp for LineNode
-    void SetMoveTimeStampLine(string path, float timeLine, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
+    void SetMoveTimeStampLine(string path, float timeLine, float holdTime, float scaleChange, int jointExclusion){
+        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
     }
 
     
@@ -239,7 +240,6 @@ public class MainCreator : MonoBehaviour
                 tmp += Math.Abs(wantedRates[k] - (currentRates[k] * numberMoves/(numberMoves+1) + decoyMove.allMovementRates[i][k]/(numberMoves + 1)));
             }
             decoyMove.allMovementGlobalRates.Add(tmp);
-            //Debug.Log(tmp);
             //Debug.Log(decoyMove.allMovementGlobalRates[i]);
         }
     }
@@ -266,6 +266,7 @@ public class MoveInfo{
     public string path;
     public float speed;
     public float timeLine;
+    public float holdTime;
     public float scaleChange;
     public int jointExclusion;
 }

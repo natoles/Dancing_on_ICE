@@ -802,46 +802,55 @@ MonoBehaviour:
   - path: basic1
     speed: 1.3
     timeLine: 3
+    holdTime: 3
     scaleChange: 1
     jointExclusion: 0
   - path: basic2
     speed: 1.3
     timeLine: 4.5
+    holdTime: 0
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic3
     speed: 0
     timeLine: 0
+    holdTime: 0
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic4
     speed: 1.3
     timeLine: 3
+    holdTime: 0
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic5
     speed: 1.3
     timeLine: 4.5
+    holdTime: 0
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic6
     speed: 1.3
     timeLine: 4.5
+    holdTime: 5
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic7
     speed: 1
     timeLine: 4.5
+    holdTime: 0
     scaleChange: 1.5
     jointExclusion: 0
   - path: basic8
     speed: 1
     timeLine: 4.5
+    holdTime: 2
     scaleChange: 1.5
     jointExclusion: 1
   - path: basic9
     speed: 0
     timeLine: 4.5
+    holdTime: 0
     scaleChange: 0
     jointExclusion: 2
 --- !u!82 &1584557257
@@ -1039,7 +1048,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'KCal: 0 '
+  m_Text: 'KCal: 0'
 --- !u!222 &1799005540
 CanvasRenderer:
   m_ObjectHideFlags: 0
