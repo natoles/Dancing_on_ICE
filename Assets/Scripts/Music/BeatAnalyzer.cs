@@ -1,16 +1,44 @@
 ﻿// Adapted from algorithmic-beat-mapping-unity by jesse-scam (https://github.com/jesse-scam/algorithmic-beat-mapping-unity)
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 using System.Numerics;
 using DSPLib;
 
+public class SpectralFluxData
+{
+    public readonly List<SpectralFluxInfo> spectralFluxSamples;
+    private readonly int numSamples;
+    private readonly float lengthPerSample;
+
+    public float ThresholdMultiplier;
+
+    internal SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int numSamples, float lengthPerSample)
+    {
+        this.spectralFluxSamples = spectralFluxSamples;
+        this.numSamples = numSamples;
+        this.lengthPerSample = lengthPerSample;
+    }
+
+    public int SampleIndex(float time)
+    {
+        return Mathf.FloorToInt(time / lengthPerSample) / numSamples;
+    }
+
+    public SpectralFluxInfo this[float time]
+    {
+        get
+        {
+            return spectralFluxSamples[SampleIndex(time)];
+        }
+    }
+}
+
 public class BeatAnalyzer
 {
+    private readonly int frequency;
     private readonly int numChannels;
 	private readonly int numTotalSamples;
 	private readonly int sampleRate;
@@ -30,46 +58,29 @@ public class BeatAnalyzer
         }
     }
 
-    public BeatAnalyzer(AudioClip clip, float thresholdMultipler = 1.5f, int thresholdWindowSize = 50)
+    public BeatAnalyzer(AudioClipData clipData, int thresholdWindowSize = 50)
     {
-        fluxAnalyzer = new SpectralFluxAnalyzer
-        {
-            ThresholdMultiplier = thresholdMultipler,
-            ThresholdWindowSize = thresholdWindowSize
-        };
+        fluxAnalyzer = new SpectralFluxAnalyzer(1024, 50);
 
-        // Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
-        // [L,R,L,R,L,R]
-        multiChannelSamples = new float[clip.samples * clip.channels];
-		numChannels = clip.channels;
-		numTotalSamples = clip.samples;
-		clipLength = clip.length;
+        // Need all audio samples.  If in stereo, samples will return with left and right channels interweaved [L,R,L,R,L,R]
+        multiChannelSamples = new float[clipData.lengthSamples * clipData.channels];
+        frequency = clipData.frequency;
+		numChannels = clipData.channels;
+		numTotalSamples = clipData.lengthSamples;
+		clipLength = (float)clipData.lengthSamples / clipData.frequency;
 
 		// We are not evaluating the audio as it is being played by Unity, so we need the clip's sampling rate
-		this.sampleRate = clip.frequency;
+		sampleRate = clipData.frequency;
 
-		clip.GetData(multiChannelSamples, 0);
-		//Debug.Log ("GetData done");
+        clipData.data.CopyTo(multiChannelSamples, clipData.offsetSamples);
 	}
 
-	public int SampleIndex(float time)
-    {
-		return getIndexFromTime (time) / 1024;
-	}
-
-	private int getIndexFromTime(float curTime)
-    {
-		float lengthPerSample = this.clipLength / (float)this.numTotalSamples;
-
-		return Mathf.FloorToInt (curTime / lengthPerSample);
-	}
-
-	private float getTimeFromIndex(int index)
+    private float GetTimeFromIndex(int index)
     {
 		return ((1f / (float)this.sampleRate) * index);
 	}
 
-	void getFullSpectrum()
+	public SpectralFluxData GetFullSpectrum()
     {
 		try {
 			// We only need to retain the samples for combined channels over the time domain
@@ -112,10 +123,10 @@ public class BeatAnalyzer
 				scaledFFTSpectrum = DSP.Math.Multiply (scaledFFTSpectrum, scaleFactor);
 
 				// These 1024 magnitude values correspond (roughly) to a single point in the audio timeline
-				float curSongTime = getTimeFromIndex(i) * spectrumSampleSize;
+				float curSongTime = GetTimeFromIndex(i) * spectrumSampleSize;
 
 				// Send our magnitude data off to our Spectral Flux Analyzer to be analyzed for peaks
-				fluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
+				fluxAnalyzer.AnalyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
 
             Debug.Log("Selecting peaks");
@@ -135,10 +146,14 @@ public class BeatAnalyzer
             peaks = null;
 
             Debug.Log ("Background Thread Completed");
-				
-		} catch (Exception e) {
+
+            return new SpectralFluxData(fluxAnalyzer.spectralFluxSamples, 1024, 1f / frequency) { ThresholdMultiplier = ThresholdMultiplier };
+		}
+        catch (Exception e)
+        {
 			// Catch exceptions here since the background thread won't always surface the exception to the main thread
 			Debug.Log (e.ToString ());
+            return null;
 		}
 	}
 }

@@ -43,12 +43,16 @@ public class TwitchRythmController : MonoBehaviour
 
     private Thread loader = null;
     private AudioClipData clipData = null;
+    private SpectralFluxData spectralFluxData = null;
     private bool loaded = false;
     private bool loadingFailed = false;
 
     private void LoadBeatmapForPlay()
     {
         clipData = BeatmapLoader.LoadBeatmapAudio(BeatmapToLoad);
+
+        BeatAnalyzer analyzer = new BeatAnalyzer(clipData);
+        spectralFluxData = analyzer.GetFullSpectrum();
 
         loaded = clipData != null;
         loadingFailed = clipData == null;
@@ -57,9 +61,6 @@ public class TwitchRythmController : MonoBehaviour
     #endregion
 
     #region Node Spawning
-
-    private BeatAnalyzer analyzer = null;
-    private bool analyzed = false;
 
     private NodeCreation creator = null;
     private Bounds bounds;
@@ -126,24 +127,9 @@ public class TwitchRythmController : MonoBehaviour
                 
                 player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                 clipData = null;
-                
-                analyzer = new BeatAnalyzer(player.clip, ThresholdMultiplier);
-                //analyzer.Start();
-            }
 
-            if (!analyzed)
-            {
-                //if (analyzer.Completed)
-                //{
-                //    analyzed = true;
-                //    player.PlayDelayed(3);
-                //    loadingScreen.Hide();
-                //}
-                //else if (analyzer.Crashed)
-                //{
-                //    NotificationManager.Instance.PushNotification("Failed to analyze audio", Color.white, Color.red);
-                //    SceneHistory.LoadPreviousScene();
-                //}
+                player.PlayDelayed(3);
+                loadingScreen.Hide();
             }
 
             if (player.isPlaying)
@@ -152,10 +138,10 @@ public class TwitchRythmController : MonoBehaviour
 
                 bounds = mainCamera.OrthographicBounds();
 
-                int currSample = analyzer.SampleIndex(player.time + ApproachTime);
-                for (int i = previousSample + 1; i <= currSample && i < analyzer.SpectralFluxSamples.Count; ++i)
+                int currSample = spectralFluxData.SampleIndex(player.time + ApproachTime);
+                for (int i = previousSample + 1; i <= currSample && i < spectralFluxData.spectralFluxSamples.Count; ++i)
                 {
-                    if (Time.time > previousNodeSpawning + SpawnDelay && analyzer.SpectralFluxSamples[currSample].IsPeak(analyzer.ThresholdMultiplier))
+                    if (Time.time > previousNodeSpawning + SpawnDelay && spectralFluxData.spectralFluxSamples[currSample].IsPeak(spectralFluxData.ThresholdMultiplier))
                     {
                         previousNodeSpawning = Time.time;
                         creator.CreateBasicNode(NodeCreation.Joint.LeftHand, ApproachTime, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
