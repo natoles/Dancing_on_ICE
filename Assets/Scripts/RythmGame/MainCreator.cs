@@ -12,7 +12,7 @@ public class MainCreator : MonoBehaviour
     public float[] currentRates; //See AddMove()
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
-    int movePoolSize = 1; //See SelectMove()
+    int movePoolSize = 9; //See SelectMove()
     IEnumerator trackCreation;
     float maxSpawnTime = 0f;
     float globalscale = 8;
@@ -25,49 +25,37 @@ public class MainCreator : MonoBehaviour
     int totalMoves = 0;
     float startTime;
     public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
+    public MoveInfo[] moveInfo =  new MoveInfo[2];
     
 
     void Start()
     {
         currentRates = bodySourceView.currentRates;
         creator = new NodeCreation();
-        
-        decoyMove.AddMovePath("basic1");      //100,0 
-        decoyMove.AddMovePath("basic2");      //100,0
-        decoyMove.AddMovePath("basic3");      //0,100
-        decoyMove.AddMovePath("basic4");      //0,100
-        decoyMove.AddMovePath("basic5");      //49.5 50.5
-        decoyMove.AddMovePath("basic6");      //46 54
-        decoyMove.AddMovePath("basic7");      //62 38
-        decoyMove.AddMovePath("basic8");      //84 15
-        decoyMove.AddMovePath("basic9");      //19 81*/
-        
-        totalMoves = decoyMove.allMovementPath.Count;
-        if (totalMoves < movePoolSize) Debug.LogError("Error: totalMoves must be greater ot equal than movePoolsize");
-        decoyMove.SaveUkiDatas();
 
-        if(globalNodeType == Mode.Basic || globalNodeType == Mode.Random){
-            SetMoveTimeStampBasic("basic1",1.3f,0,0);
-            SetMoveTimeStampBasic("basic2",1.3f,0,0);
-            decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-            SetMoveTimeStampBasic("basic4",1.3f,2,0);
-            SetMoveTimeStampBasic("basic5",1.3f,2,0);
-            SetMoveTimeStampBasic("basic6",1.3f,2,0);
-            SetMoveTimeStampBasic("basic7",1f,2,0);
-            SetMoveTimeStampBasic("basic8",1f,2,1);
-            decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        for(int i=0; i<moveInfo.Length; i++){
+            decoyMove.AddMovePath(moveInfo[i].path);
         }
 
-        if(globalNodeType == Mode.Line || globalNodeType == Mode.Random){ 
-            SetMoveTimeStampLine("basic1",1.5f,3f,0);
-            SetMoveTimeStampLine("basic2",3,4.5f,0);
-            decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
-            SetMoveTimeStampLine("basic4",1.5f,3f,0);
-            SetMoveTimeStampLine("basic5",1.5f,2.5f,0);
-            SetMoveTimeStampLine("basic6",1.5f,3.5f,0);
-            SetMoveTimeStampLine("basic7",1.5f,3.5f,0);
-            SetMoveTimeStampLine("basic8",1.5f,5.5f,1);
-            SetMoveTimeStampLine("basic9",0,4f,2);
+        totalMoves = decoyMove.allMovementPath.Count;
+        if (totalMoves < movePoolSize) movePoolSize = totalMoves; 
+
+        decoyMove.SaveUkiDatas();
+
+        //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
+        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        
+        decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+
+
+        for(int i=0; i<moveInfo.Length; i++){
+            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].speed != 0){
+                SetMoveTimeStampBasic(moveInfo[i].path,moveInfo[i].speed,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+            }
+            if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].timeLine != 0){ 
+                SetMoveTimeStampLine(moveInfo[i].path,moveInfo[i].timeLine,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+            }
         }
 
         trackCreation = TrackCreation();
@@ -97,7 +85,7 @@ public class MainCreator : MonoBehaviour
         decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
     }
     //Shorten verson of SetMoveTimeStamp for LineNode
-    void SetMoveTimeStampLine(string path, float scaleChange, float timeLine, int jointExclusion){
+    void SetMoveTimeStampLine(string path, float timeLine, float scaleChange, int jointExclusion){
         decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,0,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
     }
 
@@ -271,4 +259,13 @@ public class MainCreator : MonoBehaviour
         }
     }
     
+}
+
+[System.Serializable]
+public class MoveInfo{
+    public string path;
+    public float speed;
+    public float timeLine;
+    public float scaleChange;
+    public int jointExclusion;
 }
