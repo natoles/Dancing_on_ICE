@@ -19,6 +19,7 @@ public class BodySourceView : MonoBehaviour
     int nbFrames = 0;
     public float maxTrackDistance;
     int nbJoints = 2;
+    public int calories = 0;
     
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
@@ -178,11 +179,11 @@ public class BodySourceView : MonoBehaviour
                 realJointsMovements[i/2] += (float) Math.Sqrt(Math.Pow(jointPos[i] - previousJointsPos[i],2) + Math.Pow(jointPos[i+1] - previousJointsPos[i+1],2));
                 totalDist += realJointsMovements[i/2];
             }
-            Debug.Log("hey");
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Debug.Log("Left,Right,Total: " + realJointsMovements[1] + ", " + realJointsMovements[0] + ", " + totalDist);
             }
+            calories = (int) totalDist/122;
     
             for (int i = 0; i<realJointsMovements.Length; i++){
                 currentRates[i] = realJointsMovements[i]/totalDist * 100;
