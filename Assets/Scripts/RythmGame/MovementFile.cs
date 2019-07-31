@@ -6,12 +6,6 @@ using System;
 
 public class MovementFile
 {
-
-    //TODO : an array for jointExclusion with 1's and 0's
-    
-    int nbJoints = 2;
-    float hipCenterX = 0;
-    float hipCenterY = 0;
     public List<List<float[]>> allMovementPos;
     public List<List<TimeStamp>> allMovementTimeStampBasic;
     public List<List<TimeStamp>> allMovementTimeStampLine;
@@ -20,7 +14,9 @@ public class MovementFile
     public List<string> allMovementPath;
     float nodeDistance = 2.5f; //Distance needed between two nodes (high = less nodes)
     int maxJump = 60;//Max number of frames between two nodes
-    
+    int nbJoints = 2;
+    float hipCenterX = 0;
+    float hipCenterY = 0;
 
     public MovementFile(){
         allMovementPos = new List<List<float[]>>();
@@ -45,6 +41,7 @@ public class MovementFile
 
     //Stores every datas from the csv file into arrays (to call at the start of the game)
     public void SaveUkiDatas(){
+        #region Read from CSV
         List<string> listRHx = new List<string>();
         List<string> listRHy = new List<string>();
         List<string> listLHx = new List<string>();
@@ -91,6 +88,9 @@ public class MovementFile
                 }
                 cpt++;
             }
+            #endregion
+
+            #region Parsing
             len = listRHx.Count;
             float.TryParse(HCX, out hipCenterX);
             float.TryParse(HCY, out hipCenterY);
@@ -112,19 +112,18 @@ public class MovementFile
                 }
                 oneMovePos.Add(xPos);
                 oneMovePos.Add(yPos);
-                
             }
             allMovementPos.Add(oneMovePos);
         }
-    InitDistances();
+        InitDistances();
+        #endregion
     }
 
     //Saves the timeStamp in an array
     public void SetMoveTimeStamp(string path, float speed, float scale, float offsetX, float offsetY
-                ,float holdEnd, int jointExclusion, TimeStamp defaultNode)
+                , float holdEnd, int jointExclusion, TimeStamp defaultNode)
     {
-        #region Get Datas
-        
+        #region Select points
         int moveIndex = allMovementPath.IndexOf(GetPath(path));
         List<float> listRHx = new List<float>();
         List<float> listRHy = new List<float>();
@@ -210,7 +209,6 @@ public class MovementFile
                 }
                 totalDist += allMovementRates[k][i/2]; 
             }
-
             for(int i = 0; i < allMovementRates[k].Length; i++){
                 allMovementRates[k][i] = allMovementRates[k][i]/totalDist * 100;
             }
@@ -221,7 +219,8 @@ public class MovementFile
     }
 
     //Init any type of node except LineNodes
-    void InitAddNode(List<TimeStamp> listTS, int joint, float speed, float scale, float holdEnd, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
+    void InitAddNode(List<TimeStamp> listTS, int joint, float speed, float scale, float holdEnd 
+                , List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         for(int i =0; i < PosX.Count; i++){
             if (i==PosX.Count-1 && holdEnd != 0){
                 TimeStamp tsHold = new TimeStamp(i/speed, 3, joint, defaultNode.timeToFinish, holdEnd, new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0));
@@ -232,13 +231,13 @@ public class MovementFile
                 ts.timeSpawn = i/speed; 
                 ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0);
                 listTS.Add(ts);
-            }
-            
+            } 
         }
     }
 
     //Add a LineNode
-    void InitAddLineNode(List<TimeStamp> listTS, int joint, float scale, float holdEnd, List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
+    void InitAddLineNode(List<TimeStamp> listTS, int joint, float scale, float holdEnd
+                , List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         TimeStamp ts = defaultNode.DeepCopyTS(defaultNode);
         ts.joint = joint;
         if (PosX.Count > 0){
@@ -258,5 +257,4 @@ public class MovementFile
         }
     }
 
-  
 }
