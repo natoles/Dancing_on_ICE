@@ -1,11 +1,12 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.IO;
 using UnityEngine;
 using Kinect = Windows.Kinect;
+using Newtonsoft.Json;
 
 public class TwitchRythmController : MonoBehaviour
 {
-    bool playbackStarted = false;
-
     #region Properties
 
     public static BeatmapContainer BeatmapToLoad { set; get; } = null;
@@ -41,14 +42,47 @@ public class TwitchRythmController : MonoBehaviour
 
     #region Music Loading
 
-    private Thread loader = null;
+    private Thread thread = null;
     private AudioClipData clipData = null;
+    private BeatAnalyzer analyzer = null;
+    private SpectralFluxData spectralFluxData = null;
+    private List<SpectralFluxInfo> peaks = null;
     private bool loaded = false;
     private bool loadingFailed = false;
+
+    private void AnalyzeAudio(AudioClipData clipData)
+    {
+        analyzer = new BeatAnalyzer(clipData);
+        spectralFluxData = analyzer.GetFullSpectrum();
+        analyzer = null;
+
+        StreamWriter writer = new StreamWriter(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json");
+        writer.Write(JsonConvert.SerializeObject(spectralFluxData));
+        writer.Close();
+    }
+
+    private void LoadSpectrumFromFile()
+    {
+        StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json");
+        spectralFluxData = JsonConvert.DeserializeObject<SpectralFluxData>(reader.ReadToEnd());
+        reader.Close();
+    }
 
     private void LoadBeatmapForPlay()
     {
         clipData = BeatmapLoader.LoadBeatmapAudio(BeatmapToLoad);
+
+        if (clipData != null)
+        {
+            if (!new DirectoryInfo(Application.streamingAssetsPath + "/SpectrumData/").Exists)
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/SpectrumData/");
+
+            if (new FileInfo(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json").Exists)
+                LoadSpectrumFromFile();
+            else
+                AnalyzeAudio(clipData);
+            peaks = spectralFluxData.SelectPeaks(Difficulty);
+        }
 
         loaded = clipData != null;
         loadingFailed = clipData == null;
@@ -58,11 +92,8 @@ public class TwitchRythmController : MonoBehaviour
 
     #region Node Spawning
 
-    private BeatAnalyzer analyzer = null;
-    private bool analyzed = false;
-
     private NodeCreation creator = null;
-    private Bounds bounds;
+    private Bounds bounds = default;
 
     //private readonly float sliderPlotTime = 0.01f;
     private readonly float bx = 0.225f;
@@ -86,7 +117,7 @@ public class TwitchRythmController : MonoBehaviour
     private readonly float maxThresholdMultiplier = 1.5f;
     private float ThresholdMultiplier { get { return Mathf.Lerp(minThresholdMultiplier, maxThresholdMultiplier, (difficulty - 1) / 5); } }
 
-    private int previousSample = -1;
+    private int currPeak = 0;
     private float previousNodeSpawning = float.MinValue;
 
     private Vector3 ComputePos(Kinect.JointType joint, float time)
@@ -109,8 +140,8 @@ public class TwitchRythmController : MonoBehaviour
             BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
 #endif
         
-        loader = new Thread(new ThreadStart(LoadBeatmapForPlay));
-        loader.Start();
+        thread = new Thread(new ThreadStart(LoadBeatmapForPlay));
+        thread.Start();
         loadingScreen.Text = System.IO.Path.GetFileNameWithoutExtension(BeatmapToLoad?.sourceFile);
         loadingScreen.Show();
     }
@@ -119,76 +150,38 @@ public class TwitchRythmController : MonoBehaviour
     {
         if (loaded)
         {
-            if (loader != null)
+            if (thread != null)
             {
-                loader.Join();
-                loader = null;
-                
+                thread.Join();
+                thread = null;
+
                 player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                 clipData = null;
-                
-                analyzer = new BeatAnalyzer(player, ThresholdMultiplier);
-                analyzer.Start();
+
+                analyzer = null;
+
+                currPeak = 0;
+
+                player.PlayDelayed(3f);
+
+                loadingScreen.Hide();
             }
 
-            if (!analyzed)
+            if (player.isPlaying && player.time > 0)
             {
-                if (analyzer.Completed)
-                {
-                    analyzed = true;
-                    player.PlayDelayed(3);
-                    loadingScreen.Hide();
-                }
-                else if (analyzer.Crashed)
-                {
-                    NotificationManager.Instance.PushNotification("Failed to analyze audio", Color.white, Color.red);
-                    SceneHistory.LoadPreviousScene();
-                }
-            }
-
-            if (player.isPlaying)
-            {
-                playbackStarted = true;
-
                 bounds = mainCamera.OrthographicBounds();
-
-                int currSample = analyzer.SampleIndex(player.time + ApproachTime);
-                for (int i = previousSample + 1; i <= currSample && i < analyzer.SpectralFluxSamples.Count; ++i)
+                
+                while (currPeak < peaks.Count && peaks[currPeak].time <= player.time + ApproachTime)
                 {
-                    if (Time.time > previousNodeSpawning + SpawnDelay && analyzer.SpectralFluxSamples[currSample].IsPeak(analyzer.ThresholdMultiplier))
+                    if (Time.time > previousNodeSpawning + SpawnDelay)
                     {
                         previousNodeSpawning = Time.time;
-                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, ApproachTime, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
+                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, peaks[currPeak].time - player.time, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
                     }
+                    currPeak++;
                 }
-                previousSample = currSample;
-
-                //if (i1 < beatmapToLoad.bm.Pool1.Count)
-                //{
-                //    BeatTimestamp bts1 = beatmapToLoad.bm.Pool1[i1];
-                //    if (player.time >= bts1.time - approachTime)
-                //    {
-                //        if (bts1.type == BeatType.Simple)
-                //        {
-                //            creator.CreateBasicNode(NodeCreation.Joint.LeftHand, approachTime, ComputePosLeft(Time.time));
-                //        }
-                //        else
-                //        {
-                //            LinkedList<Vector3> lnk = new LinkedList<Vector3>();
-                //            for (float t = sliderPlotTime; t < bts1.duration; t += sliderPlotTime)
-                //            {
-                //                lnk.AddLast(ComputePosLeft(Time.time + t));
-                //            }
-                //            lnk.AddLast(ComputePosLeft(Time.time + bts1.duration));
-                //            Vector3[] points = new Vector3[lnk.Count];
-                //            lnk.CopyTo(points, 0);
-                //            creator.CreateLineNode(NodeCreation.Joint.LeftHand, approachTime, bts1.duration, ComputePosLeft(Time.time), points);
-                //        }
-                //        i1++;
-                //    }
-                //}
             }
-            else if (playbackStarted)
+            else if (player.timeSamples > player.clip.samples) // end of playback
             {
                 SceneHistory.LoadPreviousScene();
             }
