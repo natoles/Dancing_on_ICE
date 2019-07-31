@@ -7,25 +7,25 @@ using System.IO;
 public class MainCreator : MonoBehaviour
 {
     NodeCreation creator;
-    List<TimeStamp> track = new List<TimeStamp>();
+    public BodySourceView bodySourceView;
+    IEnumerator trackCreation;
+    List<TimeStamp> track = new List<TimeStamp>(); //Add a TimeStamp to track to display it on screen
     MovementFile decoyMove = new MovementFile();
-    public float[] currentRates; //See AddMove()
+    public enum Mode {Random = 0, Basic, Line} //Every available Mode
+    static public Mode globalNodeType = Mode.Random; //Chosen mode
+    public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
+    public float[] currentRates; //See AddMove()
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     int movePoolSize = 9; //See SelectMove()
-    IEnumerator trackCreation;
-    float maxSpawnTime = 0f;
-    float globalscale = 8;
+    float maxSpawnTime = 0;
+    float globalscale = 8; //Default scale
     float tmpTime;
-    public enum Mode {Random = 0, Basic, Line}
-    static public Mode globalNodeType = Mode.Random; 
-    public float d = 1;
-    public float gameLength; 
-    public BodySourceView bodySourceView;
-    int totalMoves = 0;
-    float startTime;
-    public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
-    public MoveInfo[] moveInfo =  new MoveInfo[2];
+    public float d = 1; //Difficulty
+    public float gameLength; //Duration of one session in seconds
+    int totalMoves = 0; //Number of moves available
+    float startTime; //Time at which the gale starts, relative to Time.time
+    [HideInInspector] public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
     
 
     void Start()
@@ -34,7 +34,7 @@ public class MainCreator : MonoBehaviour
         creator = new NodeCreation();
 
         for(int i=0; i<moveInfo.Length; i++){
-            decoyMove.AddMovePath(moveInfo[i].path);
+            decoyMove.AddMovePath(moveInfo[i].fileName);
         }
 
         totalMoves = decoyMove.allMovementPath.Count;
@@ -43,7 +43,6 @@ public class MainCreator : MonoBehaviour
         decoyMove.SaveUkiDatas();
 
         //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
-
         decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
         decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
         
@@ -51,11 +50,11 @@ public class MainCreator : MonoBehaviour
 
 
         for(int i=0; i<moveInfo.Length; i++){
-            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].speed != 0){
-                SetMoveTimeStampBasic(moveInfo[i].path,moveInfo[i].speed,moveInfo[i].holdTime,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].basicSpeed != 0){
+                SetMoveTimeStampBasic(moveInfo[i].fileName,moveInfo[i].basicSpeed,moveInfo[i].holdDuration,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
-            if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].timeLine != 0){ 
-                SetMoveTimeStampLine(moveInfo[i].path,moveInfo[i].timeLine,moveInfo[i].holdTime,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
+            if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].lineDuration != 0){ 
+                SetMoveTimeStampLine(moveInfo[i].fileName,moveInfo[i].lineDuration,moveInfo[i].holdDuration,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
         }
 
@@ -78,7 +77,6 @@ public class MainCreator : MonoBehaviour
             }
             cpt++;
         }
-        //Debug.Log(currentRates[0]);
     }
 
     //Shorten verson of SetMoveTimeStamp for BasicNode
@@ -90,8 +88,7 @@ public class MainCreator : MonoBehaviour
         decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
     }
 
-    
-
+    //Adds the chosen move to the track accroding to the chosen move
     IEnumerator TrackCreation(){
         ComputeGlobalRate();
         while(true){    
@@ -124,12 +121,11 @@ public class MainCreator : MonoBehaviour
             }
             while (track.Count > 0){  //Pause during the move to select a new move with recent movement datas
                 yield return null ;
-            } 
-            
-            
+            }    
         }
     }
 
+    //Exits the game after gameLenghts seconds 
     IEnumerator ExitGame(){
         yield return new WaitForSeconds(gameLength);
         Debug.Log("End of the game !");
@@ -215,7 +211,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
-    //insert a move into the array of moves
+    //Insert a move into the array of moves
     public void InsertMove(int move, int[] moves){
         int cpt = 0;
         while(cpt < moves.Length){
@@ -230,7 +226,7 @@ public class MainCreator : MonoBehaviour
         }
     }
 
-    //Compute the score of each move according to the current Rate
+    //Computes the score of each move according to the current Rate
     void ComputeGlobalRate(){
         float tmp;
         decoyMove.allMovementGlobalRates.Clear();
@@ -258,15 +254,15 @@ public class MainCreator : MonoBehaviour
             }
         }
     }
-    
 }
 
+//Class to get the information of every move from the inspector
 [System.Serializable]
 public class MoveInfo{
-    public string path;
-    public float speed;
-    public float timeLine;
-    public float holdTime;
-    public float scaleChange;
-    public int jointExclusion;
+    public string fileName; //Automatically get the file in StreamingAsset
+    public float basicSpeed; //Spawn speed of nodes in Basic Mode
+    public float lineDuration; //Duration of the Line Node
+    public float holdDuration; //Duration of the Hold Node, set to 0 if no Hold Node
+    public float scaleChange; //Scale of the move
+    public int jointExclusion; //Select which joitn to track in the move (0=both; 1=Right; 2=Left)
 }
