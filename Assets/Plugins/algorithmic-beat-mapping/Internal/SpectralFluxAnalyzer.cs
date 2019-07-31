@@ -2,13 +2,16 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class SpectralFluxInfoLight
 {
-    public float spectralFlux;
-    public float unscaledThreshold;
+    [JsonProperty(propertyName: "sf")] public float spectralFlux;
 
-    internal float PrunedSpectralFlux(float thresholdMultiplier)
+    [JsonProperty(propertyName: "ut")] public float unscaledThreshold;
+
+    public float PrunedSpectralFlux(float thresholdMultiplier)
     {
         return spectralFlux - unscaledThreshold * thresholdMultiplier;
     }
@@ -29,9 +32,11 @@ public class SpectralFluxInfoLight
     }
 }
 
+[JsonObject(MemberSerialization.OptIn)]
 public class SpectralFluxInfo : SpectralFluxInfoLight
 {
-    public float time;
+    [JsonProperty(propertyName: "tm")] public float time;
+    
     public SpectralFluxInfoLight previous;
     public SpectralFluxInfoLight next;
 
@@ -115,8 +120,8 @@ public class SpectralFluxAnalyzer
             // Now that we are processed at n, n-1 has neighbors (n-2, n) to determine peak
             int indexToDetectPeak = indexToProcess - 1;
 
-            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1].Copy();
-            spectralFluxSamples[indexToDetectPeak].next = spectralFluxSamples[indexToDetectPeak + 1].Copy();
+            spectralFluxSamples[indexToDetectPeak].previous = spectralFluxSamples[indexToDetectPeak - 1];
+            spectralFluxSamples[indexToDetectPeak].next = spectralFluxSamples[indexToDetectPeak + 1];
 
             indexToProcess++;
         }

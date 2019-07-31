@@ -2,24 +2,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 using System.Numerics;
 using DSPLib;
+using Newtonsoft.Json;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class SpectralFluxData
 {
-    public List<SpectralFluxInfo> spectralFluxSamples;
-    public int spectrumSampleSize;
-    public float lengthPerSample;
-    public float clipLength;
+    [JsonProperty(propertyName: "fs")] private readonly List<SpectralFluxInfo> spectralFluxSamples;
 
-    public SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int spectrumSampleSize, float lengthPerSample, float clipLength)
+    [JsonProperty(propertyName: "ws")] private readonly int windowSize;
+
+    [JsonProperty(propertyName: "cl")] private readonly float clipLength;
+
+    public SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int windowSize, float clipLength)
     {
         this.spectralFluxSamples = spectralFluxSamples;
-        this.spectrumSampleSize = spectrumSampleSize;
-        this.lengthPerSample = lengthPerSample;
+        this.windowSize = windowSize;
         this.clipLength = clipLength;
+    }
+
+    [OnDeserialized]
+    private void BindNeightbours(StreamingContext context)
+    {
+        for (int i = windowSize / 2; i < spectralFluxSamples.Count - (windowSize + 1) / 2; ++i)
+        {
+            spectralFluxSamples[i - 1].next = spectralFluxSamples[i];
+            spectralFluxSamples[i].previous = spectralFluxSamples[i - 1];
+        }
     }
 
     public List<SpectralFluxInfo> SelectPeaks(float wantedPeaksRate)
@@ -48,10 +61,12 @@ public class BeatAnalyzer
 
     private SpectralFluxAnalyzer fluxAnalyzer;
     private readonly int spectrumSampleSize;
+    private readonly int thresholdWindowSize;
 
     public BeatAnalyzer(AudioClipData clipData, int spectrumSampleSize = 1024, int thresholdWindowSize = 50)
     {
         this.spectrumSampleSize = spectrumSampleSize;
+        this.thresholdWindowSize = thresholdWindowSize;
         fluxAnalyzer = new SpectralFluxAnalyzer(spectrumSampleSize, thresholdWindowSize);
 
         multiChannelSamples = new float[clipData.lengthSamples * clipData.channels];
@@ -117,7 +132,7 @@ public class BeatAnalyzer
 				fluxAnalyzer.AnalyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
 
-            return new SpectralFluxData(fluxAnalyzer.spectralFluxSamples, spectrumSampleSize, timePerSample, clipLength);
+            return new SpectralFluxData(fluxAnalyzer.spectralFluxSamples, thresholdWindowSize, clipLength);
 		}
         catch (Exception e)
         {
