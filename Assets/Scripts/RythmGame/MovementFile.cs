@@ -12,7 +12,9 @@ public class MovementFile
     public List<float[]> allMovementRates;
     public List<float> allMovementGlobalRates;
     public List<string> allMovementPath;
-    float nodeDistance = 2.5f; //Distance needed between two nodes (high = less nodes)
+    public List<int> indexPreviousPointR; //To compute angle node's angle
+    public List<int> indexPreviousPointL; //To compute angle node's angle
+    float nodeDistance = 4f; //Distance needed between two nodes (high = less nodes)
     int maxJump = 60;//Max number of frames between two nodes
     int nbJoints = 2;
     float hipCenterX = 0;
@@ -25,6 +27,8 @@ public class MovementFile
         allMovementPath = new List<string>();
         allMovementTimeStampBasic = new List<List<TimeStamp>>();
         allMovementTimeStampLine = new List<List<TimeStamp>>();
+        indexPreviousPointR = new List<int>();
+        indexPreviousPointL = new List<int>();
     }
 
     //Adds a move 
@@ -150,16 +154,20 @@ public class MovementFile
             if (distR >= nodeDistance || cptR > maxJump){
                 cptR = 0;
                 distR = 0;
+                indexPreviousPointR.Add(i-1);
                 listRHx.Add(allMovementPos[moveIndex][0][i]);
                 listRHy.Add(allMovementPos[moveIndex][1][i]);
             }
             if (distL >= nodeDistance || cptL > maxJump){
                 cptL = 0;
                 distL = 0;
+                indexPreviousPointL.Add(i-1);
                 listLHx.Add(allMovementPos[moveIndex][2][i]);
                 listLHy.Add(allMovementPos[moveIndex][3][i]);
             }
         }
+        indexPreviousPointR.Reverse();
+        indexPreviousPointL.Reverse();
         listRHx.Reverse();
         listRHy.Reverse();
         listLHx.Reverse();
@@ -178,13 +186,15 @@ public class MovementFile
                 break;
             default :
                 if (jointExclusion == 1 || jointExclusion == 0) 
-                    InitAddNode(listTS, 0, speed, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
+                    InitAddNode(moveIndex, listTS, 0, speed, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
-                    InitAddNode(listTS, 1, speed, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
+                    InitAddNode(moveIndex, listTS, 1, speed, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
         }
         switch(defaultNode.nodeType){
             case(0):
+            case(2):
+            case(3):
                 allMovementTimeStampBasic.Add(listTS);
                 break;
             case(1):
@@ -219,7 +229,7 @@ public class MovementFile
     }
 
     //Init any type of node except LineNodes
-    void InitAddNode(List<TimeStamp> listTS, int joint, float speed, float scale, float holdEnd 
+    void InitAddNode(int moveIndex, List<TimeStamp> listTS, int joint, float speed, float scale, float holdEnd 
                 , List<float> PosX, List<float> PosY, float offsetX, float offsetY, TimeStamp defaultNode){
         for(int i =0; i < PosX.Count; i++){
             if (i==PosX.Count-1 && holdEnd != 0){
@@ -230,6 +240,33 @@ public class MovementFile
                 ts.joint = joint;
                 ts.timeSpawn = i/speed; 
                 ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0);
+                if(defaultNode.nodeType == 2){
+                    /*
+                    if(ts.joint == 0){
+                        Debug.Log("Previous PosX,PosY: " + (allMovementPos[moveIndex][0][indexPreviousPointR[i]]*scale) + ", " + (allMovementPos[moveIndex][1][indexPreviousPointR[i]]*scale));
+                    } else {
+                        Debug.Log("Previous PosX,PosY: " + (allMovementPos[moveIndex][2][indexPreviousPointL[i]]*scale) + ", " + (allMovementPos[moveIndex][3][indexPreviousPointL[i]]*scale));
+                    }
+                    Debug.Log("PosX,PosY: " + (PosX[i]*scale + offsetX) + ", " + (PosY[i]*scale + offsetY));*/
+                    float previousX;
+                    float previousY;
+                    int indexR = indexPreviousPointR[i];
+                    int indexL = indexPreviousPointL[i];
+                    if(ts.joint == 0){
+                        previousX = (allMovementPos[moveIndex][0][indexR]+allMovementPos[moveIndex][0][indexR-1]+allMovementPos[moveIndex][0][indexR-2])/3*scale + offsetX;
+                        previousY = (allMovementPos[moveIndex][1][indexR]+allMovementPos[moveIndex][1][indexR-1]+allMovementPos[moveIndex][1][indexR-2])/3*scale + offsetY;
+                    } else {
+                        previousX = (allMovementPos[moveIndex][2][indexL]+allMovementPos[moveIndex][2][indexL-1]+allMovementPos[moveIndex][2][indexL-2])/3*scale + offsetX;
+                        previousY = (allMovementPos[moveIndex][3][indexL]+allMovementPos[moveIndex][3][indexL-1]+allMovementPos[moveIndex][3][indexL-2])/3*scale + offsetY;
+                    }
+                    float deltaX = previousX - ts.spawnPosition.x;
+                    float deltaY = previousY - ts.spawnPosition.y;
+                    ts.startAngle = (float) (Math.Atan2(deltaY,deltaX) * 180/Math.PI);
+                    ts.previousX = previousX;
+                    ts.previousY = previousY;
+                    //Debug.Log("Angle: " + ts.startAngle);
+                    //Debug.Log(ts.startAngle);
+                }
                 listTS.Add(ts);
             } 
         }

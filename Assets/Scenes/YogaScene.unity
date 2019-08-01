@@ -251,6 +251,10 @@ MonoBehaviour:
   currentRates: []
   maxTrackDistance: 25
   calories: 0
+  caloriesCoef: 122
+  caloriesResult: 0
+  caloriesCalib: 0
+  totalDist: 0
 --- !u!4 &510959608
 Transform:
   m_ObjectHideFlags: 0
