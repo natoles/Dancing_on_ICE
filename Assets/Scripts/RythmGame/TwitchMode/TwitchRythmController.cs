@@ -7,26 +7,6 @@ using Newtonsoft.Json;
 
 public class TwitchRythmController : MonoBehaviour
 {
-    #region Properties
-
-    public static BeatmapContainer BeatmapToLoad { set; get; } = null;
-
-    public static float Difficulty
-    {
-        get
-        {
-            return difficulty;
-        }
-        set
-        {
-            difficulty = Mathf.Clamp(value, 1, 5);
-        }
-    }
-
-    private static float difficulty = 5f;
-
-    #endregion
-
     #region Serialized Fields
 
     [SerializeField]
@@ -44,48 +24,26 @@ public class TwitchRythmController : MonoBehaviour
 
     private Thread thread = null;
     private AudioClipData clipData = null;
-    private BeatAnalyzer analyzer = null;
     private SpectralFluxData spectralFluxData = null;
     private List<SpectralFluxInfo> peaks = null;
     private bool loaded = false;
     private bool loadingFailed = false;
 
-    private void AnalyzeAudio(AudioClipData clipData)
-    {
-        analyzer = new BeatAnalyzer(clipData);
-        spectralFluxData = analyzer.GetFullSpectrum();
-        analyzer = null;
-
-        StreamWriter writer = new StreamWriter(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json");
-        writer.Write(JsonConvert.SerializeObject(spectralFluxData));
-        writer.Close();
-    }
-
-    private void LoadSpectrumFromFile()
-    {
-        StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json");
-        spectralFluxData = JsonConvert.DeserializeObject<SpectralFluxData>(reader.ReadToEnd());
-        reader.Close();
-    }
-
     private void LoadBeatmapForPlay()
     {
-        clipData = BeatmapLoader.LoadBeatmapAudio(BeatmapToLoad);
+        clipData = BeatmapLoader.LoadBeatmapAudio(RythmGameSettings.BeatmapToLoad);
 
         if (clipData != null)
         {
-            if (!new DirectoryInfo(Application.streamingAssetsPath + "/SpectrumData/").Exists)
-                Directory.CreateDirectory(Application.streamingAssetsPath + "/SpectrumData/");
+            if (spectralFluxData == null)
+                spectralFluxData = BeatAnalyzer.AnalyzeAudio(RythmGameSettings.BeatmapToLoad, clipData);
 
-            if (new FileInfo(Application.streamingAssetsPath + "/SpectrumData/" + BeatmapToLoad.sourceFile + ".json").Exists)
-                LoadSpectrumFromFile();
-            else
-                AnalyzeAudio(clipData);
-            peaks = spectralFluxData.SelectPeaks(Difficulty);
+            if (spectralFluxData != null)
+                peaks = spectralFluxData.SelectPeaks(RythmGameSettings.Difficulty);
         }
 
-        loaded = clipData != null;
-        loadingFailed = clipData == null;
+        loaded = clipData != null && spectralFluxData != null && peaks != null;
+        loadingFailed = !loaded;
     }
 
     #endregion
@@ -102,20 +60,16 @@ public class TwitchRythmController : MonoBehaviour
     private readonly float dy = 0.375f;
 
     private readonly float minApproachTime = 2f;
-    private readonly float maxApproachTime = 0.7f;
-    private float ApproachTime { get { return Mathf.Lerp(minApproachTime, maxApproachTime, (difficulty - 1) / 5); } }
+    private readonly float maxApproachTime = 0.8f;
+    private float ApproachTime { get { return Mathf.Lerp(minApproachTime, maxApproachTime, RythmGameSettings.DifficultyPercentage); } }
 
-    private readonly float minSpeed = 1.5f;
-    private readonly float maxSpeed = 3f;
-    private float Speed { get { return Mathf.Lerp(minSpeed, maxSpeed, (difficulty - 1) / 5); } }
+    private readonly float minSpeed = 1.75f;
+    private readonly float maxSpeed = 3.5f;
+    private float Speed { get { return Mathf.Lerp(minSpeed, maxSpeed, RythmGameSettings.DifficultyPercentage); } }
 
-    private readonly float minSpawnDelay = 0.5f;
+    private readonly float minSpawnDelay = 0.75f;
     private readonly float maxSpawnDelay = 0.15f;
-    private float SpawnDelay { get { return Mathf.Lerp(minSpawnDelay, maxSpawnDelay, (difficulty - 1) / 5); } }
-
-    private readonly float minThresholdMultiplier = 1.8f;
-    private readonly float maxThresholdMultiplier = 1.5f;
-    private float ThresholdMultiplier { get { return Mathf.Lerp(minThresholdMultiplier, maxThresholdMultiplier, (difficulty - 1) / 5); } }
+    private float SpawnDelay { get { return Mathf.Lerp(minSpawnDelay, maxSpawnDelay, RythmGameSettings.DifficultyPercentage); } }
 
     private int currPeak = 0;
     private float previousNodeSpawning = float.MinValue;
@@ -136,13 +90,13 @@ public class TwitchRythmController : MonoBehaviour
         bounds = mainCamera.OrthographicBounds();
 
 #if UNITY_EDITOR
-        if (BeatmapToLoad == null)
-            BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
+        if (RythmGameSettings.BeatmapToLoad == null)
+            RythmGameSettings.BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
 #endif
         
         thread = new Thread(new ThreadStart(LoadBeatmapForPlay));
         thread.Start();
-        loadingScreen.Text = System.IO.Path.GetFileNameWithoutExtension(BeatmapToLoad?.sourceFile);
+        loadingScreen.Text = System.IO.Path.GetFileNameWithoutExtension(RythmGameSettings.BeatmapToLoad?.sourceFile);
         loadingScreen.Show();
     }
     
@@ -157,8 +111,6 @@ public class TwitchRythmController : MonoBehaviour
 
                 player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                 clipData = null;
-
-                analyzer = null;
 
                 currPeak = 0;
 

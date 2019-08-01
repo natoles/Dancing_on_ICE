@@ -110,8 +110,8 @@ public class VotePanelController : MonoBehaviour
             TwitchClient.Instance.SendMessage($"Song {choices[winnerID].Id} with difficulty {System.Math.Round(winnerDifficulty, 1)} have been choosen !");
             NotificationManager.Instance.PushNotification("Vote has ended", Color.white, Color.blue);
 
-            TwitchRythmController.BeatmapToLoad = choices[winnerID].Song.BeatmapContainer;
-            TwitchRythmController.Difficulty = winnerDifficulty;
+            RythmGameSettings.BeatmapToLoad = choices[winnerID].Song.BeatmapContainer;
+            RythmGameSettings.Difficulty = winnerDifficulty;
             SceneHistory.LoadScene("TwitchMode");
         }
 

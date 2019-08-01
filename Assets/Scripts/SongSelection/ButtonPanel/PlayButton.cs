@@ -12,6 +12,6 @@ public class PlayButton : LoadSceneButton
 
     private void Update()
     {
-        interactable = (TwitchRythmController.BeatmapToLoad != null);
+        interactable = (RythmGameSettings.BeatmapToLoad != null);
     }
 }
