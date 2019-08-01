@@ -20,7 +20,11 @@ public class BodySourceView : MonoBehaviour
     public float maxTrackDistance;
     int nbJoints = 2;
     public int calories = 0;
-    
+    public int caloriesCoef = 122;
+    public int caloriesResult;
+    public bool caloriesCalib;
+    public float totalDist;
+                                                   
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show
     private List<JointType> _joints = new List<JointType>{
@@ -173,7 +177,7 @@ public class BodySourceView : MonoBehaviour
             jointPos[1] = bodyObject.transform.Find((JointType.HandRight).ToString()).position.y;
             jointPos[2] = bodyObject.transform.Find((JointType.HandLeft).ToString()).position.x;
             jointPos[3] = bodyObject.transform.Find((JointType.HandLeft).ToString()).position.y;
-            float totalDist = 0;
+            //totalDist = 0;
 
             for (int i = 0; i<= previousJointsPos.Length/2; i+=2){
                 realJointsMovements[i/2] += (float) Math.Sqrt(Math.Pow(jointPos[i] - previousJointsPos[i],2) + Math.Pow(jointPos[i+1] - previousJointsPos[i+1],2));
@@ -183,7 +187,7 @@ public class BodySourceView : MonoBehaviour
             {
                 Debug.Log("Left,Right,Total: " + realJointsMovements[1] + ", " + realJointsMovements[0] + ", " + totalDist);
             }
-            calories = (int) totalDist/122;
+            calories = (int) totalDist/caloriesCoef;
     
             for (int i = 0; i<realJointsMovements.Length; i++){
                 currentRates[i] = realJointsMovements[i]/totalDist * 100;
