@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 using System.Numerics;
+using System.IO;
 using DSPLib;
 using Newtonsoft.Json;
 
@@ -51,6 +52,57 @@ public class SpectralFluxData
 
 public class BeatAnalyzer
 {
+    public static SpectralFluxData AnalyzeAudio(BeatmapContainer bmc, AudioClipData clipData)
+    {
+        if (!new DirectoryInfo(Application.streamingAssetsPath + "/SpectrumData/").Exists)
+        {
+            try
+            {
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/SpectrumData/");
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return null;
+            }
+        }
+
+        SpectralFluxData spectralFluxData;
+        if (new FileInfo(Application.streamingAssetsPath + "/SpectrumData/" + bmc.sourceFile + ".json").Exists)
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(Application.streamingAssetsPath + "/SpectrumData/" + RythmGameSettings.BeatmapToLoad.sourceFile + ".json");
+                spectralFluxData = JsonConvert.DeserializeObject<SpectralFluxData>(reader.ReadToEnd());
+                reader.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                return null;
+            }
+        }
+        else
+        {
+            BeatAnalyzer analyzer = new BeatAnalyzer(clipData);
+            spectralFluxData = analyzer.GetFullSpectrum();
+            analyzer = null;
+
+            try
+            {
+                StreamWriter writer = new StreamWriter(Application.streamingAssetsPath + "/SpectrumData/" + RythmGameSettings.BeatmapToLoad.sourceFile + ".json");
+                writer.Write(JsonConvert.SerializeObject(spectralFluxData));
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        return spectralFluxData;
+    }
+
     private readonly int frequency;
     private readonly int channels;
 	private readonly int lengthSamples;
@@ -63,7 +115,7 @@ public class BeatAnalyzer
     private readonly int spectrumSampleSize;
     private readonly int thresholdWindowSize;
 
-    public BeatAnalyzer(AudioClipData clipData, int spectrumSampleSize = 1024, int thresholdWindowSize = 50)
+    private BeatAnalyzer(AudioClipData clipData, int spectrumSampleSize = 1024, int thresholdWindowSize = 50)
     {
         this.spectrumSampleSize = spectrumSampleSize;
         this.thresholdWindowSize = thresholdWindowSize;
