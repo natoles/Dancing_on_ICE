@@ -16,6 +16,7 @@ public class MainCreator : MonoBehaviour
     public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     public float[] currentRates; //See AddMove()
+    TimeStamp defaultBasicNode;
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     int movePoolSize = 9; //See SelectMove()
     float maxSpawnTime = 0;
@@ -43,8 +44,9 @@ public class MainCreator : MonoBehaviour
         decoyMove.SaveUkiDatas();
 
         //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
-        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
-        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));
+        defaultBasicNode = new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero); //Reference node for Basic Node spawning
+        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,defaultBasicNode);
+        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,defaultBasicNode);
         
         decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
 
@@ -77,11 +79,13 @@ public class MainCreator : MonoBehaviour
             }
             cpt++;
         }
+
+        
     }
 
     //Shorten verson of SetMoveTimeStamp for BasicNode
     void SetMoveTimeStampBasic(string path, float speed, float holdTime, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero));                                 
+        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, defaultBasicNode);                                 
     }
     //Shorten verson of SetMoveTimeStamp for LineNode
     void SetMoveTimeStampLine(string path, float timeLine, float holdTime, float scaleChange, int jointExclusion){
@@ -128,6 +132,10 @@ public class MainCreator : MonoBehaviour
     //Exits the game after gameLenghts seconds 
     IEnumerator ExitGame(){
         yield return new WaitForSeconds(gameLength);
+        if (bodySourceView.caloriesCalib){
+            bodySourceView.caloriesCalib = false;
+            bodySourceView.caloriesCoef = (int) bodySourceView.totalDist/bodySourceView.caloriesResult;
+        }
         Debug.Log("End of the game !");
         SceneHistory.LoadPreviousScene();
         #if UNITY_EDITOR
