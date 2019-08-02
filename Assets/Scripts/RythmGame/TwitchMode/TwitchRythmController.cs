@@ -1,52 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using Kinect = Windows.Kinect;
-using Newtonsoft.Json;
 
-public class TwitchRythmController : MonoBehaviour
+using DancingICE.RythmGame;
+
+public class TwitchRythmController : RythmGameController
 {
-    #region Serialized Fields
-
-    [SerializeField]
-    private AudioSource player = null;
-
     [SerializeField]
     private Camera mainCamera = null;
-
-    [SerializeField]
-    private LoadingMusicScreen loadingScreen = null;
-
-    #endregion
-
-    #region Music Loading
-
-    private Thread thread = null;
-    private AudioClipData clipData = null;
-    private SpectralFluxData spectralFluxData = null;
-    private List<SpectralFluxInfo> peaks = null;
-    private bool loaded = false;
-    private bool loadingFailed = false;
-
-    private void LoadBeatmapForPlay()
-    {
-        clipData = BeatmapLoader.LoadBeatmapAudio(RythmGameSettings.BeatmapToLoad);
-
-        if (clipData != null)
-        {
-            if (spectralFluxData == null)
-                spectralFluxData = BeatAnalyzer.AnalyzeAudio(RythmGameSettings.BeatmapToLoad, clipData);
-
-            if (spectralFluxData != null)
-                peaks = spectralFluxData.SelectPeaks(RythmGameSettings.Difficulty);
-        }
-
-        loaded = clipData != null && spectralFluxData != null && peaks != null;
-        loadingFailed = !loaded;
-    }
-
-    #endregion
 
     #region Node Spawning
 
@@ -84,64 +44,29 @@ public class TwitchRythmController : MonoBehaviour
 
     #endregion
 
-  private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         creator = new NodeCreation();
-        bounds = mainCamera.OrthographicBounds();
-
-#if UNITY_EDITOR
-        if (RythmGameSettings.BeatmapToLoad == null)
-            RythmGameSettings.BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
-#endif
-        
-        thread = new Thread(new ThreadStart(LoadBeatmapForPlay));
-        thread.Start();
-        loadingScreen.Text = System.IO.Path.GetFileNameWithoutExtension(RythmGameSettings.BeatmapToLoad?.sourceFile);
-        loadingScreen.Show();
     }
-    
-    private void Update()
+
+    protected override void OnLoaded()
     {
-        if (loaded)
+        bounds = mainCamera.OrthographicBounds();
+    }
+
+    protected override void OnUpdate()
+    {
+        while (currPeak < Peaks.Count && Peaks[currPeak].time <= AudioPlayer.time + ApproachTime)
         {
-            if (thread != null)
+            if (Time.time > previousNodeSpawning + SpawnDelay)
             {
-                thread.Join();
-                thread = null;
-
-                player.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
-                clipData = null;
-
-                currPeak = 0;
-
-                player.PlayDelayed(3f);
-
-                loadingScreen.Hide();
+                previousNodeSpawning = Time.time;
+                GameObject node = creator.CreateBasicNode(NodeCreation.Joint.LeftHand, Peaks[currPeak].time - AudioPlayer.time, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
+                node.GetComponent<Node>().destroyOnTouch = true;
             }
-
-            if (player.isPlaying && player.time > 0)
-            {
-                bounds = mainCamera.OrthographicBounds();
-                
-                while (currPeak < peaks.Count && peaks[currPeak].time <= player.time + ApproachTime)
-                {
-                    if (Time.time > previousNodeSpawning + SpawnDelay)
-                    {
-                        previousNodeSpawning = Time.time;
-                        creator.CreateBasicNode(NodeCreation.Joint.LeftHand, peaks[currPeak].time - player.time, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
-                    }
-                    currPeak++;
-                }
-            }
-            else if (player.timeSamples > player.clip.samples) // end of playback
-            {
-                SceneHistory.LoadPreviousScene();
-            }
-        }
-        else if (loadingFailed)
-        {
-            NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
-            SceneHistory.LoadPreviousScene();
+            currPeak++;
         }
     }
 }

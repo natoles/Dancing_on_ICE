@@ -195,6 +195,11 @@ MonoBehaviour:
     type: 3}
   currentRates: []
   maxTrackDistance: 25
+  calories: 0
+  caloriesCoef: 122
+  caloriesResult: 0
+  caloriesCalib: 0
+  totalDist: 0
 --- !u!4 &144578710
 Transform:
   m_ObjectHideFlags: 0
@@ -1205,9 +1210,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c65825937156e4e95d4ea0ea17601d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 477588149}
-  mainCamera: {fileID: 1568215662}
+  audioPlayer: {fileID: 477588149}
   loadingScreen: {fileID: 274177515}
+  mainCamera: {fileID: 1568215662}
 --- !u!4 &733231977
 Transform:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Crosstales.FB;
@@ -67,24 +68,26 @@ static class BeatmapLoader
 
     public static BeatmapContainer LoadBeatmapFile(string path)
     {
-        if (Path.GetExtension(path) != BeatmapFileFormat)
-            return null;
+        string extension = Path.GetExtension(path);
+        if (extension != BeatmapFileFormat)
+            throw new NotSupportedException($"Unsupported {extension} beatmap format (expected: {BeatmapFileFormat})");
 
         StreamReader reader = new StreamReader(path);
         string json = reader.ReadToEnd();
         reader.Close();
 
-        Beatmap bm = JsonUtility.FromJson<Beatmap>(json);
+        Beatmap bm = JsonUtility.FromJson<Beatmap>(json); // FIXME: Switch to Newtonsoft.Json
         if (bm == null)
-            return null;
+            return null; // FIXME : throw appropriate exception
 
         return new BeatmapContainer { sourceFile = Path.GetFileName(path), directory = Path.GetDirectoryName(path), bm = bm };
     }
 
     public static BeatmapContainer CreateBeatmapFromAudio(string path)
     {
-        if (!SupportedAudioFormats.Contains<string>(Path.GetExtension(path)))
-            return null;
+        string extension = Path.GetExtension(path);
+        if (!SupportedAudioFormats.Contains<string>(extension))
+            throw new NotSupportedException($"{extension} files are not supported");
         
         return new BeatmapContainer
         {
@@ -101,36 +104,40 @@ static class BeatmapLoader
 
     #region Audio Loading
 
-    public static AudioClip CreateAudioClipFromData(AudioClipData cd)
+    public static AudioClip CreateAudioClipFromData(AudioClipData clipData)
     {
-        AudioClip audio = AudioClip.Create(cd.name, cd.lengthSamples, cd.channels, cd.frequency, cd.stream);
-        audio.SetData(cd.data, cd.offsetSamples);
+        AudioClip audio = AudioClip.Create(clipData.name, clipData.lengthSamples, clipData.channels, clipData.frequency, clipData.stream);
+        audio.SetData(clipData.data, clipData.offsetSamples);
         return audio;
     }
 
     public static AudioClipData LoadBeatmapAudio(BeatmapContainer bmc)
     {
-        if (bmc == null || bmc.directory == null || bmc.bm.AudioFile == null)
-            return null;
+        if (bmc == null)
+            throw new ArgumentNullException(nameof(bmc));
+
+        if (bmc.directory == null)
+            throw new NullReferenceException();
+
+        if (bmc.bm.AudioFile == null)
+            throw new NullReferenceException();
 
         return LoadAudioFile(Path.Combine(bmc.directory, bmc.bm.AudioFile));
     }
 
     public static AudioClipData LoadAudioFile(string path)
     {
+        if (path == null)
+            throw new ArgumentNullException(nameof(path));
+
         string basename = Path.GetFileNameWithoutExtension(path);
         string extension = Path.GetExtension(path);
         AudioType type = extension == ".mp3" ? AudioType.MPEG : extension == ".wav" ? AudioType.WAV : AudioType.UNKNOWN;
 
         if (type == AudioType.UNKNOWN)
-        {
-            NotificationManager.Instance.PushNotification(extension + " audio files are not supported", Color.white, Color.red);
-            return null;
-        }
+            throw new NotSupportedException($"{extension} files are not supported");
 
         AudioFileReader reader = new AudioFileReader(path);
-        if (reader == null)
-            return null;
 
         int size = (int) (reader.Length / sizeof(float));
         float[] audioData = new float[size];
