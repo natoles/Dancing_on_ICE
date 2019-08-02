@@ -54,7 +54,7 @@ public class MainCreator : MonoBehaviour
 
 
         for(int i=0; i<moveInfo.Length; i++){
-            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].basicSpeed != 0){
+            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Angle|| globalNodeType == Mode.Random) && moveInfo[i].basicSpeed != 0){
                 SetMoveTimeStampBasic(moveInfo[i].fileName,moveInfo[i].basicSpeed,moveInfo[i].holdDuration,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
             if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].lineDuration != 0){ 
@@ -88,7 +88,7 @@ public class MainCreator : MonoBehaviour
         
     }
 
-    //Shorten verson of SetMoveTimeStamp for BasicNode
+    //Shorten verson of SetMoveTimeStamp for BasicNode and AngleNode
     void SetMoveTimeStampBasic(string path, float speed, float holdTime, float scaleChange, int jointExclusion){
         decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, defaultBasicNode);                                 
     }
@@ -119,6 +119,7 @@ public class MainCreator : MonoBehaviour
                     else AddMove(decoyMove.allMovementTimeStampLine[indexChosenMove]); 
                     break;
                 case(Mode.Basic): 
+                case(Mode.Angle):
                     AddMove(decoyMove.allMovementTimeStampBasic[indexChosenMove]);
                     break;
                 case(Mode.Line):

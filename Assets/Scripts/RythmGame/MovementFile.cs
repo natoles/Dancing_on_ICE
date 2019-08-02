@@ -180,30 +180,35 @@ public class MovementFile
         List<TimeStamp> listTS = new List<TimeStamp>();
 
         switch(defaultNode.nodeType){
-            case 1 :
+            case 1 : //Line
                 if (jointExclusion == 1 || jointExclusion == 0)
                     InitAddLineNode(listTS, 0, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
                     InitAddLineNode(listTS, 1, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
-            default :
+            case 0 : //Basic    
+            case 2 : //Angle
+            case 3 : //Hold
                 if (jointExclusion == 1 || jointExclusion == 0) 
                     InitAddNode(moveIndex, listTS, 0, speed, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
                     InitAddNode(moveIndex, listTS, 1, speed, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
+            default :
+                Debug.LogError("Unsupported NodeType");
+                break;
         }
         switch(defaultNode.nodeType){
-            case(0):
-            case(2):
-            case(3):
+            case 0 :
+            case 2 :
+            case 3 :
                 allMovementTimeStampBasic.Add(listTS);
                 break;
-            case(1):
+            case 1 :
                 allMovementTimeStampLine.Add(listTS);
                 break;
             default:
-                Debug.Log("Unsupported Node Type");
+                Debug.LogError("Unsupported NodeType");
                 break;
         }
         #endregion
