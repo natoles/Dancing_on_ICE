@@ -12,7 +12,7 @@ public class MainCreator : MonoBehaviour
     List<TimeStamp> track = new List<TimeStamp>(); //Add a TimeStamp to track to display it on screen
     MovementFile decoyMove = new MovementFile();
     public enum Mode {Random = 0, Basic, Line, Angle} //Every available Mode
-    static public Mode globalNodeType = Mode.Basic; //Chosen mode
+    static public Mode globalNodeType = Mode.Angle; //Chosen mode
     public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     public float[] currentRates; //See AddMove()
@@ -44,7 +44,9 @@ public class MainCreator : MonoBehaviour
         decoyMove.SaveUkiDatas();
 
         //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
-        defaultBasicNode = new TimeStamp(0,2,0,1.2f*(1/d),0,Vector3.zero); //Reference node for Basic Node spawning
+        if(globalNodeType == Mode.Basic) defaultBasicNode = new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero); //Reference node for Basic Node spawning
+        if(globalNodeType == Mode.Angle) defaultBasicNode = new TimeStamp(0,2,0,1.8f*(1/d),0,Vector3.zero); //Reference node for Angle Node spawning
+        
         decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,defaultBasicNode);
         decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,defaultBasicNode);
         
