@@ -20,6 +20,12 @@ public class BasicYogaSettings : MonoBehaviour
     [SerializeField]
     Toggle line = null;
 
+    [SerializeField]
+    Toggle angle = null;
+
+    [SerializeField]
+    Toggle random = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +35,8 @@ public class BasicYogaSettings : MonoBehaviour
 
         basic.isOn = MainCreator.globalNodeType == MainCreator.Mode.Basic;
         line.isOn = MainCreator.globalNodeType == MainCreator.Mode.Line;
+        angle.isOn = MainCreator.globalNodeType == MainCreator.Mode.Angle;
+        random.isOn = MainCreator.globalNodeType == MainCreator.Mode.Random;
     }
 
     // Update is called once per frame
@@ -42,7 +50,16 @@ public class BasicYogaSettings : MonoBehaviour
 
         if (basic.isOn)
             MainCreator.globalNodeType = MainCreator.Mode.Basic;
-        else if (line.isOn)
-            MainCreator.globalNodeType = MainCreator.Mode.Basic;
+        else { 
+            if (line.isOn) MainCreator.globalNodeType = MainCreator.Mode.Line;
+            else {
+                if (angle.isOn) MainCreator.globalNodeType = MainCreator.Mode.Angle;
+                else {
+                    if(random.isOn) MainCreator.globalNodeType = MainCreator.Mode.Random;
+                }
+            }
+        }
+            
+
     }
 }

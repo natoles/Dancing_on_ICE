@@ -178,7 +178,6 @@ public class MovementFile
 
         #region Add to list
         List<TimeStamp> listTS = new List<TimeStamp>();
-
         switch(defaultNode.nodeType){
             case 1 : //Line
                 if (jointExclusion == 1 || jointExclusion == 0)
