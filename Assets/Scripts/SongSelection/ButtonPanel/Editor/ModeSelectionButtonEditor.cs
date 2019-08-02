@@ -35,7 +35,8 @@ public class ModeSelectionButtonEditor : ButtonEditor
                 SerializedProperty Mode = element.FindPropertyRelative("mode");
                 SerializedProperty Slider = element.FindPropertyRelative("showDifficultySlider");
                 SerializedProperty Buttons = element.FindPropertyRelative("buttonsToShow");
-                
+                SerializedProperty PreviousButtonState = element.FindPropertyRelative("previousButtonsState");
+
                 rect.y += 0.125f * EditorGUIUtility.singleLineHeight;
 
                 bool oldEnabled = GUI.enabled;
@@ -50,43 +51,55 @@ public class ModeSelectionButtonEditor : ButtonEditor
 
                 if (GUI.Button(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), buttonText))
                 {
-                    (serializedObject.targetObject as ModeSelectionButton).Current = index;
                     Current.intValue = index;
                 }
                 GUI.enabled = oldEnabled;
                 GUI.backgroundColor = oldColor;
                 rect.y += EditorGUIUtility.singleLineHeight;
-                
+
                 rect.y += 0.125f * EditorGUIUtility.singleLineHeight;
 
                 EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Mode);
                 rect.y += EditorGUIUtility.singleLineHeight;
+
                 EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Slider);
                 rect.y += EditorGUIUtility.singleLineHeight;
+
+                Object previousGameObject = Buttons.objectReferenceValue;
                 EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Buttons);
+                if (Buttons.objectReferenceValue != previousGameObject)
+                {
+                    if (previousGameObject != null)
+                        (previousGameObject as GameObject).SetActive(PreviousButtonState.boolValue);
+
+                    if (Buttons.objectReferenceValue != null)
+                        PreviousButtonState.boolValue = (Buttons.objectReferenceValue as GameObject).activeSelf;
+                }
             },
             elementHeight = EditorGUIUtility.singleLineHeight * 4.5f,
             onAddCallback = (list) =>
             {
-                int index = list.serializedProperty.arraySize;
                 list.serializedProperty.arraySize++;
-                list.index = index;
 
-                SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
+                SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(list.serializedProperty.arraySize - 1);
 
                 element.FindPropertyRelative("mode").objectReferenceValue = null;
                 element.FindPropertyRelative("showDifficultySlider").boolValue = false;
                 element.FindPropertyRelative("buttonsToShow").objectReferenceValue = null;
             },
+            onRemoveCallback = (list) =>
+            {
+                if ((list.count > 1) && (list.index < Current.intValue || (list.index == Current.intValue && Current.intValue == list.count - 1)))
+                    Current.intValue--;
+                ReorderableList.defaultBehaviours.DoRemoveButton(list);
+            },
             onReorderCallbackWithDetails = (list, oldindex, newindex) =>
             {
                 if (Current.intValue == oldindex)
                     Current.intValue = newindex;
-                else
-                if (Current.intValue < oldindex && Current.intValue >= newindex)
+                else if (Current.intValue < oldindex && Current.intValue >= newindex)
                     Current.intValue++;
-                else
-                if (Current.intValue > oldindex && Current.intValue <= newindex)
+                else if (Current.intValue > oldindex && Current.intValue <= newindex)
                     Current.intValue--;
             }
         };
@@ -103,7 +116,8 @@ public class ModeSelectionButtonEditor : ButtonEditor
 
         ModesList.DoLayoutList();
 
-        serializedObject.ApplyModifiedProperties();
+        if (serializedObject.ApplyModifiedProperties())
+            (serializedObject.targetObject as ModeSelectionButton).UpdateModeDisplay();
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();

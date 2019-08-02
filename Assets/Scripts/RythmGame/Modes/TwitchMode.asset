@@ -18,3 +18,4 @@ MonoBehaviour:
     m_SceneAsset: {fileID: 102900000, guid: 1049e92854832bf439faeca7f3455260, type: 3}
     m_SceneName: TwitchMode
   analyzeAudioSpectrum: 1
+  mesureCalories: 0

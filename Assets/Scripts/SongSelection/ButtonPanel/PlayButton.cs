@@ -1,11 +1,12 @@
-﻿using DancingICE.RythmGame;
+﻿using UnityEngine.UI;
+using DancingICE.RythmGame;
 
-public class PlayButton : LoadSceneButton
+public class PlayButton : Button
 {
     protected override void Awake()
     {
         base.Awake();
-        onClick.AddListener(() => transform.parent.gameObject.SetActive(false));
+        onClick.AddListener(() => SceneHistory.LoadScene(RythmGameSettings.GameMode.gameScene));
     }
 
     private void Update()

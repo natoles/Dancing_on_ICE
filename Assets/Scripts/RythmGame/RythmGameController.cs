@@ -9,7 +9,7 @@ namespace DancingICE.RythmGame
     public abstract class RythmGameController : MonoBehaviour
     {
         [SerializeField]
-        private readonly AudioSource audioPlayer = null;
+        private AudioSource audioPlayer = null;
         protected AudioSource AudioPlayer { get => audioPlayer; }
 
         [SerializeField]
@@ -105,17 +105,17 @@ namespace DancingICE.RythmGame
                     thread.Join();
                     thread = null;
 
-                    AudioPlayer.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
+                    audioPlayer.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
                     clipData = null;
 
                     OnLoaded();
 
-                    AudioPlayer.PlayDelayed(3f);
+                    audioPlayer.PlayDelayed(3f);
 
                     loadingScreen.Hide();
                 }
 
-                if (AudioPlayer.isPlaying && AudioPlayer.timeSamples > 0)
+                if (audioPlayer.isPlaying && audioPlayer.timeSamples > 0)
                 {
                     if (!playbackStarted)
                     {
@@ -125,7 +125,7 @@ namespace DancingICE.RythmGame
 
                     OnUpdate();
                 }
-                else if (playbackStarted && AudioPlayer.timeSamples == 0) // end of playback
+                else if (playbackStarted && audioPlayer.timeSamples == 0) // end of playback
                 {
                     OnPlaybackFinished();
                     SceneHistory.LoadPreviousScene();

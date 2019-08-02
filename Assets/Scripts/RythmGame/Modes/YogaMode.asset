@@ -18,3 +18,4 @@ MonoBehaviour:
     m_SceneAsset: {fileID: 102900000, guid: afe007db5675f3b4e9ceca7e2418be30, type: 3}
     m_SceneName: YogaScene
   analyzeAudioSpectrum: 0
+  mesureCalories: 1
