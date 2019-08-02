@@ -1,22 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using System;
-using UnityEngine.Events;
+using DancingICE.Modes;
 
 public class ModeSelectionButton : Button
 {
-    [Serializable]
-    class ModeContainer
-    {
-        public string name = null;
-        public bool useSlider = false;
-        public GameObject buttons = null;
-    }
-
-    [SerializeField]
-    private int current = 0;
-
     [SerializeField]
     private Text TextComponent = null;
 
@@ -24,7 +11,7 @@ public class ModeSelectionButton : Button
     private GameObject DifficultySlider = null;
 
     [SerializeField]
-    private ModeContainer[] Modes = null;
+    private ModeManager ModeManager = null;
     
     protected override void Awake()
     {
@@ -35,48 +22,38 @@ public class ModeSelectionButton : Button
     protected override void Start()
     {
         base.Start();
-        UpdateText();
+        UpdateText(ModeManager.Current);
     }
 
     private void NextMode()
     {
-        int previous = current;
-        current = (current + 1) % Modes.Length;
-        UpdateModeDisplay();
+        UpdateModeDisplay(ModeManager.Current, ModeManager.NextMode());
     }
 
-    public void UpdateModeDisplay()
+    public void UpdateModeDisplay(Mode previous, Mode current)
     {
-        UpdateButtonsVisibility();
-        UpdateText();
+        UpdateButtonsVisibility(previous, current);
+        SetSliderVisibility(current);
+        UpdateText(current);
     }
 
-    private void UpdateText()
+    private void UpdateText(Mode current)
     {
         if (TextComponent != null)
-            TextComponent.text = Modes[current]?.name + " Mode";
+            TextComponent.text = current?.name + " Mode";
     }
 
-    private void UpdateButtonsVisibility()
+    private void UpdateButtonsVisibility(Mode previous, Mode current)
     {
-        for (int i = 0; i < Modes.Length; ++i)
-            SetButtonsVisibility(i, i == current);
-        SetSliderVisibility(current);
+        if (previous.buttonsToShow != null)
+            previous.buttonsToShow.SetActive(false);
+
+        if (current.buttonsToShow != null)
+            current.buttonsToShow.SetActive(true);
     }
 
-    private void SetButtonsVisibility(int id, bool visible)
+    private void SetSliderVisibility(Mode current)
     {
-        if (Modes[id] != null && Modes[id].buttons != null)
-        {
-                Modes[id].buttons.SetActive(visible);
-        }
-    }
-
-    private void SetSliderVisibility(int id)
-    {
-        if (Modes[id] != null)
-        {
-            DifficultySlider.SetActive(Modes[id].useSlider);
-        }
+        DifficultySlider.SetActive(current.showDifficultySlider);
     }
 }
