@@ -146,7 +146,7 @@ public class MovementFile
         listRHy.Add(allMovementPos[moveIndex][1][len - 1]);
         listLHx.Add(allMovementPos[moveIndex][2][len - 1]);
         listLHy.Add(allMovementPos[moveIndex][3][len - 1]);
-        for (int i = len-2; i > 0; i -= 1){
+        for (int i = len-2; i >= 0; i -= 1){
             cptR++;
             cptL++;
             distR +=(float) Math.Sqrt(Math.Pow(allMovementPos[moveIndex][0][i+1] - allMovementPos[moveIndex][0][i], 2) + Math.Pow(allMovementPos[moveIndex][1][i+1] - allMovementPos[moveIndex][1][i], 2)) * scale;
@@ -154,14 +154,16 @@ public class MovementFile
             if (distR >= nodeDistance || cptR > maxJump){
                 cptR = 0;
                 distR = 0;
-                indexPreviousPointR.Add(i-1);
+                if (i==0) indexPreviousPointR.Add(i);
+                else indexPreviousPointR.Add(i-1);
                 listRHx.Add(allMovementPos[moveIndex][0][i]);
                 listRHy.Add(allMovementPos[moveIndex][1][i]);
             }
             if (distL >= nodeDistance || cptL > maxJump){
                 cptL = 0;
                 distL = 0;
-                indexPreviousPointL.Add(i-1);
+                if (i==0) indexPreviousPointL.Add(i);
+                else indexPreviousPointL.Add(i-1);
                 listLHx.Add(allMovementPos[moveIndex][2][i]);
                 listLHy.Add(allMovementPos[moveIndex][3][i]);
             }
@@ -176,32 +178,36 @@ public class MovementFile
 
         #region Add to list
         List<TimeStamp> listTS = new List<TimeStamp>();
-
         switch(defaultNode.nodeType){
-            case 1 :
+            case 1 : //Line
                 if (jointExclusion == 1 || jointExclusion == 0)
                     InitAddLineNode(listTS, 0, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
                     InitAddLineNode(listTS, 1, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
-            default :
+            case 0 : //Basic    
+            case 2 : //Angle
+            case 3 : //Hold
                 if (jointExclusion == 1 || jointExclusion == 0) 
                     InitAddNode(moveIndex, listTS, 0, speed, scale, holdEnd, listRHx, listRHy, offsetX, offsetY, defaultNode);
                 if (jointExclusion == 2 || jointExclusion == 0)
                     InitAddNode(moveIndex, listTS, 1, speed, scale, holdEnd, listLHx, listLHy, offsetX, offsetY, defaultNode);
                 break;
+            default :
+                Debug.LogError("Unsupported NodeType");
+                break;
         }
         switch(defaultNode.nodeType){
-            case(0):
-            case(2):
-            case(3):
+            case 0 :
+            case 2 :
+            case 3 :
                 allMovementTimeStampBasic.Add(listTS);
                 break;
-            case(1):
+            case 1 :
                 allMovementTimeStampLine.Add(listTS);
                 break;
             default:
-                Debug.Log("Unsupported Node Type");
+                Debug.LogError("Unsupported NodeType");
                 break;
         }
         #endregion
@@ -250,18 +256,28 @@ public class MovementFile
                     Debug.Log("PosX,PosY: " + (PosX[i]*scale + offsetX) + ", " + (PosY[i]*scale + offsetY));*/
                     float previousX;
                     float previousY;
-                    int indexR = indexPreviousPointR[i];
-                    int indexL = indexPreviousPointL[i];
+                    bool indexTooLow = false;                    
                     if(ts.joint == 0){
+                        int indexR = indexPreviousPointR[i];
+                        if (indexR < 2) {
+                            indexTooLow = true;
+                            indexR += 4;
+                        }
                         previousX = (allMovementPos[moveIndex][0][indexR]+allMovementPos[moveIndex][0][indexR-1]+allMovementPos[moveIndex][0][indexR-2])/3*scale + offsetX;
                         previousY = (allMovementPos[moveIndex][1][indexR]+allMovementPos[moveIndex][1][indexR-1]+allMovementPos[moveIndex][1][indexR-2])/3*scale + offsetY;
                     } else {
+                        int indexL = indexPreviousPointL[i];
+                        if (indexL < 2) {
+                            indexTooLow = true;
+                            indexL += 4;
+                        }
                         previousX = (allMovementPos[moveIndex][2][indexL]+allMovementPos[moveIndex][2][indexL-1]+allMovementPos[moveIndex][2][indexL-2])/3*scale + offsetX;
                         previousY = (allMovementPos[moveIndex][3][indexL]+allMovementPos[moveIndex][3][indexL-1]+allMovementPos[moveIndex][3][indexL-2])/3*scale + offsetY;
                     }
                     float deltaX = previousX - ts.spawnPosition.x;
                     float deltaY = previousY - ts.spawnPosition.y;
                     ts.startAngle = (float) (Math.Atan2(deltaY,deltaX) * 180/Math.PI);
+                    if(indexTooLow) ts.startAngle -= 180;
                     ts.previousX = previousX;
                     ts.previousY = previousY;
                     //Debug.Log("Angle: " + ts.startAngle);
@@ -285,7 +301,7 @@ public class MovementFile
                 } else pathPositions[i-1] = new Vector3(PosX[i]*scale + offsetX,PosY[i]*scale + offsetY,0);
             }
             ts.pathPositions = pathPositions;
-            if (ts.spawnPosition.x < 30)
+            if (ts.spawnPosition.x < 80)  
                 listTS.Add(ts);
         }
         if (holdEnd != 0){

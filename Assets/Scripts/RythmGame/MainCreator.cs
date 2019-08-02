@@ -12,11 +12,11 @@ public class MainCreator : MonoBehaviour
     List<TimeStamp> track = new List<TimeStamp>(); //Add a TimeStamp to track to display it on screen
     MovementFile decoyMove = new MovementFile();
     public enum Mode {Random = 0, Basic, Line, Angle} //Every available Mode
-    static public Mode globalNodeType = Mode.Basic; //Chosen mode
+    static public Mode globalNodeType = Mode.Angle; //Chosen mode
     public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     public float[] currentRates; //See AddMove()
-    TimeStamp defaultBasicNode;
+    TimeStamp defaultNode;
     [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
     int movePoolSize = 9; //See SelectMove()
     float maxSpawnTime = 0;
@@ -43,16 +43,22 @@ public class MainCreator : MonoBehaviour
 
         decoyMove.SaveUkiDatas();
 
-        //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
-        defaultBasicNode = new TimeStamp(0,2,0,1.2f*(1/d),0,Vector3.zero); //Reference node for Basic Node spawning
-        decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,defaultBasicNode);
-        decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,defaultBasicNode);
         
-        decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
-
-
+        if(globalNodeType == Mode.Basic || globalNodeType == Mode.Random) defaultNode = new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero); //Reference node for Basic Node spawning
+        if(globalNodeType == Mode.Angle) defaultNode = new TimeStamp(0,2,0,2f*(1/d),0,Vector3.zero); //Reference node for Angle Node spawning
+        
+        //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
+        if(globalNodeType == Mode.Basic || globalNodeType == Mode.Angle || globalNodeType == Mode.Random){
+            decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,defaultNode);
+            decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,defaultNode);
+        }
+        if(globalNodeType == Mode.Line || globalNodeType == Mode.Random){ 
+            decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+        }
+        
+        
         for(int i=0; i<moveInfo.Length; i++){
-            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Random) && moveInfo[i].basicSpeed != 0){
+            if((globalNodeType == Mode.Basic || globalNodeType == Mode.Angle|| globalNodeType == Mode.Random) && moveInfo[i].basicSpeed != 0){
                 SetMoveTimeStampBasic(moveInfo[i].fileName,moveInfo[i].basicSpeed,moveInfo[i].holdDuration,moveInfo[i].scaleChange,moveInfo[i].jointExclusion);
             }
             if((globalNodeType == Mode.Line || globalNodeType == Mode.Random) && moveInfo[i].lineDuration != 0){ 
@@ -86,9 +92,9 @@ public class MainCreator : MonoBehaviour
         
     }
 
-    //Shorten verson of SetMoveTimeStamp for BasicNode
+    //Shorten verson of SetMoveTimeStamp for BasicNode and AngleNode
     void SetMoveTimeStampBasic(string path, float speed, float holdTime, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, defaultBasicNode);                                 
+        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, defaultNode);                                 
     }
     //Shorten verson of SetMoveTimeStamp for LineNode
     void SetMoveTimeStampLine(string path, float timeLine, float holdTime, float scaleChange, int jointExclusion){
@@ -117,6 +123,7 @@ public class MainCreator : MonoBehaviour
                     else AddMove(decoyMove.allMovementTimeStampLine[indexChosenMove]); 
                     break;
                 case(Mode.Basic): 
+                case(Mode.Angle):
                     AddMove(decoyMove.allMovementTimeStampBasic[indexChosenMove]);
                     break;
                 case(Mode.Line):
