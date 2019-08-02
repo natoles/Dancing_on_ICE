@@ -6563,9 +6563,16 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, Unity.ugui, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  TextComponent: {fileID: 1209050930}
-  DifficultySlider: {fileID: 1973523978}
-  ModeManager: {fileID: 1854032339}
+  textComponent: {fileID: 1209050930}
+  difficultySlider: {fileID: 1973523978}
+  modes:
+  - mode: {fileID: 11400000, guid: ac45d6e110da83d40bd809f846411187, type: 2}
+    showDifficultySlider: 1
+    buttonsToShow: {fileID: 1124482766}
+  - mode: {fileID: 11400000, guid: 5be3a0f50802d2e4eaf25c371505bdfc, type: 2}
+    showDifficultySlider: 0
+    buttonsToShow: {fileID: 1345298225}
+  current: 0
 --- !u!114 &1563805711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7161,18 +7168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modes:
-  - name: Twitch
-    showDifficultySlider: 1
-    buttonsToShow: {fileID: 1124482766}
-    sceneToLoad:
-      m_SceneAsset: {fileID: 102900000, guid: 1049e92854832bf439faeca7f3455260, type: 3}
-      m_SceneName: TwitchMode
-  - name: Yoga
-    showDifficultySlider: 0
-    buttonsToShow: {fileID: 1345298225}
-    sceneToLoad:
-      m_SceneAsset: {fileID: 102900000, guid: afe007db5675f3b4e9ceca7e2418be30, type: 3}
-      m_SceneName: YogaScene
+  - {fileID: 0}
+  - {fileID: 0}
   current: 0
 --- !u!4 &1854032340
 Transform:

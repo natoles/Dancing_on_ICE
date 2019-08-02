@@ -3,13 +3,12 @@ using System;
 
 namespace DancingICE.Modes
 {
-    [Serializable]
-    public class Mode
+    [CreateAssetMenu(menuName = "RythmGame/Mode")]
+    public class Mode : ScriptableObject
     {
-        public string name = null;
-        public bool showDifficultySlider = false;
-        public GameObject buttonsToShow = null;
-        public SceneField sceneToLoad = null;
+        public bool useCustomName = false;
+        public string customName = null;
+        public SceneField gameScene = null;
         public bool analyzeAudioSpectrum = false;
     }
 }
