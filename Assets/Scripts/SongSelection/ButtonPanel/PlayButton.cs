@@ -1,6 +1,4 @@
-﻿using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+﻿using DancingICE.RythmGame;
 
 public class PlayButton : LoadSceneButton
 {

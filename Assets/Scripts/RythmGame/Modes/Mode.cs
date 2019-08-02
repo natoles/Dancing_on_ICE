@@ -10,5 +10,6 @@ namespace DancingICE.Modes
         public bool showDifficultySlider = false;
         public GameObject buttonsToShow = null;
         public SceneField sceneToLoad = null;
+        public bool analyzeAudioSpectrum = false;
     }
 }

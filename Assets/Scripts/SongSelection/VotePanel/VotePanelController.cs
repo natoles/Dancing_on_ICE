@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using TwitchLib.Client.Events;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Linq;
+using DancingICE.RythmGame;
 
 public class VotePanelController : MonoBehaviour
 {

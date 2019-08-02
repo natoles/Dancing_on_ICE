@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using DancingICE.RythmGame;
 
 public class DifficultySlider : Slider
 {

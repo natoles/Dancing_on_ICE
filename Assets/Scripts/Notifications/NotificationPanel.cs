@@ -1,6 +1,4 @@
-﻿using System;
-using TwitchLib.Client.Events;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class NotificationPanel : Image

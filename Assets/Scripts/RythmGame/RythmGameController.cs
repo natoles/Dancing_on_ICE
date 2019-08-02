@@ -2,13 +2,14 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using DancingICE.Audio.BeatAnalysis;
 
 namespace DancingICE.RythmGame
 {
     public abstract class RythmGameController : MonoBehaviour
     {
         [SerializeField]
-        private AudioSource audioPlayer = null;
+        private readonly AudioSource audioPlayer = null;
         protected AudioSource AudioPlayer { get => audioPlayer; }
 
         [SerializeField]
@@ -34,14 +35,17 @@ namespace DancingICE.RythmGame
 
                 if (clipData == null)
                     throw new NullReferenceException();
-                
-                if (SpectralFluxData == null)
-                    SpectralFluxData = BeatAnalyzer.AnalyzeAudio(RythmGameSettings.BeatmapToLoad, clipData);
 
-                if (SpectralFluxData == null)
-                    throw new NullReferenceException();
+                if (RythmGameSettings.GameMode.analyzeAudioSpectrum)
+                {
+                    if (SpectralFluxData == null)
+                        SpectralFluxData = BeatAnalyzer.AnalyzeAudio(RythmGameSettings.BeatmapToLoad, clipData);
 
-                Peaks = SpectralFluxData.SelectPeaks(RythmGameSettings.Difficulty);
+                    if (SpectralFluxData == null)
+                        throw new NullReferenceException();
+
+                    Peaks = SpectralFluxData.SelectPeaks(RythmGameSettings.Difficulty);
+                }
 
                 loaded = true;
             }
