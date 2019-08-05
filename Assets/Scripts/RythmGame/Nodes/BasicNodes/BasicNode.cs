@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class BasicNode : Node
 {
-    
-    
-    void Update()
+    public override void Update()
     {
         base.Update();
         if (destroyOnTouch){

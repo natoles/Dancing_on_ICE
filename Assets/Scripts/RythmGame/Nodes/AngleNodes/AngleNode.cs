@@ -13,7 +13,8 @@ public class AngleNode : Node
         base.Start();
         transform.Rotate(new Vector3(0,0,startAngle));
     }
-    void Update()
+
+    public override void Update()
     {
         base.Update();
         if (movingPart.GetComponent<EnterLava>().touchedLava){
