@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf5d998e08a756449c9325d7374fe87, type: 3}
+  m_Name: YogaMode
+  m_EditorClassIdentifier: 
+  useCustomName: 1
+  customName: Yoga Mode
+  gameScene:
+    m_SceneAsset: {fileID: 102900000, guid: afe007db5675f3b4e9ceca7e2418be30, type: 3}
+    m_SceneName: YogaScene
+  analyzeAudioSpectrum: 0
+  mesureCalories: 1

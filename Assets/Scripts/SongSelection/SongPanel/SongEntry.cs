@@ -4,6 +4,7 @@ using IO = System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DancingICE.RythmGame;
 
 public class SongEntry : Button
 {

@@ -1,31 +1,36 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System;
-using UnityEngine.Events;
+using UnityEngine.UI;
+using DancingICE.Modes;
+using DancingICE.RythmGame;
 
 public class ModeSelectionButton : Button
 {
     [Serializable]
-    class ModeContainer
+    private class ModeContainer
     {
-        public string name = null;
-        public bool useSlider = false;
-        public GameObject buttons = null;
+        public Mode mode = null;
+        public bool showDifficultySlider = false;
+        public GameObject buttonsToShow = null;
+#if UNITY_EDITOR
+        public bool previousButtonsState = false;
+#endif
     }
+
+    [SerializeField]
+    private Text textComponent = null;
+
+    [SerializeField]
+    private GameObject difficultySlider = null;
+
+    [SerializeField]
+    private ModeContainer[] modes = null;
 
     [SerializeField]
     private int current = 0;
 
-    [SerializeField]
-    private Text TextComponent = null;
+    private ModeContainer lastDisplayedMode = null;
 
-    [SerializeField]
-    private GameObject DifficultySlider = null;
-
-    [SerializeField]
-    private ModeContainer[] Modes = null;
-    
     protected override void Awake()
     {
         base.Awake();
@@ -35,48 +40,59 @@ public class ModeSelectionButton : Button
     protected override void Start()
     {
         base.Start();
-        UpdateText();
+        UpdateModeDisplay();
     }
 
     private void NextMode()
     {
-        int previous = current;
-        current = (current + 1) % Modes.Length;
-        UpdateModeDisplay();
+        if (modes == null || modes.Length == 0)
+            current = 0;
+        else
+        {
+            int previous = current;
+            current = (current + 1) % modes.Length;
+            UpdateModeDisplay();
+        }
     }
 
     public void UpdateModeDisplay()
     {
+        current = Mathf.Clamp(current, 0, modes.Length - 1);
+        RythmGameSettings.GameMode = modes[current].mode;
         UpdateButtonsVisibility();
+        SetSliderVisibility();
         UpdateText();
+        lastDisplayedMode = modes[current];
     }
 
     private void UpdateText()
     {
-        if (TextComponent != null)
-            TextComponent.text = Modes[current]?.name + " Mode";
+        if (textComponent != null)
+        {
+            string display = null;
+            if (modes[current]?.mode != null)
+            {
+                if (modes[current].mode.useCustomName)
+                    display = modes[current].mode.customName;
+                else
+                    display = modes[current].mode.name;
+            }
+            textComponent.text = display;
+        }
     }
 
     private void UpdateButtonsVisibility()
     {
-        for (int i = 0; i < Modes.Length; ++i)
-            SetButtonsVisibility(i, i == current);
-        SetSliderVisibility(current);
+        if (lastDisplayedMode?.buttonsToShow != null)
+            lastDisplayedMode.buttonsToShow.SetActive(false);
+
+        if (current >= 0 && current < modes.Length && modes[current]?.buttonsToShow != null)
+            modes[current].buttonsToShow.SetActive(true);
     }
 
-    private void SetButtonsVisibility(int id, bool visible)
+    private void SetSliderVisibility()
     {
-        if (Modes[id] != null && Modes[id].buttons != null)
-        {
-                Modes[id].buttons.SetActive(visible);
-        }
-    }
-
-    private void SetSliderVisibility(int id)
-    {
-        if (Modes[id] != null)
-        {
-            DifficultySlider.SetActive(Modes[id].useSlider);
-        }
+        if (current >= 0 && current < modes.Length && modes[current] != null && difficultySlider != null)
+            difficultySlider.SetActive(modes[current].showDifficultySlider);
     }
 }

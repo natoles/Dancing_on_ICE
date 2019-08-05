@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TwitchLib.Client.Events;
-using UnityEngine;
+﻿using TwitchLib.Client.Events;
 
-public class TwitchScoring : Scoring
+namespace DancingICE.RythmGame.TwitchMode
 {
-
-    private void Start()
+    public class TwitchScoring : Scoring
     {
-        TwitchClient.Instance.OnMessageReceived += Increase_Score;
-    }
 
-    private void Increase_Score(object sender, OnMessageReceivedArgs e)
-    {
-        if (e.ChatMessage.Message == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
+        private void Start()
         {
-            multiplier += 0.1f;
+            TwitchClient.Instance.OnMessageReceived += IncreaseScore;
+        }
+
+        private void IncreaseScore(object sender, OnMessageReceivedArgs e)
+        {
+            if (e.ChatMessage.Message == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
+            {
+                multiplier += 0.1f;
+            }
         }
     }
 }

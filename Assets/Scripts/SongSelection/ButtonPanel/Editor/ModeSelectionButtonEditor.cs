@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditor.UI;
+using UnityEditorInternal;
 
-[CanEditMultipleObjects]
 [CustomEditor(typeof(ModeSelectionButton), true)]
 public class ModeSelectionButtonEditor : ButtonEditor
 {
@@ -10,14 +11,98 @@ public class ModeSelectionButtonEditor : ButtonEditor
     SerializedProperty Slider;
     SerializedProperty Modes;
     SerializedProperty Current;
-    
+
+    ReorderableList ModesList;
+
     protected override void OnEnable()
     {
         base.OnEnable();
-        TargetText = serializedObject.FindProperty("TextComponent");
-        Slider = serializedObject.FindProperty("DifficultySlider");
-        Modes = serializedObject.FindProperty("Modes");
+        TargetText = serializedObject.FindProperty("textComponent");
+        Slider = serializedObject.FindProperty("difficultySlider");
+
+        Modes = serializedObject.FindProperty("modes");
         Current = serializedObject.FindProperty("current");
+        ModesList = new ReorderableList(serializedObject, Modes)
+        {
+            draggable = true,
+            displayAdd = true,
+            displayRemove = true,
+            drawHeaderCallback = (rect) => EditorGUI.LabelField(rect, "Game modes"),
+            drawElementCallback = (rect, index, active, focused) =>
+            {
+                SerializedProperty element = Modes.GetArrayElementAtIndex(index);
+
+                SerializedProperty Mode = element.FindPropertyRelative("mode");
+                SerializedProperty Slider = element.FindPropertyRelative("showDifficultySlider");
+                SerializedProperty Buttons = element.FindPropertyRelative("buttonsToShow");
+                SerializedProperty PreviousButtonState = element.FindPropertyRelative("previousButtonsState");
+
+                rect.y += 0.125f * EditorGUIUtility.singleLineHeight;
+
+                bool oldEnabled = GUI.enabled;
+                Color oldColor = GUI.backgroundColor;
+                string buttonText = "Set active";
+                if (index == Current.intValue)
+                {
+                    GUI.enabled = false;
+                    buttonText = "Active";
+                    GUI.backgroundColor = Color.green;
+                }
+
+                if (GUI.Button(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), buttonText))
+                {
+                    Current.intValue = index;
+                }
+                GUI.enabled = oldEnabled;
+                GUI.backgroundColor = oldColor;
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                rect.y += 0.125f * EditorGUIUtility.singleLineHeight;
+
+                EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Mode);
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Slider);
+                rect.y += EditorGUIUtility.singleLineHeight;
+
+                Object previousGameObject = Buttons.objectReferenceValue;
+                EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), Buttons);
+                if (Buttons.objectReferenceValue != previousGameObject)
+                {
+                    if (previousGameObject != null)
+                        (previousGameObject as GameObject).SetActive(PreviousButtonState.boolValue);
+
+                    if (Buttons.objectReferenceValue != null)
+                        PreviousButtonState.boolValue = (Buttons.objectReferenceValue as GameObject).activeSelf;
+                }
+            },
+            elementHeight = EditorGUIUtility.singleLineHeight * 4.5f,
+            onAddCallback = (list) =>
+            {
+                list.serializedProperty.arraySize++;
+
+                SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(list.serializedProperty.arraySize - 1);
+
+                element.FindPropertyRelative("mode").objectReferenceValue = null;
+                element.FindPropertyRelative("showDifficultySlider").boolValue = false;
+                element.FindPropertyRelative("buttonsToShow").objectReferenceValue = null;
+            },
+            onRemoveCallback = (list) =>
+            {
+                if ((list.count > 1) && (list.index < Current.intValue || (list.index == Current.intValue && Current.intValue == list.count - 1)))
+                    Current.intValue--;
+                ReorderableList.defaultBehaviours.DoRemoveButton(list);
+            },
+            onReorderCallbackWithDetails = (list, oldindex, newindex) =>
+            {
+                if (Current.intValue == oldindex)
+                    Current.intValue = newindex;
+                else if (Current.intValue < oldindex && Current.intValue >= newindex)
+                    Current.intValue++;
+                else if (Current.intValue > oldindex && Current.intValue <= newindex)
+                    Current.intValue--;
+            }
+        };
     }
 
     public override void OnInspectorGUI()
@@ -29,9 +114,10 @@ public class ModeSelectionButtonEditor : ButtonEditor
         EditorGUILayout.PropertyField(TargetText);
         EditorGUILayout.PropertyField(Slider);
 
-        ShowList(Modes);
+        ModesList.DoLayoutList();
 
-        serializedObject.ApplyModifiedProperties();
+        if (serializedObject.ApplyModifiedProperties())
+            (serializedObject.targetObject as ModeSelectionButton).UpdateModeDisplay();
 
         EditorGUILayout.Space();
         EditorGUILayout.Space();
@@ -39,72 +125,5 @@ public class ModeSelectionButtonEditor : ButtonEditor
         EditorGUILayout.LabelField(GetType().BaseType.ToString(), EditorStyles.centeredGreyMiniLabel);
 
         base.OnInspectorGUI();
-    }
-
-    private void ShowList(SerializedProperty list)
-    {
-        EditorGUILayout.LabelField(list.name);
-
-        SerializedProperty size = list.FindPropertyRelative("Array.size");
-        if (size.hasMultipleDifferentValues)
-            EditorGUILayout.HelpBox("Not showing lists with different sizes.", MessageType.Info);
-        else
-            ShowElements(list);
-    }
-
-    private void ShowElements(SerializedProperty list)
-    {
-        GUIStyle centeredLabel = new GUIStyle("wordWrappedLabel") { alignment = TextAnchor.MiddleCenter, stretchWidth = false };
-
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("", GUILayout.Width(20f));
-        EditorGUILayout.LabelField(new GUIContent("Name", "Name displayed by targeted Text component"), centeredLabel, GUILayout.Width((Screen.width - 106f) * 30 / 100));
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.LabelField(new GUIContent("Slider", "Should this mode use the default difficulty slider ?"), centeredLabel, GUILayout.Width(46f));
-        GUILayout.FlexibleSpace();
-        EditorGUILayout.LabelField(new GUIContent("Buttons", "Buttons displayed when this mode is selected"), centeredLabel, GUILayout.Width((Screen.width - 106f) * 45 / 100));
-        EditorGUILayout.LabelField("", GUILayout.Width(40f));
-        EditorGUILayout.EndHorizontal();
-
-        for (int i = 0; i < list.arraySize; i++)
-        {
-            SerializedProperty element = list.GetArrayElementAtIndex(i);
-
-            EditorGUILayout.BeginHorizontal();
-            if (EditorGUILayout.Toggle(Current.intValue == i, EditorStyles.radioButton, GUILayout.Width(20f)))
-            {
-                Current.intValue = i;
-                ((ModeSelectionButton)target).UpdateModeDisplay();
-            }
-
-            SerializedProperty Name = element.FindPropertyRelative("name");
-            SerializedProperty Slider = element.FindPropertyRelative("useSlider");
-            SerializedProperty Buttons = element.FindPropertyRelative("buttons");
-
-            Name.stringValue = EditorGUILayout.TextField(Name.stringValue, GUILayout.Width((Screen.width - 76f) * 30 / 100));
-            GUILayout.FlexibleSpace();
-            Slider.boolValue = EditorGUILayout.Toggle(Slider.boolValue, GUILayout.Width(16f));
-            GUILayout.FlexibleSpace();
-            Buttons.objectReferenceValue = EditorGUILayout.ObjectField(Buttons.objectReferenceValue, typeof(GameObject), true, GUILayout.Width((Screen.width - 76f) * 45 / 100));
-
-            if (GUILayout.Button(new GUIContent("-", "Delete entry"), EditorStyles.miniButton, GUILayout.Width(40f)))
-            {
-                list.DeleteArrayElementAtIndex(i);
-                if (i < Current.intValue)
-                    Current.intValue -= 1;
-                else if (i == Current.intValue)
-                    Current.intValue = 0;
-            }
-            EditorGUILayout.EndHorizontal();
-        }
-
-        if (GUILayout.Button(new GUIContent("+", "Add entry")))
-        {
-            list.InsertArrayElementAtIndex(list.arraySize);
-            SerializedProperty element = list.GetArrayElementAtIndex(list.arraySize - 1);
-            element.FindPropertyRelative("name").stringValue = null;
-            element.FindPropertyRelative("useSlider").boolValue = false;
-            element.FindPropertyRelative("buttons").objectReferenceValue = null;
-        }
     }
 }
