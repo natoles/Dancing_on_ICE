@@ -247,13 +247,6 @@ public class MovementFile
                 ts.timeSpawn = i/speed; 
                 ts.spawnPosition = new Vector3(PosX[i]*scale + offsetX, PosY[i]*scale + offsetY,0);
                 if(defaultNode.nodeType == 2){
-                    /*
-                    if(ts.joint == 0){
-                        Debug.Log("Previous PosX,PosY: " + (allMovementPos[moveIndex][0][indexPreviousPointR[i]]*scale) + ", " + (allMovementPos[moveIndex][1][indexPreviousPointR[i]]*scale));
-                    } else {
-                        Debug.Log("Previous PosX,PosY: " + (allMovementPos[moveIndex][2][indexPreviousPointL[i]]*scale) + ", " + (allMovementPos[moveIndex][3][indexPreviousPointL[i]]*scale));
-                    }
-                    Debug.Log("PosX,PosY: " + (PosX[i]*scale + offsetX) + ", " + (PosY[i]*scale + offsetY));*/
                     float previousX;
                     float previousY;
                     bool indexTooLow = false;                    
@@ -280,8 +273,6 @@ public class MovementFile
                     if(indexTooLow) ts.startAngle -= 180;
                     ts.previousX = previousX;
                     ts.previousY = previousY;
-                    //Debug.Log("Angle: " + ts.startAngle);
-                    //Debug.Log(ts.startAngle);
                 }
                 listTS.Add(ts);
             } 

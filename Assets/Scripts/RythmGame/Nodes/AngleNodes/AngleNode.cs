@@ -15,6 +15,7 @@ public class AngleNode : Node
     }
     void Update()
     {
+        base.Update();
         if (movingPart.GetComponent<EnterLava>().touchedLava){
             mtext = Instantiate(textMissed, this.transform.position, Quaternion.identity, UI.transform);
             ChangeText(mtext.GetComponent<Text>(), "BOOM!", 45, Color.black, scoreMissed);  
@@ -50,6 +51,10 @@ public class AngleNode : Node
                 Destroy(gameObject);                         
             }
         } 
+
+        if (destroyOnTouch && frameCpt > 1 && active && jointIn) finished = true; //To check if joint still in after reactivation   
+        
+
     }
     
     void OnTriggerEnter2D(Collider2D col)
@@ -57,14 +62,14 @@ public class AngleNode : Node
         if (col.gameObject.tag == joint){
             jointIn = true;
         } 
-
-        if (destroyOnTouch) finished = true;
+        if (destroyOnTouch && frameCpt > 1 && active) finished = true;
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
             jointIn = false;
+            active = true;
         } 
     }
 }

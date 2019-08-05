@@ -90,8 +90,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5805339251056733813}
   - component: {fileID: 5805339251056733814}
-  - component: {fileID: 5805339251056733811}
   - component: {fileID: 5805339251056733810}
+  - component: {fileID: 34274363895594393}
   m_Layer: 0
   m_Name: movingPart
   m_TagString: Untagged
@@ -162,7 +162,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &5805339251056733811
+--- !u!114 &5805339251056733810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5805339251056733812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f26d2f2c7463843acf84ac50934378, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchedLava: 0
+--- !u!60 &34274363895594393
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,62 +200,37 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.58, y: -0.79999995}
-      - {x: 0.57, y: -0.77}
-      - {x: 0.48999998, y: -0.69}
-      - {x: 0.45, y: -0.7}
-      - {x: 0.28, y: -0.78999996}
-      - {x: 0.099999994, y: -0.83}
-      - {x: -0.08, y: -0.83}
-      - {x: -0.24, y: -0.78999996}
-      - {x: -0.45, y: -0.7}
-      - {x: -0.65, y: -0.52}
-      - {x: -0.72999996, y: -0.39999998}
+    - - {x: -0.24, y: -0.78}
+      - {x: -0.41, y: -0.72999996}
+      - {x: -0.53, y: -0.65}
+      - {x: -0.65, y: -0.53}
+      - {x: -0.78999996, y: -0.28}
       - {x: -0.83, y: -0.099999994}
       - {x: -0.83, y: 0.08}
       - {x: -0.78999996, y: 0.24}
       - {x: -0.7, y: 0.45}
       - {x: -0.52, y: 0.65}
-      - {x: -0.39999998, y: 0.72999996}
-      - {x: -0.099999994, y: 0.83}
-      - {x: 0.08, y: 0.83}
-      - {x: 0.32999998, y: 0.77}
-      - {x: 0.37, y: 0.77}
-      - {x: 0.42999998, y: 0.9}
-      - {x: 0.38, y: 0.94}
-      - {x: 0.19999999, y: 1}
-      - {x: -0.19, y: 1}
+      - {x: -0.28, y: 0.78999996}
+      - {x: -0.01, y: 0.84}
+      - {x: 0.01, y: 0.85999995}
+      - {x: 0.01, y: 0.98999995}
+      - {x: 0, y: 1}
+      - {x: -0.21, y: 1}
       - {x: -0.39, y: 0.95}
-      - {x: -0.56, y: 0.84999996}
-      - {x: -0.64, y: 0.78999996}
+      - {x: -0.51, y: 0.88}
+      - {x: -0.64, y: 0.79999995}
       - {x: -0.85999995, y: 0.56}
-      - {x: -0.94, y: 0.38}
-      - {x: -1, y: 0.19999999}
+      - {x: -0.95, y: 0.39}
+      - {x: -1, y: 0.21}
       - {x: -1, y: -0.19}
       - {x: -0.95, y: -0.39}
       - {x: -0.85999995, y: -0.56}
       - {x: -0.64, y: -0.78999996}
       - {x: -0.51, y: -0.88}
       - {x: -0.32999998, y: -0.96999997}
-      - {x: -0.22, y: -0.98999995}
-      - {x: -0.17, y: -1}
-      - {x: 0.17999999, y: -1}
-      - {x: 0.29999998, y: -0.97999996}
-      - {x: 0.39, y: -0.94}
-      - {x: 0.58, y: -0.84}
---- !u!114 &5805339251056733810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5805339251056733812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f26d2f2c7463843acf84ac50934378, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  touchedLava: 0
+      - {x: -0.22999999, y: -1}
+      - {x: 0.01, y: -1}
+      - {x: 0.01, y: -0.84}
 --- !u!1 &5805339251076946826
 GameObject:
   m_ObjectHideFlags: 0

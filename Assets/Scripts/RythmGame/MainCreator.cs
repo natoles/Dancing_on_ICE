@@ -12,7 +12,7 @@ public class MainCreator : MonoBehaviour
     List<TimeStamp> track = new List<TimeStamp>(); //Add a TimeStamp to track to display it on screen
     MovementFile decoyMove = new MovementFile();
     public enum Mode {Random = 0, Basic, Line, Angle} //Every available Mode
-    static public Mode globalNodeType = Mode.Angle; //Chosen mode
+    static public Mode globalNodeType = Mode.Basic; //Chosen mode
     public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
     [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
     public float[] currentRates; //See AddMove()

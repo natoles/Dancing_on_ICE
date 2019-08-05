@@ -26,6 +26,8 @@ public class Node : MonoBehaviour
     protected string joint;
     public bool destroyOnTouch;
     static int layerOrder = 0;
+    protected int frameCpt = 0;
+    protected bool active = true; //Is the collision detection active ?
 
     public virtual void Start()
     {
@@ -51,6 +53,15 @@ public class Node : MonoBehaviour
         SetJoint();
     }
 
+    public virtual void Update(){ 
+        //To prevent accidental node activations(if the node spawns on the player's hands)
+        frameCpt++;
+        if(destroyOnTouch && frameCpt == 1 && jointIn){
+            Debug.Log("enter coroutine");
+            StartCoroutine(deactivateAtStart());
+        }
+    }
+
 
     //Interpolates the outer circle
     private IEnumerator Growth(float timeGrowth){
@@ -66,12 +77,18 @@ public class Node : MonoBehaviour
         finished = true;
     }
 
+    IEnumerator deactivateAtStart(){
+        var col = GetComponent<CircleCollider2D>();
+        active = false;
+        yield return new WaitForSeconds(0.7f);
+        active = true;
+    }
+
     protected void ChangeText(Text theText, string displayed, int font, Color color, int score){
         theText.text = displayed;
         theText.fontSize += font;
         theText.color = color;
         scoring.AddScore(score); 
-        //Debug.Log(displayed);
     }
 
     public virtual void SetJoint(){

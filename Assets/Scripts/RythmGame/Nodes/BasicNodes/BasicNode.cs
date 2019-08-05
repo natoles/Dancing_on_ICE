@@ -9,6 +9,7 @@ public class BasicNode : Node
     
     void Update()
     {
+        base.Update();
         if (destroyOnTouch){
             //Score according to timing
             if (finished){
@@ -39,9 +40,7 @@ public class BasicNode : Node
             }
         }
 
-
-        
-         
+        if (destroyOnTouch && frameCpt > 1 && active && jointIn) finished = true; //To check if joint still in after reactivation   
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -50,13 +49,14 @@ public class BasicNode : Node
             jointIn = true;
         } 
 
-        if (destroyOnTouch) finished = true;//If wrong hand, then fail
+        if (destroyOnTouch && frameCpt > 1 && active) finished = true;
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.tag == joint){
             jointIn = false;
+            active = true;
         } 
     }
 
