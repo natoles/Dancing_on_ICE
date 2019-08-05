@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using DancingICE.RythmGame;
 
-public class MainCreator : MonoBehaviour
+public class MainCreator : RythmGameController
 {
     NodeCreation creator;
     public BodySourceView bodySourceView;
@@ -29,8 +30,10 @@ public class MainCreator : MonoBehaviour
     [HideInInspector] public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
     
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         currentRates = bodySourceView.currentRates;
         creator = new NodeCreation();
 
@@ -68,11 +71,14 @@ public class MainCreator : MonoBehaviour
 
         trackCreation = TrackCreation();
         StartCoroutine(trackCreation);
-        StartCoroutine(ExitGame());
+    }
+
+    protected override void OnPlaybackStarted()
+    {
         startTime = Time.time;
     }
 
-    void Update()
+    protected override void OnUpdate()
     {
         //Goes through the track and sees if a node must be spawned. If yes, spawns it and removes it from the list
         int cpt = 0;
@@ -88,8 +94,6 @@ public class MainCreator : MonoBehaviour
             }
             cpt++;
         }
-
-        
     }
 
     //Shorten verson of SetMoveTimeStamp for BasicNode and AngleNode
@@ -137,20 +141,6 @@ public class MainCreator : MonoBehaviour
                 yield return null ;
             }    
         }
-    }
-
-    //Exits the game after gameLenghts seconds 
-    IEnumerator ExitGame(){
-        yield return new WaitForSeconds(gameLength);
-        if (bodySourceView.caloriesCalib){
-            bodySourceView.caloriesCalib = false;
-            bodySourceView.caloriesCoef = (int) bodySourceView.totalDist/bodySourceView.caloriesResult;
-        }
-        Debug.Log("End of the game !");
-        SceneHistory.LoadPreviousScene();
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.ExitPlaymode();
-        #endif
     }
 
     //Chooses the right constructor according to what is asked
