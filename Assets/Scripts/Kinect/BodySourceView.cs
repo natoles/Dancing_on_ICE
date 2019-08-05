@@ -19,11 +19,12 @@ public class BodySourceView : MonoBehaviour
     int nbFrames = 0;
     public float maxTrackDistance;
     int nbJoints = 2;
-    public int calories = 0;
-    public int caloriesCoef = 122;
-    public int caloriesResult;
-    public bool caloriesCalib;
     public float totalDist;
+    public int calories = 0; //Number calories spend
+    public int caloriesCoef = 122; //Coef given after calibration, used to translate amount of movement into Kcal
+    public int caloriesResult; //Calories to enter just after calibration
+    public bool caloriesCalib; //Is calibration active ?
+    public bool caloriesActive; //Is calories mode activated ?
                                                    
     private Dictionary<ulong, GameObject> mBodies = new Dictionary<ulong, GameObject>();
     //Joints we want to show

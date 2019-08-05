@@ -17,6 +17,9 @@ public class CalText : MonoBehaviour
     void Update()
     {
         int x = bodyView.calories;
-        CaloriesText.GetComponent<Text>().text = "KCal: " + x;
+        if (bodyView.caloriesActive){
+            CaloriesText.GetComponent<Text>().text = "KCal: " + x;
+        } else CaloriesText.GetComponent<Text>().text = "";
+
     }
 }
