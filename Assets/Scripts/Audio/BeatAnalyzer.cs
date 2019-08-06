@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Linq;
 using UnityEngine;
 
 using System.Numerics;
@@ -36,6 +37,41 @@ namespace DancingICE.Audio.BeatAnalysis
                 spectralFluxSamples[i - 1].next = spectralFluxSamples[i];
                 spectralFluxSamples[i].previous = spectralFluxSamples[i - 1];
             }
+        }
+
+        public List<SpectralFluxInfo> SelectPeaksV2(float wantedPeaksRate)
+        {
+            List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
+            if (peaks.Count == 0)
+                return new List<SpectralFluxInfo>();
+
+            int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(wantedPeaksRate * clipLength), peaks.Count);
+            if (effectivePeakCount == peaks.Count)
+                return peaks;
+
+            List<float> means = new List<float>();
+            int j = 0;
+            float mean = 0;
+            int n = 42;
+            for (int i = 0; i < spectralFluxSamples.Count; ++i)
+            {
+                mean += spectralFluxSamples[i].spectralFlux;
+                j++;
+                if (j == n)
+                {
+                    means.Add(mean / n);
+                    mean = 0;
+                    j = 0;
+                }
+            }
+            if (j != 0)
+            {
+                means.Add(mean / j);
+            }
+
+            float total = means.Sum();
+
+            return null;
         }
 
         public List<SpectralFluxInfo> SelectPeaks(float wantedPeaksRate)

@@ -3,23 +3,109 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using DancingICE.Audio.BeatAnalysis;
+using DancingICE.Modes;
 
 namespace DancingICE.RythmGame
 {
     public abstract class RythmGameController : MonoBehaviour
     {
         [SerializeField]
+        [Tooltip("Mode to use if none is specified in RythmGameSettings")]
+        private Mode DefaultMode = null;
+
+        [SerializeField]
+        [Tooltip("AudioSource component that will be used for music playback")]
         private AudioSource audioPlayer = null;
         protected AudioSource AudioPlayer { get => audioPlayer; }
 
         [SerializeField]
+        [Tooltip("The GameObject to show when loading the game")]
         private LoadingMusicScreen loadingScreen = null;
-        
-        private Thread thread = null;
-        private AudioClipData clipData = null;
+
+        [SerializeField]
+        [Tooltip("The GameObject to load when pausing the game")]
+        private PauseMenuController pauseMenu = null;
 
         protected SpectralFluxData SpectralFluxData { get; private set; } = null;
         protected List<SpectralFluxInfo> Peaks { get; private set; } = null;
+
+        /// <summary>
+        /// Invoked right after the audio have been loaded (and analyzed if the mode requires it)
+        /// </summary>
+        protected virtual void OnLoaded() { }
+
+        /// <summary>
+        /// Invoked if the audio couldn't be loaded (or analyzed, if the mode requires it)
+        /// </summary>
+        protected virtual void OnLoadingFailed(Exception e) { }
+
+        /// <summary>
+        /// Invoked each frame after the loading process have completed. (For general Update operations, please override the Update function instead)
+        /// </summary>
+        protected virtual void OnUpdate() { }
+
+        /// <summary>
+        /// Invoked at the start of the audio playback
+        /// </summary>
+        protected virtual void OnPlaybackStarted() { }
+
+        /// <summary>
+        /// Invoked at the end of the audio playback
+        /// </summary>
+        protected virtual void OnPlaybackFinished() { }
+
+        #region Pause Feature
+        
+        private bool paused = false;
+        private float previousTimeScale = 1f;
+
+        public void Pause()
+        {
+            if (!paused)
+            {
+                paused = true;
+                previousTimeScale = Time.timeScale;
+                audioPlayer.Pause();
+                Time.timeScale = 0f;
+                pauseMenu.gameObject.SetActive(true);
+            }
+        }
+
+        public void Resume()
+        {
+            if (paused)
+            {
+                pauseMenu.gameObject.SetActive(false);
+                Time.timeScale = previousTimeScale;
+                audioPlayer.UnPause();
+                paused = false;
+            }
+        }
+
+        public void Retry()
+        {
+            if (paused)
+            {
+                Time.timeScale = previousTimeScale;
+            }
+            SceneHistory.ReloadActiveScene();
+        }
+
+        public void Quit()
+        {
+            if (paused)
+            {
+                Time.timeScale = previousTimeScale;
+            }
+            SceneHistory.LoadPreviousScene();
+        }
+
+        #endregion
+
+        #region Audio Loading
+
+        private Thread thread = null;
+        private AudioClipData clipData = null;
 
         private bool loaded = false;
         private bool loadingFailed = false;
@@ -57,38 +143,29 @@ namespace DancingICE.RythmGame
             }
         }
 
-        /// <summary>
-        /// Invoked right after the audio have been loaded (and analyzed if the mode requires it)
-        /// </summary>
-        protected virtual void OnLoaded() { }
-
-        /// <summary>
-        /// Invoked if the audio couldn't be loaded (or analyzed, if the mode requires it)
-        /// </summary>
-        protected virtual void OnLoadingFailed(Exception e) { }
-
-        /// <summary>
-        /// Invoked each frame after the loading process have completed. (For general Update operations, please override the Update function instead)
-        /// </summary>
-        protected virtual void OnUpdate() { }
-
-        /// <summary>
-        /// Invoked at the start of the audio playback
-        /// </summary>
-        protected virtual void OnPlaybackStarted() { }
-
-
-        /// <summary>
-        /// Invoked at the end of the audio playback
-        /// </summary>
-        protected virtual void OnPlaybackFinished() { }
+        #endregion
+        
+        protected virtual void Awake()
+        {
+            if (RythmGameSettings.GameMode == null)
+                RythmGameSettings.GameMode = DefaultMode;
+        }
 
         protected virtual void Start()
         {
 #if UNITY_EDITOR
             if (RythmGameSettings.BeatmapToLoad == null)
-                RythmGameSettings.BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(BeatmapLoader.SelectAudioFile());
+            {
+                string path = BeatmapLoader.SelectAudioFile();
+                if (string.IsNullOrEmpty(path))
+                {
+                    UnityEditor.EditorApplication.isPlaying = false;
+                }
+                RythmGameSettings.BeatmapToLoad = BeatmapLoader.CreateBeatmapFromAudio(path);
+            }
 #endif
+            if (pauseMenu != null)
+                pauseMenu.rythmGameController = this;
 
             thread = new Thread(new ThreadStart(LoadBeatmapForPlay));
             thread.Start();
