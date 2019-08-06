@@ -8,27 +8,30 @@ public class Node : MonoBehaviour
     protected GameObject movingPart; //Outer circle
     protected GameObject goal; //Inner circle
     protected Vector3 size; //Size of the inner circle 
-    protected float timeFrame; //Time frame to make a PERFECT
     public float timeToFinish; ///Time the node will take to destroy itself
     private IEnumerator _growth; 
     protected bool finished = false; //True if the node is finished
-    public GameObject textMissed; //Score text : MISSED, BAD, GREAT, PERFECT
+    protected bool active = true; //Is the collision detection active ?
+    public bool destroyOnTouch;
+    static int layerOrder = 0;
+    
     protected GameObject main;
     protected float progress = 0; //progress of the node
+    protected string joint;
     protected bool jointIn = false; //Did the player miss the node ?
+
     protected GameObject UI;
     string UIname = "UI";
+    protected Scoring scoring;
+    public GameObject textMissed; //Score text : MISSED, BAD, GREAT, PERFECT
+    protected float timeFrame; //Time frame to make a PERFECT
     protected int scoreMissed = 0;
     protected int scoreBad = 5621;
     protected int scoreGreat = 8345;
     protected int scorePerfect = 15787;
-    protected Scoring scoring;
-    protected string joint;
-    public bool destroyOnTouch;
-    static int layerOrder = 0;
-    protected int frameCpt = 0;
-    protected bool active = true; //Is the collision detection active ?
 
+    protected int frameCpt = 0;
+    
     public virtual void Start()
     {
         goal = this.transform.GetChild(0).gameObject;

@@ -37,7 +37,7 @@ public class NodeCreation
                 nodeInstance = Object.Instantiate(nodePrefabBLH, spawnPositon, Quaternion.Euler(0,0,0));
                 break;
             default :
-                Debug.Log("Pas normal");
+                Debug.Log("Error");
                 break;
         }
         BasicNode obj = nodeInstance.GetComponent<BasicNode>();
@@ -60,7 +60,7 @@ public class NodeCreation
                 nodeInstance = Object.Instantiate(nodePrefabLLH, spawnPosition, Quaternion.Euler(0,0,0));
                 break;
             default :
-                Debug.Log("Pas normal");
+                Debug.Log("Error");
                 break;
         }
         LineNode obj = nodeInstance.GetComponent<LineNode>();
@@ -85,7 +85,7 @@ public class NodeCreation
                 nodeInstance = Object.Instantiate(nodePrefabALH, spawnPositon, Quaternion.Euler(0,0,0));
                 break;
             default :
-                Debug.Log("Pas normal");
+                Debug.Log("Error");
                 break;
         }
         AngleNode obj = nodeInstance.GetComponent<AngleNode>();
@@ -108,7 +108,7 @@ public class NodeCreation
                 nodeInstance = Object.Instantiate(nodePrefabHLH, spawnPositon, Quaternion.Euler(0,0,0));
                 break;
             default :
-                Debug.Log("Pas normal");
+                Debug.Log("Error");
                 break;
         }
         HoldNode obj = nodeInstance.GetComponent<HoldNode>();

@@ -271,8 +271,6 @@ public class MovementFile
                     float deltaY = previousY - ts.spawnPosition.y;
                     ts.startAngle = (float) (Math.Atan2(deltaY,deltaX) * 180/Math.PI);
                     if(indexTooLow) ts.startAngle -= 180;
-                    ts.previousX = previousX;
-                    ts.previousY = previousY;
                 }
                 listTS.Add(ts);
             } 
