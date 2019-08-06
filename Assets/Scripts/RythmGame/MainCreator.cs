@@ -85,9 +85,6 @@ public class MainCreator : RythmGameController
         while (cpt < track.Count){
             if (track[cpt].timeSpawn <= Time.time - startTime){
                 spawnNode(track[cpt]);
-                if(track[cpt].nodeType == 2){
-                    Debug.Log("previousX, previousY: " + track[cpt].previousX + ", " + track[cpt].previousY);
-                }
                 if (track[cpt].nodeType == 3) holdPause = track[cpt].timeHold + track[cpt].timeToFinish;
                 track.Remove(track[cpt]);
                 cpt--;

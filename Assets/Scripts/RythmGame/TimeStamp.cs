@@ -14,11 +14,6 @@ public class TimeStamp
     public float timeHold;
     public Vector3 spawnPosition;
     public Vector3[] pathPositions;
-    /*public float time;
-    public Uri Uri;
-    public int Count;*/
-    public float previousX;
-    public float previousY;
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){
@@ -63,8 +58,6 @@ public class TimeStamp
         TimeStamp ts2 = new TimeStamp(ts1.timeSpawn, ts1.nodeType, ts1.joint);
         ts2.timeToFinish = ts1.timeToFinish;
         ts2.spawnPosition = ts1.spawnPosition;
-        ts2.previousX = ts1.previousX;                  //////To remove
-        ts2.previousY = ts1.previousY;                //////To remove
         switch(ts2.nodeType){
             case(1):
                 ts2.pathPositions = ts1.pathPositions;
