@@ -1,34 +1,29 @@
-﻿using SharpConfig;
+﻿using System;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsScrollRect : ScrollRect
 {
-    private string[] sections = new string[] { "twitch" };
-    
     private OptionEntry prefab = null;
 
     protected override void Start()
     {
-        prefab = GetComponentInChildren<OptionEntry>();
         base.Start();
         if (Application.isPlaying)
         {
-            foreach (string section in sections)
-            {
-                DisplayOptions(section);
-            }
+            prefab = GetComponentInChildren<OptionEntry>();
+            DisplayOptions();
         }
     }
 
-    private void DisplayOptions(string section)
+    private void DisplayOptions()
     {
-        foreach (Setting s in SettingsManager.Instance.config[section])
+        PropertyInfo[] properties = typeof(SettingsManager.Twitch).GetProperties();
+        foreach (PropertyInfo pif in properties)
         {
-            OptionEntry opt = Instantiate<OptionEntry>(prefab, content.transform);
-            opt.OptionName = s.Name;
-            opt.SetLayout(typeof(string));
-            opt.StringValue = s.StringValue;
+            OptionEntry opt = Instantiate(prefab, content.transform);
+            opt.Property = pif;
         }
     }
 }

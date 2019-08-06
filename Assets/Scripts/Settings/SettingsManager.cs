@@ -4,84 +4,83 @@ using System.Collections.Generic;
 using UnityEngine;
 using SharpConfig;
 
-public enum SettingTyp
+public class SettingsManager
 {
-    TwitchUsr,  // Twitch Username
-    AudTimCmd,  // Audience Time
-    IncDiffCmd, // Increase difficulty
-    DecDiffCmd, // Decrease difficulty
-    CongratCmd  // Congratulate
-}
-
-public class SettingsManager : Singleton<SettingsManager>
-{
-    public Configuration config = null;
-
-    // Twitch-related settings
-    private readonly string twitchSection = "Twitch";
-    public readonly Dictionary<SettingTyp, StringSetting> twitch = new Dictionary<SettingTyp, StringSetting>
+    // Just add the settings you want to expose here
+    public static class Twitch
     {
-        //  Command Type                                Config file field               Default value
-        {   SettingTyp.TwitchUsr,   new StringSetting(  "TwitchUsername"            ,   ""            ) },
-        {   SettingTyp.AudTimCmd,   new StringSetting(  "AudienceTimeCommand"       ,   "gambatte"    ) },
-        {   SettingTyp.IncDiffCmd,  new StringSetting(  "IncreaseDifficultyCommand" ,   "increase"    ) },
-        {   SettingTyp.DecDiffCmd,  new StringSetting(  "DecreaseDifficultyCommand" ,   "decrease"    ) },
-        {   SettingTyp.CongratCmd,  new StringSetting(  "CongratulationCommand"     ,   "gg"          ) },
-    };
+        public static string TwitchUsername { get => GetValue<string>("Twitch", "TwitchUsername"); set => SetValue("Twitch", "TwitchUsername", value); }
+        public static string AudienceTimeCommand { get => GetValue<string>("Twitch", "AudienceTimeCommand"); set => SetValue("Twitch", "AudienceTimeCommand", value); }
+        public static string CongratulationCommand { get => GetValue<string>("Twitch", "CongratulationCommand"); set => SetValue("Twitch", "CongratulationCommand", value); }
+    }
 
     #region Implementation
-    private string path; // setting file path
 
-    public class StringSetting
+    private static SettingsManager instance = null;
+    private static SettingsManager Instance
     {
-        internal string setting;
-        public string value;
-
-        public StringSetting(string s, string v)
+        get
         {
-            setting = s;
-            value = v;
+            if (instance == null)
+                instance = new SettingsManager();
+            return instance;
         }
     }
 
-    private void Awake()
+    private static string path = $"{Application.persistentDataPath}/config.cfg";
+    private Configuration config = null;
+
+    #region Get / Set
+
+    public static T GetValue<T>(string section, string settingName)
     {
-        path = $"{Application.persistentDataPath}/config.cfg";
+        return Instance.config[section][settingName].GetValue<T>();
+    }
+
+    public static object GetValue(string section, string settingName, Type type)
+    {
+        return Instance.config[section][settingName].GetValue(type);
+    }
+
+    public static void SetValue(string section, string settingName, object value)
+    {
+        Instance.config[section][settingName].SetValue(value);
+    }
+
+    #endregion
+
+    #region Constructor
+
+    private SettingsManager()
+    {
         if (System.IO.File.Exists(path))
-        {
             config = Configuration.LoadFromFile(path);
-            
-            foreach (KeyValuePair<SettingTyp, StringSetting> c in twitch)
-            {
-                SettingTyp typ = c.Key;
-                c.Value.value = config[twitchSection][c.Value.setting].StringValue;
-            }
-        }
-    }
-
-    public void SaveConfig()
-    {
-        if (config == null)
-            config = new Configuration();
-
-        foreach (KeyValuePair<SettingTyp, StringSetting> c in twitch)
+        else
         {
-            SettingTyp typ = c.Key;
-            config[twitchSection][c.Value.setting].StringValue = c.Value.value;
+            config = new Configuration();
         }
-
-        config.SaveToFile(path);
     }
 
-    private void OnApplicationQuit()
+    #endregion
+
+    #region Save / Load
+
+    public static void Load()
     {
-        //SaveConfig();
+        instance = new SettingsManager();
     }
 
-    private void OnDestroy()
+    public static void Reload() => Load();
+
+    public static void Save()
     {
-        //SaveConfig();
+        if (Instance.config == null)
+            return;
+
+        Instance.config.SaveToFile(path);
     }
+
+    #endregion
 
     #endregion
 }

@@ -10,7 +10,7 @@ public class SettingsSaveButton : Button
 
     private void SaveSettings()
     {
-        SettingsManager.Instance.SaveConfig();
+        SettingsManager.Save();
         NotificationManager.Instance.PushNotification("Configuration saved", Color.white, Color.green);
     }
 }

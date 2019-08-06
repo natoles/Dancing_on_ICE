@@ -12,7 +12,7 @@ namespace DancingICE.RythmGame.TwitchMode
 
         private void IncreaseScore(object sender, OnMessageReceivedArgs e)
         {
-            if (e.ChatMessage.Message == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
+            if (e.ChatMessage.Message == SettingsManager.Twitch.AudienceTimeCommand)
             {
                 multiplier += 0.1f;
             }

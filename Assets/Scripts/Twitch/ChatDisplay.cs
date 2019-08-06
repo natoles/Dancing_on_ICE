@@ -18,7 +18,7 @@ public class ChatDisplay : MonoBehaviour
     {
         chat = GetComponent<Text>();
         TwitchClient.Instance.OnMessageReceived += Chat_OnMessageReceived;
-        twitchChannelInputField.text = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
+        twitchChannelInputField.text = SettingsManager.Twitch.TwitchUsername;
         twitchChannelInputField.onValueChanged.AddListener(delegate { connectButton.ChangeButtonLayout("Connect", Color.green, true); });
     }
 

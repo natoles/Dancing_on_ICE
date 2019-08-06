@@ -37,7 +37,7 @@ public class AudienceTimeManager : MonoBehaviour
                 startTime = Time.time;
                 lastMessageTime = startTime;
                 Show();
-                TwitchClient.Instance.SendMessage($"Audience time ! Type {SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value.ToUpperInvariant()} in chat to increase the multiplier !");
+                TwitchClient.Instance.SendMessage($"Audience time ! Type {SettingsManager.Twitch.AudienceTimeCommand.ToUpperInvariant()} in chat to increase the multiplier !");
                 TwitchClient.Instance.OnMessageReceived += AudienceTime_Handler;
                 Debug.Log("Starting Audience Time");
                 started = true;
@@ -68,7 +68,7 @@ public class AudienceTimeManager : MonoBehaviour
 
     private void AudienceTime_Handler(object sender, OnMessageReceivedArgs e)
     {
-        if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Instance.twitch[SettingTyp.AudTimCmd].value)
+        if (e.ChatMessage.Message.ToLowerInvariant() == SettingsManager.Twitch.AudienceTimeCommand)
         {
             AddToMultiplier(0.1f);
             lastMessageTime = Time.time;

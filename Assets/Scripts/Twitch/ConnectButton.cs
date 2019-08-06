@@ -35,7 +35,7 @@ public class ConnectButton : Button
 
     private void ConnectButton_OnClickHandler()
     {
-        string channel = SettingsManager.Instance.twitch[SettingTyp.TwitchUsr].value;
+        string channel = SettingsManager.Twitch.TwitchUsername;
 
         if (!TwitchClient.Instance.IsConnected)
         {
