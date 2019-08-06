@@ -85,10 +85,6 @@ static class BeatmapLoader
 
     public static BeatmapContainer CreateBeatmapFromAudio(string path)
     {
-        string extension = Path.GetExtension(path);
-        if (!SupportedAudioFormats.Contains<string>(extension))
-            throw new NotSupportedException($"{extension} files are not supported");
-        
         return new BeatmapContainer
         {
             sourceFile = Path.GetFileName(path),

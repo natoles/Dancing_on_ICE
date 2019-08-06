@@ -1,65 +1,28 @@
 ﻿using UnityEngine;
+using DancingICE.RythmGame;
+using UnityEngine.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject pauseMenu = null;
+    [System.NonSerialized] 
+    public RythmGameController rythmGameController = null;
 
     [SerializeField]
-    private AudioSource audioPlayer = null;
+    private Button ResumeButton = null;
 
-    bool paused = false;
-    float previousTimeScale = 1f;
+    [SerializeField]    
+    private Button RetryButton = null;
 
-    private void Update()
+    [SerializeField]    
+    private Button QuitButton = null;
+
+    protected void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (paused)
-                Resume();
-            else
-                Pause();
-        }
-    }
-
-    public void Pause()
-    {
-        if (!paused)
-        {
-            paused = true;
-            previousTimeScale = Time.timeScale;
-            audioPlayer.Pause();
-            Time.timeScale = 0f;
-            pauseMenu.SetActive(true);
-        }
-    }
-
-    public void Resume()
-    {
-        if (paused)
-        {
-            pauseMenu.SetActive(false);
-            Time.timeScale = previousTimeScale;
-            audioPlayer.UnPause();
-            paused = false;
-        }
-    }
-
-    public void Retry()
-    {
-        if (paused)
-        {
-            Time.timeScale = previousTimeScale;
-        }
-        SceneHistory.ReloadActiveScene();
-    }
-
-    public void Quit()
-    {
-        if (paused)
-        {
-            Time.timeScale = previousTimeScale;
-        }
-        SceneHistory.LoadPreviousScene();
+        if (ResumeButton != null)
+            ResumeButton.onClick.AddListener(rythmGameController.Resume);
+        if (RetryButton != null)
+            RetryButton.onClick.AddListener(rythmGameController.Retry);
+        if (QuitButton != null)
+            QuitButton.onClick.AddListener(rythmGameController.Quit);
     }
 }

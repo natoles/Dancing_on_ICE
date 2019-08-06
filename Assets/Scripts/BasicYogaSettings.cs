@@ -26,8 +26,7 @@ public class BasicYogaSettings : MonoBehaviour
     [SerializeField]
     Toggle random = null;
 
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         slider.value = MainCreator.wantedRates[1];
         leftValue.text = slider.value.ToString();
@@ -50,16 +49,11 @@ public class BasicYogaSettings : MonoBehaviour
 
         if (basic.isOn)
             MainCreator.globalNodeType = MainCreator.Mode.Basic;
-        else { 
-            if (line.isOn) MainCreator.globalNodeType = MainCreator.Mode.Line;
-            else {
-                if (angle.isOn) MainCreator.globalNodeType = MainCreator.Mode.Angle;
-                else {
-                    if(random.isOn) MainCreator.globalNodeType = MainCreator.Mode.Random;
-                }
-            }
-        }
-            
-
+        else if (line.isOn)
+            MainCreator.globalNodeType = MainCreator.Mode.Line;
+        else if (angle.isOn)
+            MainCreator.globalNodeType = MainCreator.Mode.Angle;
+        else if(random.isOn)
+            MainCreator.globalNodeType = MainCreator.Mode.Random;
     }
 }
