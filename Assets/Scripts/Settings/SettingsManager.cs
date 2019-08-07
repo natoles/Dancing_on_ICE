@@ -7,11 +7,18 @@ using SharpConfig;
 public class SettingsManager
 {
     // Just add the settings you want to expose here
+    // Try to group settings by type (General, Mode-specific...) in static classes
+
     public static class Twitch
     {
         public static string TwitchUsername { get => GetValue<string>("Twitch", "TwitchUsername"); set => SetValue("Twitch", "TwitchUsername", value); }
         public static string AudienceTimeCommand { get => GetValue<string>("Twitch", "AudienceTimeCommand"); set => SetValue("Twitch", "AudienceTimeCommand", value); }
         public static string CongratulationCommand { get => GetValue<string>("Twitch", "CongratulationCommand"); set => SetValue("Twitch", "CongratulationCommand", value); }
+    }
+
+    public static class Yoga
+    {
+
     }
 
     #region Implementation
