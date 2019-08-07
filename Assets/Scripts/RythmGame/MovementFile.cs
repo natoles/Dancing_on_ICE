@@ -14,7 +14,7 @@ public class MovementFile
     public List<string> allMovementPath;
     public List<int> indexPreviousPointR; //To compute angle node's angle
     public List<int> indexPreviousPointL; //To compute angle node's angle
-    float nodeDistance = 4f; //Distance needed between two nodes (high = less nodes)
+    public float nodeDistance = 4f; //Distance needed between two nodes (high = less nodes)
     int maxJump = 60;//Max number of frames between two nodes
     int nbJoints = 2;
     float hipCenterX = 0;
