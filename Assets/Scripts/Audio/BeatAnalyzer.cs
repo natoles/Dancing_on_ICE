@@ -88,7 +88,7 @@ namespace DancingICE.Audio.BeatAnalysis
                 sublist.Sort((sfi1, sfi2) => -Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux()));
 
                 int peaksToKeep = Mathf.Min(Mathf.CeilToInt(means[i] / total * effectivePeakCount), sublist.Count);
-                Debug.Log($"{i} - {peaksToKeep}");
+                //Debug.Log($"{i} - {peaksToKeep}");
                 result.AddRange(sublist.GetRange(0, peaksToKeep - 1));
             }
 

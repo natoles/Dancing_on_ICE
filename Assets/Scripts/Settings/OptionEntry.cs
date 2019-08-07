@@ -28,7 +28,7 @@ public class OptionEntry : MonoBehaviour
     {
         Type type = property.PropertyType;
 
-        label.text = property.Name;
+        label.text = property.Name.SplitCamelCase();
 
         bool isString = type == typeof(string);
         bool isBool = type == typeof(bool);

@@ -16,7 +16,7 @@ public class NotificationManager : Singleton<NotificationManager>
 
     private void Awake()
     {
-        notificationPanelPrefab = Resources.Load<NotificationPanel>("Prefabs/NotificationPanel");
+        notificationPanelPrefab = Resources.Load<NotificationPanel>("NotificationPanel");
         spawnPosition = notificationPanelPrefab.rectTransform.anchoredPosition;
     }
 

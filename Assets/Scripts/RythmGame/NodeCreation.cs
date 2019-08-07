@@ -14,14 +14,14 @@ public class NodeCreation
     GameObject main;
 
     public NodeCreation(){
-        nodePrefabBRH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_RightHand") as GameObject;
-        nodePrefabBLH = Resources.Load("Prefabs/Nodes/BasicNodes/Prefab_BasicNode_LeftHand") as GameObject;
-        nodePrefabLRH = Resources.Load("Prefabs/Nodes/LineNodes/Prefab_LineNode_RightHand") as GameObject;
-        nodePrefabLLH = Resources.Load("Prefabs/Nodes/LineNodes/Prefab_LineNode_LeftHand") as GameObject;
-        nodePrefabARH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
-        nodePrefabALH = Resources.Load("Prefabs/Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
-        nodePrefabHRH = Resources.Load("Prefabs/Nodes/HoldNodes/Prefab_HoldNode_RightHand") as GameObject;
-        nodePrefabHLH = Resources.Load("Prefabs/Nodes/HoldNodes/Prefab_HoldNode_LeftHand") as GameObject;
+        nodePrefabBRH = Resources.Load("Nodes/BasicNodes/Prefab_BasicNode_RightHand") as GameObject;
+        nodePrefabBLH = Resources.Load("Nodes/BasicNodes/Prefab_BasicNode_LeftHand") as GameObject;
+        nodePrefabLRH = Resources.Load("Nodes/LineNodes/Prefab_LineNode_RightHand") as GameObject;
+        nodePrefabLLH = Resources.Load("Nodes/LineNodes/Prefab_LineNode_LeftHand") as GameObject;
+        nodePrefabARH = Resources.Load("Nodes/AngleNodes/Prefab_AngleNode_RightHand") as GameObject;
+        nodePrefabALH = Resources.Load("Nodes/AngleNodes/Prefab_AngleNode_LeftHand") as GameObject;
+        nodePrefabHRH = Resources.Load("Nodes/HoldNodes/Prefab_HoldNode_RightHand") as GameObject;
+        nodePrefabHLH = Resources.Load("Nodes/HoldNodes/Prefab_HoldNode_LeftHand") as GameObject;
         main = GameObject.Find("Main");
     }
 

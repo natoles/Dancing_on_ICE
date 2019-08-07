@@ -175,44 +175,55 @@ namespace DancingICE.RythmGame
 
         protected virtual void Update()
         {
-            if (loaded)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (thread != null)
+                if (paused)
+                    Resume();
+                else
+                    Pause();
+            }
+
+            if (!paused)
+            {
+                if (loaded)
                 {
-                    thread.Join();
-                    thread = null;
-
-                    audioPlayer.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
-                    clipData = null;
-
-                    OnLoaded();
-
-                    audioPlayer.PlayDelayed(3f);
-
-                    loadingScreen.Hide();
-                }
-
-                if (audioPlayer.isPlaying && audioPlayer.timeSamples > 0)
-                {
-                    if (!playbackStarted)
+                    if (thread != null)
                     {
-                        playbackStarted = true;
-                        OnPlaybackStarted();
+                        thread.Join();
+                        thread = null;
+
+                        audioPlayer.clip = BeatmapLoader.CreateAudioClipFromData(clipData);
+                        clipData = null;
+
+                        OnLoaded();
+
+                        audioPlayer.PlayDelayed(3f);
+
+                        loadingScreen.Hide();
                     }
 
-                    OnUpdate();
+                    if (audioPlayer.isPlaying && audioPlayer.timeSamples > 0)
+                    {
+                        if (!playbackStarted)
+                        {
+                            playbackStarted = true;
+                            OnPlaybackStarted();
+                        }
+
+                        OnUpdate();
+                    }
+                    else if (playbackStarted && audioPlayer.timeSamples == 0) // end of playback
+                    {
+                        OnPlaybackFinished();
+                        SceneHistory.LoadPreviousScene();
+                    }
                 }
-                else if (playbackStarted && audioPlayer.timeSamples == 0) // end of playback
+                else if (loadingFailed)
                 {
-                    OnPlaybackFinished();
+                    OnLoadingFailed(loadingException);
+                    NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
                     SceneHistory.LoadPreviousScene();
                 }
-            }
-            else if (loadingFailed)
-            {
-                OnLoadingFailed(loadingException);
-                NotificationManager.Instance.PushNotification("Failed to load beatmap audio", Color.white, Color.red);
-                SceneHistory.LoadPreviousScene();
             }
         }
     }
