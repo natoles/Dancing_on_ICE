@@ -48,7 +48,7 @@ public abstract class LineNode : Node
         }
  
     }
-    void Update()
+    public override void Update()
     {
         line.loop = false;
         movingPart.transform.Rotate(0f,0f,1f);

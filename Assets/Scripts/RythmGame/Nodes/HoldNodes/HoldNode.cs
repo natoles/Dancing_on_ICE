@@ -14,7 +14,7 @@ public class HoldNode : Node
 
     IEnumerator holdIt;
 
-    void Update(){
+    public override void Update(){
         if (finished && !hold){
             holdIt = Hold();
             StartCoroutine(holdIt);
