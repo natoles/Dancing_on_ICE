@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using DancingICE.Modes;
+using DancingICE.GameModes;
 
 namespace DancingICE.RythmGame
 {
@@ -7,7 +7,7 @@ namespace DancingICE.RythmGame
     {
         #region Game Mode
 
-        public static Mode GameMode { get; set; } = null;
+        public static GameMode GameMode { get; set; } = null;
 
         #endregion
 

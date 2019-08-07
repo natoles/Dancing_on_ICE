@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using UnityEngine.UI;
-using DancingICE.Modes;
+using DancingICE.GameModes;
 using DancingICE.RythmGame;
 
 public class ModeSelectionButton : Button
@@ -9,7 +9,7 @@ public class ModeSelectionButton : Button
     [Serializable]
     private class ModeContainer
     {
-        public Mode mode = null;
+        public GameMode mode = null;
         public bool showDifficultySlider = false;
         public GameObject buttonsToShow = null;
 #if UNITY_EDITOR

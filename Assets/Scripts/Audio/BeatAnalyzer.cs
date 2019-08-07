@@ -39,42 +39,65 @@ namespace DancingICE.Audio.BeatAnalysis
             }
         }
 
-        public List<SpectralFluxInfo> SelectPeaksV2(float wantedPeaksRate)
+        public List<SpectralFluxInfo> SelectPeaks(float wantedPeaksRate)
         {
-            List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
-            if (peaks.Count == 0)
-                return new List<SpectralFluxInfo>();
+            int effectivePeakCount = 0;
+            {
+                List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
+                if (peaks.Count == 0)
+                    return new List<SpectralFluxInfo>();
 
-            int effectivePeakCount = Mathf.Min(Mathf.RoundToInt(wantedPeaksRate * clipLength), peaks.Count);
-            if (effectivePeakCount == peaks.Count)
-                return peaks;
+                effectivePeakCount = Mathf.Min(Mathf.RoundToInt(wantedPeaksRate * clipLength), peaks.Count);
+                if (effectivePeakCount == peaks.Count)
+                    return peaks;
+            }
 
             List<float> means = new List<float>();
-            int j = 0;
-            float mean = 0;
             int n = 42;
-            for (int i = 0; i < spectralFluxSamples.Count; ++i)
             {
-                mean += spectralFluxSamples[i].spectralFlux;
-                j++;
-                if (j == n)
+                int j = 0;
+                float sum = 0;
+                for (int i = 0; i < spectralFluxSamples.Count; ++i)
                 {
-                    means.Add(mean / n);
-                    mean = 0;
-                    j = 0;
+                    sum += spectralFluxSamples[i].spectralFlux;
+                    j++;
+                    if (j == n)
+                    {
+                        means.Add(sum / n);
+                        sum = 0;
+                        j = 0;
+                    }
+                }
+                if (j != 0)
+                {
+                    means.Add(sum / j);
                 }
             }
-            if (j != 0)
-            {
-                means.Add(mean / j);
-            }
-
             float total = means.Sum();
 
-            return null;
+            List<SpectralFluxInfo> result = new List<SpectralFluxInfo>();
+
+            for (int i = 0; i < means.Count; ++i)
+            {
+                int start = i * n;
+                int length = n;
+                if (start + length - 1 >= spectralFluxSamples.Count)
+                    length = spectralFluxSamples.Count - start;
+
+                List<SpectralFluxInfo> sublist = spectralFluxSamples.GetRange(start, length).FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
+                sublist.Sort((sfi1, sfi2) => -Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux()));
+
+                int peaksToKeep = Mathf.Min(Mathf.CeilToInt(means[i] / total * effectivePeakCount), sublist.Count);
+                Debug.Log($"{i} - {peaksToKeep}");
+                result.AddRange(sublist.GetRange(0, peaksToKeep - 1));
+            }
+
+            result.Sort((sfi1, sfi2) => Comparer<float>.Default.Compare(sfi1.time, sfi2.time));
+
+            return result;
         }
 
-        public List<SpectralFluxInfo> SelectPeaks(float wantedPeaksRate)
+        public List<SpectralFluxInfo> SelectPeaks2(float wantedPeaksRate)
         {
             float thresholdMultiplier = 1f;
             List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
