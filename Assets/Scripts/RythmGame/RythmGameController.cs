@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using DancingICE.Audio.BeatAnalysis;
-using DancingICE.Modes;
+using DancingICE.GameModes;
 
 namespace DancingICE.RythmGame
 {
@@ -11,7 +11,7 @@ namespace DancingICE.RythmGame
     {
         [SerializeField]
         [Tooltip("Mode to use if none is specified in RythmGameSettings")]
-        private Mode DefaultMode = null;
+        private GameMode DefaultMode = null;
 
         [SerializeField]
         [Tooltip("AudioSource component that will be used for music playback")]
