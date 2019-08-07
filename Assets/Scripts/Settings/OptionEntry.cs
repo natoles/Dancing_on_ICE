@@ -13,16 +13,23 @@ public class OptionEntry : MonoBehaviour
 
     [SerializeField]
     private Toggle toggleButton = null;
-    
+
+    private PropertyInfo property = null;
     public PropertyInfo Property
     {
         set
         {
+            property = value;
             SetLayout(value);
         }
     }
 
     public Action Apply = () => { };
+
+    public void CancelModifications()
+    {
+        SetLayout(property);
+    }
 
     private void SetLayout(PropertyInfo property)
     {

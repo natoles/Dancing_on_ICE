@@ -2,7 +2,7 @@
 
 namespace DancingICE.GameModes
 {
-    [CreateAssetMenu(menuName = "RythmGame/Mode")]
+    [CreateAssetMenu(menuName = "RythmGame/GameMode")]
     [System.Serializable]
     public class GameMode : ScriptableObject
     {

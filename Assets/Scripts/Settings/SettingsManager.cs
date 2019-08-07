@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using SharpConfig;
+
+public class SettingSectionAttribute : Attribute { internal SettingSectionAttribute() { } }
 
 public class SettingsManager
 {
     // Just add the settings you want to expose here
-    // Try to group settings by type (General, Mode-specific...) in static classes
+    // Classes containing settings must be marked as "static" with a "SettingSectionAttribute"
 
+    [SettingSection]
     public static class Twitch
     {
         public static string TwitchUsername { get => GetValue<string>("Twitch", "TwitchUsername"); set => SetValue("Twitch", "TwitchUsername", value); }
@@ -16,6 +17,7 @@ public class SettingsManager
         public static string CongratulationCommand { get => GetValue<string>("Twitch", "CongratulationCommand"); set => SetValue("Twitch", "CongratulationCommand", value); }
     }
 
+    [SettingSection]
     public static class Yoga
     {
 

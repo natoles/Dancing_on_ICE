@@ -21,7 +21,7 @@ public class NotificationManager : Singleton<NotificationManager>
     }
 
     public void PushNotification(string text, Color textColor, Color bgColor)
-    {   
+    {
         NotificationPanel notif = Instantiate(notificationPanelPrefab, transform);
         notif.name = "NotificationPanel";
         notif.textComponent.text = text;

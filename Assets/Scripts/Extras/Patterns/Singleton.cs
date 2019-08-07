@@ -34,7 +34,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 
                         // Check if exists a singleton prefab on Resources Folder.
                         // -- Prefab must have the same name as the Singleton SubClass
-                        singletonPrefab = Resources.Load<GameObject>("Prefabs/" + typeof(T).ToString());
+                        singletonPrefab = Resources.Load<GameObject>(typeof(T).Name);
 
                         // Create singleton as new or from prefab
                         if (singletonPrefab != null)
