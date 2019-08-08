@@ -964,31 +964,31 @@ MonoBehaviour:
     jointExclusion: 0
   - fileName: basic5
     basicSpeed: 1.3
-    lineDuration: 4.5
+    lineDuration: 2.5
     holdDuration: 3
     scaleChange: 1.5
     jointExclusion: 0
   - fileName: basic6
     basicSpeed: 1.3
-    lineDuration: 4.5
+    lineDuration: 2.5
     holdDuration: 0
     scaleChange: 1.5
     jointExclusion: 0
   - fileName: basic7
     basicSpeed: 1
-    lineDuration: 4.5
+    lineDuration: 3.5
     holdDuration: 0
     scaleChange: 1.5
     jointExclusion: 0
   - fileName: basic8
     basicSpeed: 1
-    lineDuration: 4.5
+    lineDuration: 5.5
     holdDuration: 0
     scaleChange: 1.5
     jointExclusion: 1
   - fileName: basic9
     basicSpeed: 0
-    lineDuration: 4.5
+    lineDuration: 4
     holdDuration: 4
     scaleChange: 0
     jointExclusion: 2
@@ -996,8 +996,7 @@ MonoBehaviour:
   - 0
   - 0
   numberMoves: 0
-  d: 1.1
-  gameLength: 80
+  dif: 1
   holdPause: 0
 --- !u!82 &1584557257
 AudioSource:

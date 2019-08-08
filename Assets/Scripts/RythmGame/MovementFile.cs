@@ -6,19 +6,20 @@ using System;
 
 public class MovementFile
 {
-    public List<List<float[]>> allMovementPos;
-    public List<List<TimeStamp>> allMovementTimeStampBasic;
-    public List<List<TimeStamp>> allMovementTimeStampLine;
-    public List<float[]> allMovementRates;
-    public List<float> allMovementGlobalRates;
-    public List<string> allMovementPath;
+    public List<List<float[]>> allMovementPos; //Position of every available joint for every move
+    public List<List<TimeStamp>> allMovementTimeStampBasic; //Timestamp for every move for Basic and Angle (after point selection)
+    public List<List<TimeStamp>> allMovementTimeStampLine; //Timestamp for every move for Basic and Angle (after point selection)
+    public List<float[]> allMovementRates; //Fix rates for every available joint for every move
+    public List<float> allMovementGlobalRates; //Rates for every move dependaing on the current rates 
+    public List<string> allMovementPath; //Positons to draw the path for the line node for each move
+
     public List<int> indexPreviousPointR; //To compute angle node's angle
     public List<int> indexPreviousPointL; //To compute angle node's angle
+
     public float nodeDistance = 4f; //Distance needed between two nodes (high = less nodes)
-    int maxJump = 60;//Max number of frames between two nodes
-    int nbJoints = 2;
-    float hipCenterX = 0;
-    float hipCenterY = 0;
+    int maxJump = 60; //Max number of frames between two nodes
+    int nbJoints = 2; //Number of available joints
+    
 
     public MovementFile(){
         allMovementPos = new List<List<float[]>>();
@@ -53,6 +54,8 @@ public class MovementFile
         bool centered; //Did I get the hipCenter value ?
         string HCX;
         string HCY;
+        float hipCenterX;
+        float hipCenterY;
         int cpt;
         float x;
         float y;

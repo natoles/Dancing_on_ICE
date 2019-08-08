@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+//Class to store all informations of a node 
 public class TimeStamp
 {
     public float timeSpawn;
-    public int nodeType;
-    public int joint;
-    public float timeToFinish;
-    public float timeLine;
-    public float startAngle;
-    public float timeHold;
-    public Vector3 spawnPosition;
-    public Vector3[] pathPositions;
+    public int nodeType; //Basic=0; Line=1; Angle=2; Hold=3
+    public int joint; //RightHand=0; LeftHand=1
+    public float timeToFinish; //Time between apparition and disparition of teh node
+    public float timeLine; //Time duration of the line node
+    public float startAngle; //Angle of the angle node
+    public float timeHold; //Hold time of the hold node
+    public Vector3 spawnPosition; 
+    public Vector3[] pathPositions; //Position of the points forming the line node
 
     //Simplified constructor(default values)
     public TimeStamp(float timeSpawn1, int nodeType1, int joint1){

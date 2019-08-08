@@ -9,25 +9,28 @@ public class MainCreator : RythmGameController
 {
     NodeCreation creator;
     public BodySourceView bodySourceView;
+
     IEnumerator trackCreation;
     List<TimeStamp> track = new List<TimeStamp>(); //Add a TimeStamp to track to display it on screen
+
     MovementFile decoyMove = new MovementFile();
     public enum Mode {Random = 0, Basic, Line, Angle} //Every available Mode
-    static public Mode globalNodeType = Mode.Angle; //Chosen mode
+    static public Mode globalNodeType = Mode.Basic; //Chosen mode
     public MoveInfo[] moveInfo =  new MoveInfo[2]; //Array that stocks infos about every move.
-    [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
-    public float[] currentRates; //See AddMove()
     TimeStamp defaultNode;
-    [HideInInspector] public int numberMoves = 0; //Increases each time a move is added
-    int movePoolSize = 9; //See SelectMove()
-    float maxSpawnTime = 0;
+
+    [SerializeField] static public float[] wantedRates = new float[2] {50,50}; //Wanted joints rates needs to be initialise in inspector
+    [HideInInspector] public float[] currentRates; //See AddMove()
+    
+    int movePoolSize = 3; //See SelectMove()
+    public float dif = 1; //Difficulty(default is one)
     float globalscale = 8; //Default scale
+    [HideInInspector] public int numberMoves; //Increases each time a move is added
+    float maxSpawnTime;
     float tmpTime;
-    public float d = 1; //Difficulty
-    public float gameLength; //Duration of one session in seconds
-    int totalMoves = 0; //Number of moves available
-    float startTime; //Time at which the gale starts, relative to Time.time
-    [HideInInspector] public float holdPause = 0; //We pause the level generation to let time for the holdnode to finish
+    int totalMoves; //Number of moves available
+    float startTime; //Time at which the game starts, relative to Time.time
+    [HideInInspector] public float holdPause; //We pause the level generation to let time for the holdnode to finish
     
 
     protected override void Start()
@@ -48,21 +51,21 @@ public class MainCreator : RythmGameController
 
         
         if(globalNodeType == Mode.Basic || globalNodeType == Mode.Line || globalNodeType == Mode.Random){
-            defaultNode = new TimeStamp(0,0,0,1.2f*(1/d),Vector3.zero); //Reference node for Basic Node spawning
+            defaultNode = new TimeStamp(0,0,0,1.2f*(1/dif),Vector3.zero); //Reference node for Basic Node spawning
             decoyMove.nodeDistance = 2.5f;
         } 
         if(globalNodeType == Mode.Angle) {
-            defaultNode = new TimeStamp(0,2,0,2f*(1/d),0,Vector3.zero); //Reference node for Angle Node spawning
+            defaultNode = new TimeStamp(0,2,0,2f*(1/dif),0,Vector3.zero); //Reference node for Angle Node spawning
             decoyMove.nodeDistance = 4f;
         }
         
         //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
         if(globalNodeType == Mode.Basic || globalNodeType == Mode.Angle || globalNodeType == Mode.Random){
-            decoyMove.SetMoveTimeStamp("basic3",1.3f*d,globalscale*d+3,0,5,4,0,defaultNode);
-            decoyMove.SetMoveTimeStamp("basic9",1.1f*d,globalscale*d,0,2,4,2,defaultNode);
+            decoyMove.SetMoveTimeStamp("basic3",1.3f*dif,globalscale*dif+3,0,5,4,0,defaultNode);
+            decoyMove.SetMoveTimeStamp("basic9",1.1f*dif,globalscale*dif,0,2,4,2,defaultNode);
         }
         if(globalNodeType == Mode.Line || globalNodeType == Mode.Random){ 
-            decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*d + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/d),Vector3.zero, new Vector3[0]));
+            decoyMove.SetMoveTimeStamp("basic3",1f,globalscale*dif + 3,0,5,4,0, new TimeStamp(0,1,0,1.5f,4f*(1/dif),Vector3.zero, new Vector3[0]));
         }
         
         
@@ -101,11 +104,11 @@ public class MainCreator : RythmGameController
 
     //Shorten verson of SetMoveTimeStamp for BasicNode and AngleNode
     void SetMoveTimeStampBasic(string path, float speed, float holdTime, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,speed*d,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, defaultNode);                                 
+        decoyMove.SetMoveTimeStamp(path,speed*dif,globalscale*dif + scaleChange,0,-1,holdTime,jointExclusion, defaultNode);                                 
     }
     //Shorten verson of SetMoveTimeStamp for LineNode
     void SetMoveTimeStampLine(string path, float timeLine, float holdTime, float scaleChange, int jointExclusion){
-        decoyMove.SetMoveTimeStamp(path,1f,globalscale*d + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/d),Vector3.zero, new Vector3[0]));                                  
+        decoyMove.SetMoveTimeStamp(path,1f,globalscale*dif + scaleChange,0,-1,holdTime,jointExclusion, new TimeStamp(0,1,0,1.5f,timeLine*(1/dif),Vector3.zero, new Vector3[0]));                                  
     }
 
     //Adds the chosen move to the track accroding to the chosen move
