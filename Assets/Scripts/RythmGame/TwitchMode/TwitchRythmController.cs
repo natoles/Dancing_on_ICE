@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Kinect = Windows.Kinect;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DancingICE.RythmGame.TwitchMode
 {
@@ -19,26 +21,27 @@ namespace DancingICE.RythmGame.TwitchMode
         private readonly float by = 0.275f;
         private readonly float dy = 0.375f;
 
-        private readonly float minApproachTime = 2f;
-        private readonly float maxApproachTime = 0.8f;
+        private readonly float minApproachTime = 1.6f;
+        private readonly float maxApproachTime = 0.5f;
         private float ApproachTime { get { return Mathf.Lerp(minApproachTime, maxApproachTime, RythmGameSettings.DifficultyPercentage); } }
 
-        private readonly float minSpeed = 1.75f;
-        private readonly float maxSpeed = 3.5f;
+        private readonly float minSpeed = 0.2f; // rotation per second
+        private readonly float maxSpeed = 1.0f;
         private float Speed { get { return Mathf.Lerp(minSpeed, maxSpeed, RythmGameSettings.DifficultyPercentage); } }
 
-        private readonly float minSpawnDelay = 0.75f;
-        private readonly float maxSpawnDelay = 0.15f;
+        private readonly float minSpawnDelay = 0.675f;
+        private readonly float maxSpawnDelay = 0.175f;
         private float SpawnDelay { get { return Mathf.Lerp(minSpawnDelay, maxSpawnDelay, RythmGameSettings.DifficultyPercentage); } }
 
         private int currPeak = 0;
+        private int currJoint = 0;
         private float previousNodeSpawning = float.MinValue;
 
         private Vector3 ComputePos(Kinect.JointType joint, float time)
         {
             return new Vector3(
-                bounds.center.x + (joint == Kinect.JointType.HandLeft ? -1f : 1f) * (bx + dx * Mathf.Cos(time * Speed)) * bounds.extents.x,
-                bounds.center.y + (1) * (by + dy * Mathf.Sin(time * Speed)) * bounds.extents.y
+                bounds.center.x + (joint == Kinect.JointType.HandLeft ? -1f : 1f) * (bx + dx * Mathf.Cos(time * Speed * 2 * Mathf.PI)) * bounds.extents.x,
+                bounds.center.y + (1) * (by + dy * Mathf.Sin(time * Speed * 2 * Mathf.PI)) * bounds.extents.y
                 );
         }
 
@@ -60,13 +63,36 @@ namespace DancingICE.RythmGame.TwitchMode
         {
             while (currPeak < Peaks.Count && Peaks[currPeak].time <= AudioPlayer.time + ApproachTime)
             {
-                if (Time.time > previousNodeSpawning + SpawnDelay)
+                currJoint = 1 - currJoint;
+                Kinect.JointType JointType = currJoint == 0 ? Kinect.JointType.HandLeft : Kinect.JointType.HandRight;
+                NodeCreation.Joint Joint = currJoint == 0 ? NodeCreation.Joint.LeftHand : NodeCreation.Joint.RightHand;
+
+                float current = currPeak;
+                float nodeTime = Peaks[currPeak].time;
+                previousNodeSpawning = nodeTime;
+                currPeak++;
+
+                // Search for the last of a group of "close" nodes starting with the current one
+                while (currPeak < Peaks.Count && Peaks[currPeak].time < previousNodeSpawning + SpawnDelay)
                 {
-                    previousNodeSpawning = Time.time;
-                    GameObject node = creator.CreateBasicNode(NodeCreation.Joint.LeftHand, Peaks[currPeak].time - AudioPlayer.time, ComputePos(Kinect.JointType.HandLeft, previousNodeSpawning));
+                    previousNodeSpawning = Peaks[currPeak].time;
+                    currPeak++;
+                }
+
+                if (nodeTime + SpawnDelay >= previousNodeSpawning) // spawn basic node when we have an isolated node, or when line node would be too short
+                {
+                    GameObject node = creator.CreateBasicNode(Joint, nodeTime - AudioPlayer.time, ComputePos(JointType, nodeTime));
                     node.GetComponent<Node>().destroyOnTouch = true;
                 }
-                currPeak++;
+                else
+                {
+                    List<float> lineTimes = new List<float>();
+                    for (float f = nodeTime + 0.025f; f < previousNodeSpawning; f += 0.025f)
+                        lineTimes.Add(f);
+                    lineTimes.Add(previousNodeSpawning);
+                    Vector3[] line = lineTimes.Select(time => ComputePos(JointType, time)).ToArray();
+                    GameObject node = creator.CreateLineNode(Joint, nodeTime - AudioPlayer.time, lineTimes.Last() - nodeTime, ComputePos(JointType, nodeTime), line);
+                }
             }
         }
     }

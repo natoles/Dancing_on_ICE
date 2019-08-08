@@ -20,12 +20,15 @@ namespace DancingICE.Audio.BeatAnalysis
 
         [JsonProperty(propertyName: "ws")] private readonly int windowSize;
 
+        [JsonProperty(propertyName: "ds")] private readonly float dataPerSecond;
+
         [JsonProperty(propertyName: "cl")] private readonly float clipLength;
 
-        public SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int windowSize, float clipLength)
+        public SpectralFluxData(List<SpectralFluxInfo> spectralFluxSamples, int windowSize, float dataPerSecond, float clipLength)
         {
             this.spectralFluxSamples = spectralFluxSamples;
             this.windowSize = windowSize;
+            this.dataPerSecond = dataPerSecond;
             this.clipLength = clipLength;
         }
 
@@ -53,7 +56,8 @@ namespace DancingICE.Audio.BeatAnalysis
             }
 
             List<float> means = new List<float>();
-            int n = 42;
+            int secondsPerBlock = 2;
+            int n = Mathf.FloorToInt(secondsPerBlock * dataPerSecond);
             {
                 int j = 0;
                 float sum = 0;
@@ -86,10 +90,9 @@ namespace DancingICE.Audio.BeatAnalysis
 
                 List<SpectralFluxInfo> sublist = spectralFluxSamples.GetRange(start, length).FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
                 sublist.Sort((sfi1, sfi2) => -Comparer<float>.Default.Compare(sfi1.PrunedSpectralFlux(), sfi2.PrunedSpectralFlux()));
-
+                
                 int peaksToKeep = Mathf.Min(Mathf.CeilToInt(means[i] / total * effectivePeakCount), sublist.Count);
-                //Debug.Log($"{i} - {peaksToKeep}");
-                result.AddRange(sublist.GetRange(0, peaksToKeep - 1));
+                result.AddRange(sublist.GetRange(0, peaksToKeep));
             }
 
             result.Sort((sfi1, sfi2) => Comparer<float>.Default.Compare(sfi1.time, sfi2.time));
@@ -97,7 +100,7 @@ namespace DancingICE.Audio.BeatAnalysis
             return result;
         }
 
-        public List<SpectralFluxInfo> SelectPeaks2(float wantedPeaksRate)
+        public List<SpectralFluxInfo> SelectPeaksV2(float wantedPeaksRate)
         {
             float thresholdMultiplier = 1f;
             List<SpectralFluxInfo> peaks = spectralFluxSamples.FindAll((SpectralFluxInfo sfi) => sfi.IsPeak());
@@ -116,7 +119,6 @@ namespace DancingICE.Audio.BeatAnalysis
         private readonly int frequency;
         private readonly int channels;
         private readonly int lengthSamples;
-        private readonly int sampleRate;
         private readonly float clipLength;
         private readonly float timePerSample;
         private readonly float[] multiChannelSamples;
@@ -230,7 +232,7 @@ namespace DancingICE.Audio.BeatAnalysis
                 fluxAnalyzer.AnalyzeSpectrum(Array.ConvertAll(scaledFFTSpectrum, x => (float)x), curSongTime);
             }
 
-            return new SpectralFluxData(fluxAnalyzer.spectralFluxSamples, thresholdWindowSize, clipLength);
+            return new SpectralFluxData(fluxAnalyzer.spectralFluxSamples, windowSize: thresholdWindowSize, dataPerSecond: (float)frequency / spectrumSampleSize, clipLength: clipLength);
         }
     }
 }
