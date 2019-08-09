@@ -14,17 +14,20 @@ namespace DancingICE.RythmGame.TwitchMode
 
         private NodeCreation creator = null;
         private Bounds bounds = default;
-
-        //private readonly float sliderPlotTime = 0.01f;
+        
+        // Parameters of the circle (b = center, d = deviation / radius)
+        // Those values are percentages, relative to the position of the GameObject
+        // Example : bx = 0.5f means 50% of bounds.extents.x to the left (left hand) or right (right hand) from the center of the GameObject
         private readonly float bx = 0.225f;
         private readonly float dx = 0.150f;
         private readonly float by = 0.275f;
         private readonly float dy = 0.375f;
 
+        // Time the node stays on screen
         private readonly float minApproachTime = 1.6f;
         private readonly float maxApproachTime = 0.5f;
         private float ApproachTime { get { return Mathf.Lerp(minApproachTime, maxApproachTime, RythmGameSettings.DifficultyPercentage); } }
-
+        
         private readonly float minSpeed = 0.2f; // rotation per second
         private readonly float maxSpeed = 1.0f;
         private float Speed { get { return Mathf.Lerp(minSpeed, maxSpeed, RythmGameSettings.DifficultyPercentage); } }
