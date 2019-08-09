@@ -100,6 +100,7 @@ namespace DancingICE.Audio.BeatAnalysis
             return result;
         }
 
+        //First implementation
         public List<SpectralFluxInfo> SelectPeaksV2(float wantedPeaksRate)
         {
             float thresholdMultiplier = 1f;
