@@ -54,7 +54,7 @@ public class TwitchClient : Singleton<TwitchClient>
 
     private TwitchClient()
     {
-        credentials = new ConnectionCredentials(AuthTokens.BOT_NAME, AuthTokens.BOT_ACCESS_TOKEN);
+        credentials = new ConnectionCredentials(AuthTokens.ACCOUNT_NAME, AuthTokens.BOT_ACCESS_TOKEN);
     }
 
     private void Awake()
