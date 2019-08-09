@@ -59,7 +59,7 @@ public class MainCreator : RythmGameController
             decoyMove.nodeDistance = 4f;
         }
         
-        //Custom Moves : Speed (Basic) or TimeLine (Line) have to be set to 0 to use custom parameters
+        //Custom Moves : Basic Speed (BasicMode) or Line Duration (LineMode) have to be set to 0 to use custom parameters
         if(globalNodeType == Mode.Basic || globalNodeType == Mode.Angle || globalNodeType == Mode.Random){
             decoyMove.SetMoveTimeStamp("basic3",1.3f*dif,globalscale*dif+3,0,5,4,0,defaultNode);
             decoyMove.SetMoveTimeStamp("basic9",1.1f*dif,globalscale*dif,0,2,4,2,defaultNode);

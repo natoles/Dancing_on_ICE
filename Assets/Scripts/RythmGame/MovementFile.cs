@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
-
+//Converts CSV files from UKI into lists of Timestamps
 public class MovementFile
 {
     public List<List<float[]>> allMovementPos; //Position of every available joint for every move

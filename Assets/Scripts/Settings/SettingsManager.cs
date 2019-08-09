@@ -12,6 +12,7 @@ public class SettingsManager
     [SettingSection]
     public static class Twitch
     {
+        // Channel name (will join this chat)
         public static string TwitchUsername { get => GetValue<string>("Twitch", "TwitchUsername"); set => SetValue("Twitch", "TwitchUsername", value); }
         public static string AudienceTimeCommand { get => GetValue<string>("Twitch", "AudienceTimeCommand"); set => SetValue("Twitch", "AudienceTimeCommand", value); }
         public static string CongratulationCommand { get => GetValue<string>("Twitch", "CongratulationCommand"); set => SetValue("Twitch", "CongratulationCommand", value); }
