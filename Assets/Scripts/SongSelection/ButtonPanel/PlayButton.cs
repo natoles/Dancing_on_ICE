@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using DancingICE.RythmGame;
 
 public class PlayButton : Button
@@ -6,11 +7,13 @@ public class PlayButton : Button
     protected override void Awake()
     {
         base.Awake();
-        onClick.AddListener(() => SceneHistory.LoadScene(RythmGameSettings.GameMode.gameScene));
+        if (Application.isPlaying)
+            onClick.AddListener(() => SceneHistory.LoadScene(RythmGameSettings.GameMode.gameScene));
     }
 
     private void Update()
     {
-        interactable = (RythmGameSettings.BeatmapToLoad != null);
+        if (Application.isPlaying)
+            interactable = (RythmGameSettings.BeatmapToLoad != null) && (!RythmGameSettings.GameMode.useTwitchIntegration || TwitchClient.Instance.IsConnected);
     }
 }

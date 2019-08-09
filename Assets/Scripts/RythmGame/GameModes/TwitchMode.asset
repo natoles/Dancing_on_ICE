@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf5d998e08a756449c9325d7374fe87, type: 3}
   m_Name: TwitchMode
   m_EditorClassIdentifier: 
-  useCustomName: 1
-  customName: Twitch Mode
+  modeName: Twitch Mode
   gameScene:
     m_SceneAsset: {fileID: 102900000, guid: 1049e92854832bf439faeca7f3455260, type: 3}
     m_SceneName: TwitchMode
+  useTwitchIntegration: 1
   analyzeAudioSpectrum: 1
   mesureCalories: 0

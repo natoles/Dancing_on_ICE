@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf5d998e08a756449c9325d7374fe87, type: 3}
   m_Name: YogaMode
   m_EditorClassIdentifier: 
-  useCustomName: 1
-  customName: Yoga Mode
+  modeName: Yoga Mode
   gameScene:
     m_SceneAsset: {fileID: 102900000, guid: afe007db5675f3b4e9ceca7e2418be30, type: 3}
     m_SceneName: YogaScene
+  useTwitchIntegration: 0
   analyzeAudioSpectrum: 0
   mesureCalories: 1

@@ -72,10 +72,10 @@ public class ModeSelectionButton : Button
             string display = null;
             if (modes[current]?.mode != null)
             {
-                if (modes[current].mode.useCustomName)
-                    display = modes[current].mode.customName;
-                else
+                if (string.IsNullOrWhiteSpace(modes[current].mode.modeName))
                     display = modes[current].mode.name;
+                else
+                    display = modes[current].mode.modeName;
             }
             textComponent.text = display;
         }

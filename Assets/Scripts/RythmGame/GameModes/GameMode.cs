@@ -6,9 +6,9 @@ namespace DancingICE.GameModes
     [System.Serializable]
     public class GameMode : ScriptableObject
     {
-        public bool useCustomName = false;
-        public string customName = null;
+        public string modeName = null;
         public SceneField gameScene = null;
+        public bool useTwitchIntegration = false;
         public bool analyzeAudioSpectrum = false;
         public bool mesureCalories = false;
     }
